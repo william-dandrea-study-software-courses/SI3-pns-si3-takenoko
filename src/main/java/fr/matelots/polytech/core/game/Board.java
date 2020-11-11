@@ -2,10 +2,7 @@ package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.engine.util.Position;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
     // Attributes
@@ -39,7 +36,7 @@ public class Board {
         return getNbNeighbors(x, y, z) > 0;
     }
 
-    private int getNbNeighbors(int x, int y, int z) {
+    public int getNbNeighbors(int x, int y, int z) {
         List<Position<Integer>> cubeDirections = Arrays.asList(
                 new Position<>(1, -1, 0),
                 new Position<>(0, -1, 1),
@@ -77,5 +74,9 @@ public class Board {
         });
 
         return "Plateau: \n" + builder.toString();
+    }
+
+    public Set<Position<Integer>> getPositions() {
+        return new HashSet<>(this.grid.keySet()); //évite la modification
     }
 }
