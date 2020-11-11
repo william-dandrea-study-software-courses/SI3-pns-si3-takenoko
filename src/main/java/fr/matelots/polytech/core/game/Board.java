@@ -65,12 +65,8 @@ public class Board {
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         grid.keySet().forEach(pos -> {
-            builder.append("(x=");
-            builder.append(pos.getX());
-            builder.append(", y=");
-            builder.append(pos.getY());
-            builder.append(", z=");
-            builder.append(pos.getZ());
+            builder.append("(");
+            builder.append(pos);
             builder.append(",");
             builder.append(grid.get(pos));
             builder.append(")\n");

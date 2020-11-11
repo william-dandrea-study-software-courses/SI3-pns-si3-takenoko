@@ -35,4 +35,16 @@ public class Position<E extends Number> {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("x=");
+        builder.append(getX());
+        builder.append(", y=");
+        builder.append(getY());
+        builder.append(", z=");
+        builder.append(getZ());
+        return builder.toString();
+    }
 }
