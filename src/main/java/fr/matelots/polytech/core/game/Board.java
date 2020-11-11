@@ -1,8 +1,10 @@
-package core.game;
+package fr.matelots.polytech.core.game;
 
-import engine.util.Position;
+import fr.matelots.polytech.engine.util.Position;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -17,6 +19,14 @@ public class Board {
     }
 
     // Methods and Function
+    public Parcel getParcel (int x, int y, int z) {
+        for (Position<Integer> pos : grid.keySet()) {
+            if (pos.equals(new Position<>(x, y, z)))
+                return grid.get(pos);
+        }
+        return null;
+    }
+
     public boolean addParcel (int x, int y, int z, Parcel p) {
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position<>(x, y, z), p);
@@ -25,18 +35,30 @@ public class Board {
         return false;
     }
 
-    private boolean isPlaceValid (int x, int y, int z) {
+    public boolean isPlaceValid (int x, int y, int z) {
         return getNbNeighbors(x, y, z) > 0;
     }
 
     private int getNbNeighbors(int x, int y, int z) {
-        return (int) grid.keySet()
-                .stream()
-                .filter(pos ->
-                        (Math.abs(pos.getX() - x) <= 1) &&
-                                (Math.abs(pos.getY() - y) <= 1) &&
-                                (Math.abs(pos.getZ() - z) <= 1))
-                .count();
+        List<Position<Integer>> cubeDirections = Arrays.asList(
+                new Position<>(1, -1, 0),
+                new Position<>(0, -1, 1),
+                new Position<>(-1, 0, 1),
+                new Position<>(-1, 1, 0),
+                new Position<>(0, 1, -1),
+                new Position<>(1, 0, -1)
+                );
+
+        int nb = 0;
+        Position<Integer> tmp;
+        for (Position<Integer> pos : grid.keySet()) {
+            tmp = new Position<>(pos.getX() - x, pos.getY() - y, pos.getZ() - z);
+            if (cubeDirections.contains(tmp)) {
+                nb++;
+            }
+        }
+
+        return nb;
     }
 
     @Override

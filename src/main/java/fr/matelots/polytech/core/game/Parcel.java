@@ -1,4 +1,4 @@
-package core.game;
+package fr.matelots.polytech.core.game;
 
 class Parcel {
     // Attributes - None yet

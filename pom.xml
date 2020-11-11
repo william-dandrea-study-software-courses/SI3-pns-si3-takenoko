@@ -4,7 +4,7 @@
 
     <groupId>les_matelots_des_7_mers</groupId>
     <artifactId>Takenoko</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

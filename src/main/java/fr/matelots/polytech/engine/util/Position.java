@@ -1,4 +1,4 @@
-package engine.util;
+package fr.matelots.polytech.engine.util;
 
 public class Position<E extends Number> {
     // Attributes

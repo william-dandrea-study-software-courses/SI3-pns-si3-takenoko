@@ -1,6 +1,6 @@
-package core.players;
+package fr.matelots.polytech.core.players;
 
-import core.game.Board;
+import fr.matelots.polytech.core.game.Board;
 
 public abstract class VirtualPlayer extends Player {
     protected Board board;

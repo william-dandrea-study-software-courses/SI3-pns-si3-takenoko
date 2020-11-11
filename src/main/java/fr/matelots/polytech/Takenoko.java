@@ -1,6 +1,6 @@
 package fr.matelots.polytech;
 
-import core.game.Game;
+import fr.matelots.polytech.core.game.Game;
 
 /**
  * @author AlexandreArcil

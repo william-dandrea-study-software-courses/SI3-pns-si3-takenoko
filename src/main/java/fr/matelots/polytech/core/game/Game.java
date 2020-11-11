@@ -1,7 +1,7 @@
-package core.game;
+package fr.matelots.polytech.core.game;
 
-import core.players.Player;
-import core.players.VirtualPlayer;
+import fr.matelots.polytech.core.players.Player;
+import fr.matelots.polytech.core.players.VirtualPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
