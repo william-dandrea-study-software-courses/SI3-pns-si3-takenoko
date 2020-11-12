@@ -32,4 +32,24 @@ public class BoardTest {
     public void testInvalidPositionCarPAsVoisine () {
         assertFalse(board.isPlaceValid(2, -1, -1));
     }
+
+    @Test
+    public void testPoseParcelVoisineALEtang () {
+        assertTrue(board.addParcel(1, -1, 0, new Parcel()));
+        assertNotNull(board.getParcel(1, -1, 0));
+    }
+
+    @Test
+    public void testPoseParcelVoisineARien () {
+        assertFalse(board.addParcel(2, -1, -1, new Parcel()));
+        assertNull(board.getParcel(2, -1, -1));
+    }
+
+    @Test
+    public void testPoseParcelVoisineAVoisineEtang () {
+        assertTrue(board.addParcel(1, -1, 0, new Parcel()));
+        assertTrue(board.addParcel(1, 0, -1, new Parcel()));
+        assertTrue(board.addParcel(2, -1, -1, new Parcel()));
+        assertNotNull(board.getParcel(2, -1, -1));
+    }
 }
