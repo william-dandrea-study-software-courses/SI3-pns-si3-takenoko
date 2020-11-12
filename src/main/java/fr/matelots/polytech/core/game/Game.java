@@ -45,4 +45,13 @@ public class Game {
             i++;
         }
     }
+
+    /**
+     * This return the hidden top card of the parcel objective deck
+     * @return the hidden top card of the parcel objective deck
+     */
+    public CardObjectiveParcel getNextParcelObjective () {
+        // TODO
+        return null;
+    }
 }
