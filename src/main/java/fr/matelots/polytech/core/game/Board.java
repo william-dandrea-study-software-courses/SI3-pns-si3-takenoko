@@ -7,10 +7,12 @@ import java.util.*;
 public class Board {
     // Attributes
     private final Map<Position<Integer>, Parcel> grid;
+    private final DeckParcelObjective deckParcelObjective;
 
     // Constructors
     public Board () {
         grid = new HashMap<>();
+        this.deckParcelObjective = new DeckParcelObjective(this);
         // On ajout l'étang
         grid.put(new Position<>(0, 0, 0), new Parcel());
     }
