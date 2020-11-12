@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.game;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Board {
     // Attributes
@@ -25,8 +26,16 @@ public class Board {
         }
         return null;
     }
+    public Parcel getParcel (Position<Integer> position) {
+        for (Position<Integer> pos : grid.keySet()) {
+            if (pos.equals(position))
+                return grid.get(pos);
+        }
+        return null;
+    }
 
     public boolean addParcel (int x, int y, int z, Parcel p) {
+
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position<>(x, y, z), p);
             return true;
@@ -76,6 +85,10 @@ public class Board {
 
     public Set<Position<Integer>> getPositions() {
         return new HashSet<>(this.grid.keySet()); //évite la modification
+    }
+
+    public boolean ContainTile(Position<Integer> position) {
+        return getParcel(position) != null;
     }
 
     public DeckParcelObjective getDeckParcelObjective() {

@@ -1,13 +1,12 @@
 package fr.matelots.polytech.core.game;
 
-class Parcel {
+public class Parcel {
     // Attributes - None yet
-
     // Constructors
-    Parcel () {}
+    public Parcel()  {
+    }
 
     // Methods
-
     @Override
     public String toString() {
         return super.toString();

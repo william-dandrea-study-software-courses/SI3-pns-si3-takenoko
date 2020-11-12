@@ -10,4 +10,8 @@ public abstract class VirtualPlayer extends Player {
     }
 
     public abstract void playTurn ();
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

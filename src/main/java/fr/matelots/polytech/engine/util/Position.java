@@ -36,6 +36,19 @@ public class Position<E extends Number> {
         return false;
     }
 
+    public static Position<Integer> add(Position<Integer> position, Vector<Integer> vector) {
+        int x = Integer.sum(position.getX(), vector.getX());
+        int y = Integer.sum(position.getY(), vector.getY());
+        int z = Integer.sum(position.getZ(), vector.getZ());
+
+        return new Position<Integer>(x, y, z);
+    }
+
+
+    public static Vector<Integer> substract(Position<Integer> a, Position<Integer> b) {
+        return new Vector<>(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

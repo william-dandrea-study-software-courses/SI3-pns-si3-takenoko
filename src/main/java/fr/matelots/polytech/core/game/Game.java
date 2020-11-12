@@ -1,7 +1,9 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
 import fr.matelots.polytech.core.players.Player;
 import fr.matelots.polytech.core.players.VirtualPlayer;
+import fr.matelots.polytech.core.players.bots.PremierBot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,15 @@ public class Game {
     private final Board board;
     private Player winner;
 
+    PremierBot pb = new PremierBot();
+    AlignedParcelGoal goal = new AlignedParcelGoal(4);
     // Constructors
     public Game () {
         players = new ArrayList<>();
+
+        pb.ResolveGoal(goal);
+        players.add(pb);
+
         board = new Board();
     }
 
@@ -27,6 +35,12 @@ public class Game {
         System.out.print("Joueurs: ");
         players.forEach(System.out::println);
         System.out.println();
+
+        players.forEach((Player p) -> {
+            if(p instanceof  VirtualPlayer) {
+                ((VirtualPlayer) p).setBoard(board);
+            }
+        });
 
         System.out.println(board);
 
