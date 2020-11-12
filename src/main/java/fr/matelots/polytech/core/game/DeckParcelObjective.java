@@ -10,11 +10,12 @@ import java.util.List;
  */
 public class DeckParcelObjective {
 
+    public static final int DECK_SIZE = 14;
     private final List<CardObjectiveParcel> objectives;
 
     public DeckParcelObjective(Board board) {
         this.objectives = new ArrayList<>();
-        for(int i = 0; i < 14; i++)
+        for(int i = 0; i < DECK_SIZE; i++)
             this.objectives.add(new CardObjectiveParcel(board));
     }
 
