@@ -51,7 +51,10 @@ public class Game {
      * @return the hidden top card of the parcel objective deck
      */
     public CardObjectiveParcel getNextParcelObjective () {
-        // TODO
-        return null;
+        try {
+            return board.getDeckParcelObjective().pick();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

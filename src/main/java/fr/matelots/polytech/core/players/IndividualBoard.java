@@ -4,8 +4,6 @@ import fr.matelots.polytech.core.game.CardObjectiveParcel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class IndividualBoard {
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
@@ -21,13 +19,19 @@ public class IndividualBoard {
     }
 
     private int countUnfinishedParcelObjectives () {
-        return (int ) objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
+        return (int ) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
-    public Set<CardObjectiveParcel> getUnfinishedParcelObjectives () {
-        return objectiveParcels.stream()
-                .filter(CardObjectiveParcel::isCompleted)
-                .collect(Collectors.toUnmodifiableSet());
+    public List<CardObjectiveParcel> getUnfinishedParcelObjectives () {
+        List<CardObjectiveParcel> unfinishedObj = new ArrayList<>();
+        objectiveParcels.stream()
+                .filter(obj -> !obj.isCompleted())
+                .forEach(obj -> unfinishedObj.add(obj));
+        return unfinishedObj;
+    }
+
+    public List<CardObjectiveParcel> getObjectiveParcels () {
+        return new ArrayList<>(objectiveParcels);
     }
 
     /**

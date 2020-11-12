@@ -77,4 +77,8 @@ public class Board {
     public Set<Position<Integer>> getPositions() {
         return new HashSet<>(this.grid.keySet()); //évite la modification
     }
+
+    public DeckParcelObjective getDeckParcelObjective() {
+        return deckParcelObjective;
+    }
 }
