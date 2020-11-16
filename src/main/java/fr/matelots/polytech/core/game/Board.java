@@ -44,7 +44,7 @@ public class Board {
     }
 
     public boolean isPlaceValid (int x, int y, int z) {
-        return getNbNeighbors(x, y, z) > 0;
+        return getNbNeighbors(x, y, z) > 0 && !containTile(new Position<>(x, y, y));
     }
 
     public int getNbNeighbors(int x, int y, int z) {
@@ -87,7 +87,7 @@ public class Board {
         return new HashSet<>(this.grid.keySet()); //évite la modification
     }
 
-    public boolean ContainTile(Position<Integer> position) {
+    public boolean containTile(Position<Integer> position) {
         return getParcel(position) != null;
     }
 
