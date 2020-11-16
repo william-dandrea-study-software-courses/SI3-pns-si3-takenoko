@@ -8,6 +8,7 @@ import java.util.List;
 public class IndividualBoard {
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
+
     private final List<CardObjectiveParcel> objectiveParcels;
 
     public IndividualBoard() {
@@ -29,6 +30,15 @@ public class IndividualBoard {
                 .forEach(obj -> unfinishedObj.add(obj));
         return unfinishedObj;
     }
+
+    public int getCompletedGoals() {
+        int n = 0;
+        for(var goal : objectiveParcels) {
+            if(goal.isCompleted()) n++;
+        }
+        return n;
+    }
+
 
     public List<CardObjectiveParcel> getObjectiveParcels () {
         return new ArrayList<>(objectiveParcels);
