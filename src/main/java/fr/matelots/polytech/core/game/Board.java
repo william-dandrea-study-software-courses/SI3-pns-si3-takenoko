@@ -43,6 +43,10 @@ public class Board {
         return false;
     }
 
+    public boolean addParcel(Position<Integer> position, Parcel p) {
+        return addParcel(position.getX(), position.getY(), position.getZ(), p);
+    }
+
     public boolean isPlaceValid (int x, int y, int z) {
         return getNbNeighbors(x, y, z) > 0 && !containTile(new Position<>(x, y, y));
     }

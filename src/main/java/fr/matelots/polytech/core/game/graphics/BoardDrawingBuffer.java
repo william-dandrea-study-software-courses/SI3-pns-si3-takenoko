@@ -33,7 +33,7 @@ public class BoardDrawingBuffer {
     }
 
     void beginDraw(Position<Integer> currentParcel, Vector2Int position) {
-        if(board.ContainTile(currentParcel) && !allreadyDrawn.contains(currentParcel)) {
+        if(board.containTile(currentParcel) && !allreadyDrawn.contains(currentParcel)) {
             Hexagone hexa = new Hexagone(position);
             Parcel  parcel = board.getParcel(currentParcel);
             allreadyDrawn.add(currentParcel);

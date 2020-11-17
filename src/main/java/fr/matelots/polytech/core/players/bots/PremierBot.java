@@ -28,13 +28,9 @@ public class PremierBot extends VirtualPlayer {
     }
 
     private void AttemptToPlaceParcelWithGoal() {
-        boolean resolvable = false;
-
-        while(!resolvable) { // Continue while the bot has not place his tile
-            ParcelLineResolver resolver = new ParcelLineResolver(board);
-
-            resolvable = resolver.attemptResolve(currentGoal);
-        }
+        ParcelLineResolver resolver = new ParcelLineResolver(board);
+        boolean resolved = resolver.attemptResolve(currentGoal);
+        if(resolved) currentGoal.setComplete();
     }
 
     private void SelectGoal() {

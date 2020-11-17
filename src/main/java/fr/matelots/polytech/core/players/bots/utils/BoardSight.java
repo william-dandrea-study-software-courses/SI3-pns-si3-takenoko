@@ -11,6 +11,6 @@ public class BoardSight {
     }
 
     private void FindForLine(int length) {
-
+        
     }
 }

@@ -49,6 +49,10 @@ public class Position<E extends Number> {
         return new Vector<>(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
     }
 
+    public static Position<Integer> translate(Position<Integer> depart, Vector<Integer> direction, int distance) {
+        return add(depart, Vector.multiply(direction, distance));
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

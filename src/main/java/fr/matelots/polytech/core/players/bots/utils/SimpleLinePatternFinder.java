@@ -30,7 +30,7 @@ public class SimpleLinePatternFinder {
 
 
         // Getting all tile from a side
-        while (board.ContainTile(currentPosition)) {
+        while (board.containTile(currentPosition)) {
             i++;
             currentPosition = Position.add(start, Vector.multiply(direction, i));
         }
@@ -39,14 +39,14 @@ public class SimpleLinePatternFinder {
         totalSize += i;
         i = 0;
         // Getting all tile from the other side
-        while (board.ContainTile(currentPosition)) {
+        while (board.containTile(currentPosition)) {
             i--;
             currentPosition = Position.add(start, Vector.multiply(direction, i));
         }
         lineEnd = Position.add(start, Vector.multiply(direction, i + 1));
         totalSize -= i;
 
-        return new SimpleLinePattern(lineStart, lineEnd, totalSize);
+        return new SimpleLinePattern(lineStart, lineEnd, direction, totalSize);
     }
 
     /**

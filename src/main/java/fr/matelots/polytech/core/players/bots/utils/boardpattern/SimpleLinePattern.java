@@ -6,11 +6,24 @@ import fr.matelots.polytech.engine.util.Vector;
 public class SimpleLinePattern {
     private final Position<Integer> start, end;
     private final int length;
+    private final Vector<Integer> direction;
 
-    public SimpleLinePattern(Position<Integer> start, Position<Integer> end, int length) {
+    public SimpleLinePattern(Position<Integer> start, Position<Integer> end, Vector<Integer> direction, int length) {
         this.start = start;
         this.end = end;
         this.length = length;
+        this.direction = direction;
+    }
+
+    public Vector<Integer> getDirection() {
+        //return Vector.naiveNormalize(Position.substract(end, start));
+        return direction;
+    }
+
+    public Position<Integer> getSide() {
+        var direction = getDirection();
+        if(direction == null) return null;
+        return Position.add(end, direction);
     }
 
     /**
