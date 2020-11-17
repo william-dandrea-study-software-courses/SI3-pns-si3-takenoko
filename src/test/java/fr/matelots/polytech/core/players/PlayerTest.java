@@ -13,20 +13,20 @@ public class PlayerTest {
 
     @BeforeEach
     public void init () {
-        player = new PremierBot();
         game = new Game();
+        player = new PremierBot(game);
     }
 
     @Test
     public void testPiocheDUnObjectifParcelle () {
-        assertTrue(player.pickParcelObjective(game));
+        assertTrue(player.pickParcelObjective());
     }
 
     @Test
     public void testGetUnfinishedParcelObjectives () {
         assertTrue(player.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
 
-        assertTrue(player.pickParcelObjective(game));
+        assertTrue(player.pickParcelObjective());
 
         assertFalse(player.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }

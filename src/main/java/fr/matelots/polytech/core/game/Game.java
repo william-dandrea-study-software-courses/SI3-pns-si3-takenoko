@@ -16,14 +16,18 @@ public class Game {
     private final BoardDrawer drawer;
     //private Player winner;
 
-    PremierBot pb = new PremierBot();
-    PremierBot pb2 = new PremierBot();
+    private final PremierBot pb;
+    private final PremierBot pb2;
 
-    AlignedParcelGoal goal = new AlignedParcelGoal(5);
-    AlignedParcelGoal goal2 = new AlignedParcelGoal(8);
+    private final AlignedParcelGoal goal = new AlignedParcelGoal(5);
+    private final AlignedParcelGoal goal2 = new AlignedParcelGoal(8);
+
     // Constructors
     public Game () {
         players = new ArrayList<>();
+
+        pb = new PremierBot(this);
+        pb2 = new PremierBot(this);
 
         pb.ResolveGoal(goal);
         players.add(pb);
@@ -58,31 +62,21 @@ public class Game {
         });
 
         drawer.Print();
+        int i = 0;
 
-
-        while(!goal.getComplete()) {
-            for(int i = 0; i < 4; i++) {
-                System.out.println("");
-            }
-            pb.playTurn();
-            pb2.playTurn();
-            drawer.Print();
-            System.out.println(board);
-
-        }
-
-        /*while (getWinner() == null) {
+        while (getWinner() == null) {
             for (Player p : players) {
                 if (p instanceof VirtualPlayer) {
                     ((VirtualPlayer) p).playTurn();
                 }
             }
 
-            if (i > 0) {
+            drawer.Print();
+            /*if (i > 0) {
                 break;
             }
-            i++;
-        }*/
+            i++;*/
+        }
 
 
     }
@@ -91,7 +85,7 @@ public class Game {
      * This return the hidden top card of the parcel objective deck
      * @return the hidden top card of the parcel objective deck
      */
-    public CardObjectiveParcel getNextParcelObjective () {
+    public AlignedParcelGoal getNextParcelObjective () {
         try {
             return board.getDeckParcelObjective().pick();
         } catch (Exception e) {
