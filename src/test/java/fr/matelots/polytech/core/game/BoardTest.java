@@ -32,13 +32,14 @@ public class BoardTest {
     }
 
     @Test
-    public void testValiditePositionPourVoisineAVoisineALEtang () {
+    public void testValiditePositionPour2VoisinesSiNonVoisineALEtang () {
         board.addParcel(1, -1, 0, new Parcel());
-        assertTrue(board.isPlaceValid(2, -2, 0));
+        board.addParcel(0, -1, 1, new Parcel());
+        assertTrue(board.isPlaceValid(1, -2, 1));
     }
 
     @Test
-    public void testInvalidPositionCarPAsVoisine () {
+    public void testInvalidPositionCarPasVoisine () {
         assertFalse(board.isPlaceValid(2, -1, -1));
     }
 

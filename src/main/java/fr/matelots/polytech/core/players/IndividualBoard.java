@@ -27,7 +27,7 @@ public class IndividualBoard {
     }
 
 
-    private int countUnfinishedObjectives () {
+    public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives();
     }
 
