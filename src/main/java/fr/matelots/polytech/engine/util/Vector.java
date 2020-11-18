@@ -1,5 +1,8 @@
 package fr.matelots.polytech.engine.util;
 
+/**
+ * @author Yann CLODONG
+ */
 public class Vector<E extends Number> {
     private final E x, y, z;
 
@@ -11,9 +14,9 @@ public class Vector<E extends Number> {
 
     public E getX() {
         return x;
-    }public E getY() {
+    } public E getY() {
         return y;
-    }public E getZ() {
+    } public E getZ() {
         return z;
     }
 

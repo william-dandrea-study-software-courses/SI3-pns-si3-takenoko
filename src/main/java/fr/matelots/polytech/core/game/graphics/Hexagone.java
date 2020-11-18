@@ -7,6 +7,9 @@ import fr.matelots.polytech.engine.util.Vector2Int;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Yann CLODONG
+ */
 public class Hexagone {
     //  / \ / \
     // | c |   |

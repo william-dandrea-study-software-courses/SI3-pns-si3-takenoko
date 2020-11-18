@@ -7,6 +7,10 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Yann CLODONG
+ */
+
 public class BoardDrawer {
     //  / \ / \
     // |   |   |

@@ -9,6 +9,9 @@ import fr.matelots.polytech.engine.util.Vector2Int;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Yann CLODONG
+ */
 public class BoardDrawingBuffer {
 
     List<Position<Integer>> allreadyDrawn = new ArrayList<Position<Integer>>();

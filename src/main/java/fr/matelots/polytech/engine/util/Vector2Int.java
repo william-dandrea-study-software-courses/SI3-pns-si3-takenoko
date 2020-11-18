@@ -1,5 +1,8 @@
 package fr.matelots.polytech.engine.util;
 
+/**
+ * @author Yann CLODONG
+ */
 public class Vector2Int {
     private final int X, Y;
 

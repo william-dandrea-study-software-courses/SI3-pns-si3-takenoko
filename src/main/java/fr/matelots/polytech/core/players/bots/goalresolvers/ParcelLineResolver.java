@@ -11,6 +11,9 @@ import fr.matelots.polytech.engine.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Yann CLODONG
+ */
 public class ParcelLineResolver {
 
     private final Board board;

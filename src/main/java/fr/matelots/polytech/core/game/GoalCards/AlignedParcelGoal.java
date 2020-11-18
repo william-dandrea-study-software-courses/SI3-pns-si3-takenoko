@@ -1,5 +1,8 @@
 package fr.matelots.polytech.core.game.GoalCards;
 
+/**
+ * @author Yann CLODONG
+ */
 public class AlignedParcelGoal {
     private final int length;
 

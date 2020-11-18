@@ -8,7 +8,9 @@ import fr.matelots.polytech.engine.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * @author Yann CLODONG
+ */
 public class SimpleLinePatternFinder {
 
     /**

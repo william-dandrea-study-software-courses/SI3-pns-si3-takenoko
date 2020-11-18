@@ -2,7 +2,9 @@ package fr.matelots.polytech.core.players.bots.utils.boardpattern;
 
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
-
+/**
+ * @author Yann CLODONG
+ */
 public class SimpleLinePattern {
     private final Position<Integer> start, end;
     private final int length;
