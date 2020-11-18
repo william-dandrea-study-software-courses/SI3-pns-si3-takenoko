@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.engine.util.Position;
+import fr.matelots.polytech.engine.util.Vector;
 
 import java.util.*;
 
@@ -46,7 +47,32 @@ public class Board {
     }
 
     public boolean isPlaceValid (int x, int y, int z) {
-        return getNbNeighbors(x, y, z) > 0 && !containTile(new Position(x, y, y));
+        return isPlaceValid(new Position(x, y, z));
+    }
+    public boolean isPlaceValid (Position position) {
+        return getNbNeighbors(position.getX(), position.getY(), position.getZ()) > 0 && !containTile(position);
+    }
+
+    public Set<Position> getValidPlaces() {
+        Set<Position> validPlaces = new HashSet<>();
+        List<Vector> cubeDirections = Arrays.asList(
+                new Vector(1, -1, 0),
+                new Vector(0, -1, 1),
+                new Vector(-1, 0, 1),
+                new Vector(-1, 1, 0),
+                new Vector(0, 1, -1),
+                new Vector(1, 0, -1)
+        );
+        var positions = getPositions();
+        for(var position : positions) {
+            for (var direction : cubeDirections) {
+                Position checkingPosition = Position.add(position, direction);
+                if(isPlaceValid(checkingPosition))
+                    validPlaces.add(checkingPosition);
+            }
+        }
+
+        return validPlaces;
     }
 
     public int getNbNeighbors(int x, int y, int z) {
