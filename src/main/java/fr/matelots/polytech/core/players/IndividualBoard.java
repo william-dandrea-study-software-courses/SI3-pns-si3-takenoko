@@ -41,7 +41,7 @@ public class IndividualBoard {
     }
 
     public int countUnfinishedParcelObjectives () {
-        return (int ) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
+        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
     }
 
     public int getCompletedGoals() {

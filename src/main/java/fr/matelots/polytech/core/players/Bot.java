@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 
 /**
  * @author Gabriel Cogne
@@ -23,7 +24,10 @@ public abstract class Bot {
     }
 
     public boolean pickParcelObjective () {
-        return individualBoard.addNewParcelObjective(game.getNextParcelObjective());
+        AlignedParcelGoal obj = game.getNextParcelObjective();
+        if (obj == null)
+            return false;
+        return individualBoard.addNewParcelObjective(obj);
     }
 
     public boolean isVictorious() {

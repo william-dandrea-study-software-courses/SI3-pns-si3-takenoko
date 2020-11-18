@@ -60,10 +60,8 @@ public class Game {
      * @return the hidden top card of the parcel objective deck
      */
     public AlignedParcelGoal getNextParcelObjective () {
-        try {
+        if (board.getDeckParcelObjective().canPick())
             return board.getDeckParcelObjective().pick();
-        } catch (Exception e) {
-            return null;
-        }
+        return null;
     }
 }
