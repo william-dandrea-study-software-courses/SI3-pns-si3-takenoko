@@ -37,6 +37,8 @@ public class ParcelLineResolver {
         List<SimpleLinePattern> lines = new ArrayList<>();
 
 
+        SimpleLinePattern line = null;
+
         // Find lines
         for(var position : positions) {
             for(var direction : directions) {
@@ -62,20 +64,22 @@ public class ParcelLineResolver {
 
                 length -= 2;
 
+                SimpleLinePattern currentlyCheckingLine = new SimpleLinePattern(start, end, direction, length);
                 // Check for 1 remaining line
                 if(length == goalCard.getLength() - 1) {
-                    board.addParcel(p.getX(), p.getY(), p.getZ(), new Parcel());
-                    return true;
+                    line =currentlyCheckingLine;
+                    break;
                 }
-                lines.add(new SimpleLinePattern(start, end, direction, length));
+                lines.add(currentlyCheckingLine);
             }
         }
 
-        // Get longer line bellow goal limit
-        SimpleLinePattern line = null;
-        for(var l : lines ){
-            if(l.getLength() < goalCard.getLength() && (line == null || l.getLength() > line.getLength()))
-                line = l;
+        if(line == null) {
+            // Get longer line bellow goal limit
+            for (var l : lines) {
+                if (l.getLength() < goalCard.getLength() && (line == null || l.getLength() > line.getLength()))
+                    line = l;
+            }
         }
 
 

@@ -35,12 +35,6 @@ public class SimpleLinePattern {
      */
     public int getLength() {
         return length;
-        /*Vector<Integer> dist = Position.substract(end, start);
-        return (int)Math.sqrt(
-                Math.pow(dist.getX(), 2) +
-                Math.pow(dist.getY(), 2) +
-                Math.pow(dist.getZ(), 2)
-        );*/
     }
 
     /**
