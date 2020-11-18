@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 
@@ -24,7 +25,7 @@ public abstract class Bot {
     }
 
     public boolean pickParcelObjective () {
-        AlignedParcelGoal obj = game.getNextParcelObjective();
+        CardObjectiveParcel obj = game.getNextParcelObjective();
         if (obj == null)
             return false;
         return individualBoard.addNewParcelObjective(obj);

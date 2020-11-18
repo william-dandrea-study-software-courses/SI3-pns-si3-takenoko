@@ -27,7 +27,7 @@ public class Game {
     public Game () {
         bots = new ArrayList<>();
         bots.add(new PremierBot(this));
-        bots.add(new PremierBot(this));
+        //bots.add(new PremierBot(this));
 
         board = new Board();
         drawer = new BoardDrawer(board);
@@ -69,7 +69,7 @@ public class Game {
      * This return the hidden top card of the parcel objective deck
      * @return the hidden top card of the parcel objective deck
      */
-    public AlignedParcelGoal getNextParcelObjective () {
+    public CardObjectiveParcel getNextParcelObjective () {
         if (board.getDeckParcelObjective().canPick())
             return board.getDeckParcelObjective().pick();
         return null;

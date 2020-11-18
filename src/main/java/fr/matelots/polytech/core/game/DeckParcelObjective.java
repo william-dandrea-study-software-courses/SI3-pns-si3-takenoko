@@ -12,15 +12,15 @@ import java.util.List;
 public class DeckParcelObjective {
 
     public static final int DECK_SIZE = 18;
-    private final List<AlignedParcelGoal> objectives;
+    private final List<CardObjectiveParcel> objectives;
 
     public DeckParcelObjective(Board board) {
         this.objectives = new ArrayList<>();
         for(int i = 0; i < DECK_SIZE; i++)
-            this.objectives.add(new AlignedParcelGoal(i + 2));
+            this.objectives.add(new CardObjectiveParcel(board));
     }
 
-    public AlignedParcelGoal pick() {
+    public CardObjectiveParcel pick() {
         if(this.canPick())
             return this.objectives.remove(0);
         else
