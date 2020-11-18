@@ -1,7 +1,7 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.PickDeckEmptyException;
-import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,27 +7,27 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PlayerTest {
-    private Player player;
+public class BotTest {
+    private Bot bot;
     private Game game;
 
     @BeforeEach
     public void init () {
         game = new Game();
-        player = new PremierBot(game);
+        bot = new PremierBot(game);
     }
 
     @Test
     public void testPiocheDUnObjectifParcelle () {
-        assertTrue(player.pickParcelObjective());
+        assertTrue(bot.pickParcelObjective());
     }
 
     @Test
     public void testGetUnfinishedParcelObjectives () {
-        assertTrue(player.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
+        assertTrue(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
 
-        assertTrue(player.pickParcelObjective());
+        assertTrue(bot.pickParcelObjective());
 
-        assertFalse(player.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
+        assertFalse(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }
 }

@@ -3,7 +3,6 @@ package fr.matelots.polytech.core.game;
 /**
  * @author Gabriel Cogne
  */
-
 public class Parcel {
     // Constructors
     public Parcel()  {

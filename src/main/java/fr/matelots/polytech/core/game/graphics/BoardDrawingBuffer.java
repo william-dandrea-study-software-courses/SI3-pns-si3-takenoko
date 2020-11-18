@@ -1,7 +1,6 @@
 package fr.matelots.polytech.core.game.graphics;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
 import fr.matelots.polytech.engine.util.Vector2Int;
@@ -10,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Yann CLODONG
+ * @author Yann Clodong
  */
 public class BoardDrawingBuffer {
 
-    List<Position<Integer>> allreadyDrawn = new ArrayList<Position<Integer>>();
-    Board board;
-    int width = 1;
-    int height = 1;
+    private final List<Position> allReadyDrawn = new ArrayList<>();
+    private final Board board;
+    private int width = 1;
+    private int height = 1;
 
-    int offsetX = 0;
-    int offsetY = 0;
-    ArrayList<ArrayList<Character>> buffer = new ArrayList<>();
+    private int offsetX = 0;
+    private int offsetY = 0;
+    private final ArrayList<ArrayList<Character>> buffer = new ArrayList<>();
 
     public BoardDrawingBuffer(Board board) {
         this.board = board;
@@ -30,76 +29,78 @@ public class BoardDrawingBuffer {
     }
 
 
-    void DrawHexas() {
-        beginDraw(new Position<>(0, 0, 0), new Vector2Int(0, 0));
-        Print();
+    void drawHexas() {
+        beginDraw(new Position(0, 0, 0), new Vector2Int(0, 0));
+        print();
     }
 
-    void beginDraw(Position<Integer> currentParcel, Vector2Int position) {
-        if(board.containTile(currentParcel) && !allreadyDrawn.contains(currentParcel)) {
+    void beginDraw(Position currentParcel, Vector2Int position) {
+        if(board.containTile(currentParcel) && !allReadyDrawn.contains(currentParcel)) {
             Hexagone hexa = new Hexagone(position);
-            Parcel  parcel = board.getParcel(currentParcel);
-            allreadyDrawn.add(currentParcel);
-            hexa.PrintHexa(this, parcel);
+            // Parcel  parcel = board.getParcel(currentParcel);
+            allReadyDrawn.add(currentParcel);
+            hexa.printHexa(this);
 
-            hexa.GetNeighboors().forEach((Vector<Integer> p, Vector2Int rp) -> {
-                beginDraw(Position.add(currentParcel, p), Vector2Int.add(position, rp));
-            });
+            hexa.getNeighbours().forEach((Vector p, Vector2Int rp) ->
+                    beginDraw(Position.add(currentParcel, p), Vector2Int.add(position, rp))
+            );
         }
     }
 
-    private void Print() {
+    private void print() {
         for(var line : buffer) {
-            String lineContent = "";
+            StringBuilder lineContent = new StringBuilder();
             for(var c : line) {
-                lineContent += c;
+                lineContent.append(c);
             }
             System.out.println(lineContent);
         }
     }
 
-    void SetCharac(int X, int Y, char charac) {
-        int tX = X + offsetX;
-        int tY = Y + offsetY;
+    void setCharacter(int x, int y, char character) {
+        int tX = x + offsetX;
+        int tY = y + offsetY;
 
         if(tX < 0) {
-            AddColumnStart();
-            SetCharac(X, Y, charac);
+            addColumnStart();
+            setCharacter(x, y, character);
             return;
         }
         if(tY < 0) {
-            AddLineStart();
-            SetCharac(X, Y, charac);
+            addLineStart();
+            setCharacter(x, y, character);
             return;
         }
         if(tX >= width) {
-            AddColumnEnd();
-            SetCharac(X, Y, charac);
+            addColumnEnd();
+            setCharacter(x, y, character);
             return;
         }
         if(tY >= height) {
-            AddLineEnd();
-            SetCharac(X, Y, charac);
+            addLineEnd();
+            setCharacter(x, y, character);
             return;
         }
 
-        buffer.get(tY).set(tX, charac);
+        buffer.get(tY).set(tX, character);
     }
 
-    void AddColumnStart() {
+    private void addColumnStart() {
         offsetX++;
         for(int i = 0; i < height; i++) {
             buffer.get(i).add(0, ' ');
         }
         width++;
     }
-    void AddColumnEnd() {
+
+    private void addColumnEnd() {
         for(int i = 0; i < height; i++) {
             buffer.get(i).add(' ');
         }
         width++;
     }
-    void AddLineStart() {
+
+    private void addLineStart() {
         offsetY++;
         ArrayList<Character> t = new ArrayList<>();
         for(int i = 0; i < width; i++) {
@@ -108,7 +109,8 @@ public class BoardDrawingBuffer {
         height++;
         buffer.add(0, t);
     }
-    void AddLineEnd() {
+
+    private void addLineEnd() {
         ArrayList<Character> t = new ArrayList<>();
         for(int i = 0; i < width; i++) {
             t.add(' ');

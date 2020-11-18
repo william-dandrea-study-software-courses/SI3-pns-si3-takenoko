@@ -6,6 +6,6 @@ package fr.matelots.polytech.core;
 public class PickDeckEmptyException extends RuntimeException {
 
     public PickDeckEmptyException() {
-        super("impossible de tirer une carte, le deck est vide");
+        super("Impossible de tirer une carte, le deck est vide");
     }
 }

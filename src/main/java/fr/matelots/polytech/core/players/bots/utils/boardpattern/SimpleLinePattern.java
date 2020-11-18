@@ -2,27 +2,28 @@ package fr.matelots.polytech.core.players.bots.utils.boardpattern;
 
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
+
 /**
- * @author Yann CLODONG
+ * @author Yann Clodong
  */
 public class SimpleLinePattern {
-    private final Position<Integer> start, end;
+    private final Position start, end;
     private final int length;
-    private final Vector<Integer> direction;
+    private final Vector direction;
 
-    public SimpleLinePattern(Position<Integer> start, Position<Integer> end, Vector<Integer> direction, int length) {
+    public SimpleLinePattern(Position start, Position end, Vector direction, int length) {
         this.start = start;
         this.end = end;
         this.length = length;
         this.direction = direction;
     }
 
-    public Vector<Integer> getDirection() {
+    public Vector getDirection() {
         //return Vector.naiveNormalize(Position.substract(end, start));
         return direction;
     }
 
-    public Position<Integer> getSide() {
+    public Position getSide() {
         var direction = getDirection();
         if(direction == null) return null;
         return Position.add(end, direction);
@@ -32,7 +33,7 @@ public class SimpleLinePattern {
      * return the length of the line
      * @return
      */
-    public int GetLength() {
+    public int getLength() {
         return length;
         /*Vector<Integer> dist = Position.substract(end, start);
         return (int)Math.sqrt(
@@ -46,7 +47,7 @@ public class SimpleLinePattern {
      * Return the end of the line
      * @return Position<Integer>
      */
-    public Position<Integer> getEnd() {
+    public Position getEnd() {
         return end;
     }
 
@@ -54,7 +55,7 @@ public class SimpleLinePattern {
      * Return the direction of the line
      * @return
      */
-    public Vector<Integer> GetDirection() {
+    public Vector getCalculatedDirection() {
         return Position.substract(end, start);
     }
 

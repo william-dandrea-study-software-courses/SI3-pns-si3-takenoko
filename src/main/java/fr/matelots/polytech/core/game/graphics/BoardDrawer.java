@@ -1,16 +1,10 @@
 package fr.matelots.polytech.core.game.graphics;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Parcel;
-import fr.matelots.polytech.engine.util.Position;
-
-import java.util.List;
-import java.util.Set;
 
 /**
- * @author Yann CLODONG
+ * @author Yann Clodong
  */
-
 public class BoardDrawer {
     //  / \ / \
     // |   |   |
@@ -18,14 +12,14 @@ public class BoardDrawer {
     //   |   |
     //    \ /
 
-    private Board board;
+    private final Board board;
 
     public BoardDrawer(Board board) {
         this.board = board;
     }
 
-    public void Print() {
+    public void print() {
         BoardDrawingBuffer bdb = new BoardDrawingBuffer(board);
-        bdb.DrawHexas();
+        bdb.drawHexas();
     }
 }

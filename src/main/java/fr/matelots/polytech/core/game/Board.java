@@ -7,10 +7,9 @@ import java.util.*;
 /**
  * @author Gabriel Cogne
  */
-
 public class Board {
     // Attributes
-    private final Map<Position<Integer>, Parcel> grid;
+    private final Map<Position, Parcel> grid;
     private final DeckParcelObjective deckParcelObjective;
 
     // Constructors
@@ -18,19 +17,16 @@ public class Board {
         grid = new HashMap<>();
         this.deckParcelObjective = new DeckParcelObjective(this);
         // On ajout l'étang
-        grid.put(new Position<>(0, 0, 0), new Parcel());
+        grid.put(new Position(0, 0, 0), new Parcel());
     }
 
     // Methods and Function
     public Parcel getParcel (int x, int y, int z) {
-        for (Position<Integer> pos : grid.keySet()) {
-            if (pos.equals(new Position<>(x, y, z)))
-                return grid.get(pos);
-        }
-        return null;
+        return getParcel(new Position(x, y, z));
     }
-    public Parcel getParcel (Position<Integer> position) {
-        for (Position<Integer> pos : grid.keySet()) {
+
+    public Parcel getParcel (Position position) {
+        for (Position pos : grid.keySet()) {
             if (pos.equals(position))
                 return grid.get(pos);
         }
@@ -39,34 +35,34 @@ public class Board {
 
     public boolean addParcel (int x, int y, int z, Parcel p) {
         if (isPlaceValid(x, y, z)) {
-            grid.put(new Position<>(x, y, z), p);
+            grid.put(new Position(x, y, z), p);
             return true;
         }
         return false;
     }
 
-    public boolean addParcel(Position<Integer> position, Parcel p) {
+    public boolean addParcel(Position position, Parcel p) {
         return addParcel(position.getX(), position.getY(), position.getZ(), p);
     }
 
     public boolean isPlaceValid (int x, int y, int z) {
-        return getNbNeighbors(x, y, z) > 0 && !containTile(new Position<>(x, y, y));
+        return getNbNeighbors(x, y, z) > 0 && !containTile(new Position(x, y, y));
     }
 
     public int getNbNeighbors(int x, int y, int z) {
-        List<Position<Integer>> cubeDirections = Arrays.asList(
-                new Position<>(1, -1, 0),
-                new Position<>(0, -1, 1),
-                new Position<>(-1, 0, 1),
-                new Position<>(-1, 1, 0),
-                new Position<>(0, 1, -1),
-                new Position<>(1, 0, -1)
+        List<Position> cubeDirections = Arrays.asList(
+                new Position(1, -1, 0),
+                new Position(0, -1, 1),
+                new Position(-1, 0, 1),
+                new Position(-1, 1, 0),
+                new Position(0, 1, -1),
+                new Position(1, 0, -1)
                 );
 
         int nb = 0;
-        Position<Integer> tmp;
-        for (Position<Integer> pos : grid.keySet()) {
-            tmp = new Position<>(pos.getX() - x, pos.getY() - y, pos.getZ() - z);
+        Position tmp;
+        for (Position pos : grid.keySet()) {
+            tmp = new Position(pos.getX() - x, pos.getY() - y, pos.getZ() - z);
             if (cubeDirections.contains(tmp)) {
                 nb++;
             }
@@ -89,11 +85,11 @@ public class Board {
         return "Plateau: \n" + builder.toString();
     }
 
-    public Set<Position<Integer>> getPositions() {
-        return new HashSet<>(this.grid.keySet()); //évite la modification
+    public Set<Position> getPositions() {
+        return new HashSet<>(this.grid.keySet()); // évite la modification
     }
 
-    public boolean containTile(Position<Integer> position) {
+    public boolean containTile(Position position) {
         return getParcel(position) != null;
     }
 

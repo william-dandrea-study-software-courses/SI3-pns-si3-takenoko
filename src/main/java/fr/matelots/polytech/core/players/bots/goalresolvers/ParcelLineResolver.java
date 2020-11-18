@@ -1,9 +1,8 @@
 package fr.matelots.polytech.core.players.bots.goalresolvers;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 import fr.matelots.polytech.core.game.Parcel;
-import fr.matelots.polytech.core.players.bots.utils.SimpleLinePatternFinder;
 import fr.matelots.polytech.core.players.bots.utils.boardpattern.SimpleLinePattern;
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Yann CLODONG
+ * @author Yann Clodong
  */
 public class ParcelLineResolver {
 
@@ -28,18 +27,7 @@ public class ParcelLineResolver {
      * @return return True if the goal is resolvable, false if it is not
      */
     public boolean attemptResolve(AlignedParcelGoal goalCard) {
-        /*SimpleLinePatternFinder finder = new SimpleLinePatternFinder();
-        SimpleLinePattern line = finder.GetLinePatterns(board, goalCard.getLength());
-
-        if(line == null) {
-            return false;
-        } else {
-            boolean complete = ResoveGoal(line, goalCard);
-            if(complete) goalCard.setComplete();
-
-            return true;
-        }*/
-        Vector<Integer>[] directions = new Vector[] {
+        Vector[] directions = new Vector[] {
             new Vector(0, -1, 1),
             new Vector(1, -1, 0),
             new Vector(1, 0, -1)
@@ -55,8 +43,8 @@ public class ParcelLineResolver {
 
                 int length = 1;
 
-                Position<Integer> end = position;
-                Position<Integer> p = position;
+                Position end;
+                Position p = position;
                 do { // Check though positive direction
                     end = p;
                     p = Position.add(p, direction);
@@ -64,8 +52,8 @@ public class ParcelLineResolver {
                 } while(board.containTile(p));
 
                 p = position;
-                Position<Integer> start = position;
-                Vector<Integer> oppDir = Vector.oposite(direction);
+                Position start;
+                Vector oppDir = Vector.oposite(direction);
                 do {
                     start = p;
                     p = Position.add(p, oppDir);
@@ -86,18 +74,17 @@ public class ParcelLineResolver {
         // Get longer line bellow goal limit
         SimpleLinePattern line = null;
         for(var l : lines ){
-            if(l.GetLength() < goalCard.getLength() && (line == null || l.GetLength() > line.GetLength()))
+            if(l.getLength() < goalCard.getLength() && (line == null || l.getLength() > line.getLength()))
                 line = l;
         }
 
 
         // Add parcel
-        if(line == null) return false;
-        else {
-            Position<Integer> action = line.getSide();
+        if(line != null) {
+            Position action = line.getSide();
             board.addParcel(action, new Parcel());
-            return false;
         }
+        return false;
     }
 
 
@@ -107,16 +94,16 @@ public class ParcelLineResolver {
      * @param goal: the goal to fulfill
      * @return true if the goal is completed, false else
      */
-    boolean ResoveGoal(SimpleLinePattern line, AlignedParcelGoal goal) {
-        Position<Integer> p = line.getEnd();
+    boolean resolveGoal(SimpleLinePattern line, AlignedParcelGoal goal) {
+        Position p = line.getEnd();
 
-        if(board.containTile(p)) p = Position.add(line.getEnd(), line.GetDirection());
+        if(board.containTile(p)) p = Position.add(line.getEnd(), line.getCalculatedDirection());
 
         boolean successful = board.addParcel(p.getX(), p.getY(), p.getZ(), new Parcel());
 
         //System.out.println(successful);
 
-        if(line.GetLength() == goal.getLength() - 1)
+        if(line.getLength() == goal.getLength() - 1)
             return true;
         return false;
     }

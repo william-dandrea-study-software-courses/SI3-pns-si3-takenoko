@@ -1,47 +1,40 @@
 package fr.matelots.polytech.core.players.bots;
 
-import fr.matelots.polytech.core.game.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
-import fr.matelots.polytech.core.players.VirtualPlayer;
-import fr.matelots.polytech.core.players.bots.goalresolvers.GoalResolver;
-import fr.matelots.polytech.core.players.bots.goalresolvers.ParcelGoalResolver;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
+import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.goalresolvers.ParcelLineResolver;
 
-import java.util.List;
+/**
+ * @author Yann Clodong
+ */
+public class PremierBot extends Bot {
 
-public class PremierBot extends VirtualPlayer {
+    private AlignedParcelGoal currentGoal;
 
-    AlignedParcelGoal currentGoal;
+    private boolean filling = true;
 
-    boolean filling = true;
     public PremierBot (Game game) {
         super (game);
     }
 
     @Override
     public void playTurn() {
-        // todo
         if(filling)
             pickGoal();
         else {
-            SelectGoal();
-            AttemptToPlaceParcelWithGoal();
+            selectGoal();
+            attemptToPlaceParcelWithGoal();
         }
-        Strategie();
+        strategie();
     }
 
-    public void Strategie() {
+    public void strategie() {
         if(getIndividualBoard().countUnfinishedParcelObjectives() == 0 && !filling) filling = true;
         else if(getIndividualBoard().countUnfinishedParcelObjectives() >= 5 && filling) filling = false;
     }
 
-    public void ResolveGoal(AlignedParcelGoal goal) {
-        this.currentGoal = goal;
-        getIndividualBoard().addNewParcelObjective(goal);
-    }
-
-    private void AttemptToPlaceParcelWithGoal() {
+    private void attemptToPlaceParcelWithGoal() {
         ParcelLineResolver resolver = new ParcelLineResolver(board);
         boolean resolved = resolver.attemptResolve(currentGoal);
         if(resolved) currentGoal.setComplete();
@@ -51,7 +44,7 @@ public class PremierBot extends VirtualPlayer {
         pickParcelObjective();
     }
 
-    private void SelectGoal() {
+    private void selectGoal() {
         currentGoal = getIndividualBoard().getNextParcelGoal();
         /*if(currentGoal == null || currentGoal.isCompleted()) {
             List<CardObjectiveParcel> unfinished = getIndividualBoard().getUnfinishedParcelObjectives();

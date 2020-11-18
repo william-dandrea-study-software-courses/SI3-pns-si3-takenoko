@@ -1,9 +1,8 @@
 package fr.matelots.polytech.core.game;
 
-import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
-import fr.matelots.polytech.core.players.Player;
-import fr.matelots.polytech.core.players.VirtualPlayer;
+import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 
 import java.util.ArrayList;
@@ -11,44 +10,28 @@ import java.util.List;
 
 /**
  * @author Gabriel Cogne
+ * @author Yann Clodong
  */
-
 public class Game {
     // Attributes
-    private final List<Player> players;
+    private final List<Bot> bots;
     private final Board board;
     private final BoardDrawer drawer;
     //private Player winner;
 
-    private final PremierBot pb;
-    private final PremierBot pb2;
-
-    private final AlignedParcelGoal goal = new AlignedParcelGoal(5);
-    private final AlignedParcelGoal goal2 = new AlignedParcelGoal(8);
-
     // Constructors
     public Game () {
-        players = new ArrayList<>();
-
-        pb = new PremierBot(this);
-        pb2 = new PremierBot(this);
-
-        pb.ResolveGoal(goal);
-        players.add(pb);
-
-        pb2.ResolveGoal(goal2);
-        players.add(pb2);
+        bots = new ArrayList<>();
+        bots.add(new PremierBot(this));
+        bots.add(new PremierBot(this));
 
         board = new Board();
-        /*board.addParcel(-1, 0, 1, new Parcel());
-        board.addParcel(0, -1, 1, new Parcel());*/
         drawer = new BoardDrawer(board);
     }
 
-    public Player getWinner () {
-        for (var player:
-             players) {
-            if(player.isVictorious()) return player;
+    public Bot getWinner () {
+        for (Bot bot : bots) {
+            if (bot.isVictorious()) return bot;
         }
         return null;
     }
@@ -56,26 +39,17 @@ public class Game {
     // Methods
     public void run () {
         System.out.print("Joueurs: ");
-        players.forEach(System.out::println);
+        bots.forEach(System.out::println);
         System.out.println();
 
-        players.forEach((Player p) -> {
-            if(p instanceof  VirtualPlayer) {
-                ((VirtualPlayer) p).setBoard(board);
-            }
-        });
+        bots.forEach(bot -> bot.setBoard(board));
 
-        drawer.Print();
-        int i = 0;
+        drawer.print();
 
         while (getWinner() == null) {
-            for (Player p : players) {
-                if (p instanceof VirtualPlayer) {
-                    ((VirtualPlayer) p).playTurn();
-                }
-            }
+            bots.forEach(Bot::playTurn);
 
-            drawer.Print();
+            drawer.print();
         }
 
 

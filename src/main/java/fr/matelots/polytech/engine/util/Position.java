@@ -2,30 +2,29 @@ package fr.matelots.polytech.engine.util;
 
 /**
  * @author Gabriel Cogne
- * @param <E>
  */
 
-public class Position<E extends Number> {
+public class Position {
     // Attributes
-    private final E x;
-    private final E y;
-    private final E z;
+    private final int x;
+    private final int y;
+    private final int z;
 
     // Constructor
-    public Position(E x, E y, E z) {
+    public Position(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     // Accessors
-    public E getX () {
+    public int getX () {
         return x;
     }
-    public E getY() {
+    public int getY() {
         return y;
     }
-    public E getZ() {
+    public int getZ() {
         return z;
     }
 
@@ -33,28 +32,28 @@ public class Position<E extends Number> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Position) {
-            Position<? extends Number> tmp = (Position<? extends Number>) obj;
-            return (getX().equals(tmp.getX())) &&
-                    (getY().equals(tmp.getY())) &&
-                    (getZ().equals(tmp.getZ()));
+            Position tmp = (Position) obj;
+            return (getX() == (tmp.getX())) &&
+                    (getY() == (tmp.getY())) &&
+                    (getZ() == (tmp.getZ()));
         }
         return false;
     }
 
-    public static Position<Integer> add(Position<Integer> position, Vector<Integer> vector) {
+    public static Position add(Position position, Vector vector) {
         int x = Integer.sum(position.getX(), vector.getX());
         int y = Integer.sum(position.getY(), vector.getY());
         int z = Integer.sum(position.getZ(), vector.getZ());
 
-        return new Position<Integer>(x, y, z);
+        return new Position(x, y, z);
     }
 
 
-    public static Vector<Integer> substract(Position<Integer> a, Position<Integer> b) {
-        return new Vector<>(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
+    public static Vector substract(Position a, Position b) {
+        return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
     }
 
-    public static Position<Integer> translate(Position<Integer> depart, Vector<Integer> direction, int distance) {
+    public static Position translate(Position depart, Vector direction, int distance) {
         return add(depart, Vector.multiply(direction, distance));
     }
 

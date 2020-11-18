@@ -1,7 +1,6 @@
 package fr.matelots.polytech.core.players;
 
-import fr.matelots.polytech.core.game.CardObjectiveParcel;
-import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +8,9 @@ import java.util.List;
 /**
  * @author Gabriel Cogne
  */
-
 public class IndividualBoard {
-    private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
+    private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
     private final List<AlignedParcelGoal> objectiveParcels;
 
@@ -41,6 +39,7 @@ public class IndividualBoard {
         }
         return result;
     }
+
     public int countUnfinishedParcelObjectives () {
         return (int ) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
     }
@@ -51,11 +50,6 @@ public class IndividualBoard {
             if(goal.getComplete()) n++;
         }
         return n;
-    }
-
-
-    public List<AlignedParcelGoal> getObjectiveParcels () {
-        return new ArrayList<>(objectiveParcels);
     }
 
     /**

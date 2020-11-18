@@ -4,19 +4,19 @@ package fr.matelots.polytech.engine.util;
  * @author Yann CLODONG
  */
 public class Vector2Int {
-    private final int X, Y;
+    private final int x, y;
 
     public Vector2Int(int x, int y) {
-        this.X = x;
-        this.Y = y;
+        this.x = x;
+        this.y = y;
     }
 
     public int getX() {
-        return X;
+        return x;
     }
 
     public int getY() {
-        return Y;
+        return y;
     }
 
     public static Vector2Int add(Vector2Int a, Vector2Int b) {
