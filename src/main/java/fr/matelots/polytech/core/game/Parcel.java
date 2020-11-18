@@ -1,7 +1,10 @@
 package fr.matelots.polytech.core.game;
 
+/**
+ * @author Gabriel Cogne
+ */
+
 public class Parcel {
-    // Attributes - None yet
     // Constructors
     public Parcel()  {
     }

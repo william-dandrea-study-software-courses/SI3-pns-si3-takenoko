@@ -2,6 +2,10 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Game;
 
+/**
+ * @author Gabriel Cogne
+ */
+
 public abstract class Player {
     private final int nCardsForVictory = 9;
     private final Game game;
@@ -20,8 +24,6 @@ public abstract class Player {
     public boolean pickParcelObjective () {
         return individualBoard.addNewParcelObjective(game.getNextParcelObjective());
     }
-
-
 
     public boolean isVictorious() {
         return getIndividualBoard().getCompletedGoals() >= nCardsForVictory;

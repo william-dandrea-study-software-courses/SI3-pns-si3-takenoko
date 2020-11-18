@@ -1,5 +1,10 @@
 package fr.matelots.polytech.engine.util;
 
+/**
+ * @author Gabriel Cogne
+ * @param <E>
+ */
+
 public class Position<E extends Number> {
     // Attributes
     private final E x;

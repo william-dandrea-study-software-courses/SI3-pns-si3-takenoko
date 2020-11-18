@@ -9,6 +9,10 @@ import fr.matelots.polytech.core.players.bots.PremierBot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Gabriel Cogne
+ */
+
 public class Game {
     // Attributes
     private final List<Player> players;
@@ -72,10 +76,6 @@ public class Game {
             }
 
             drawer.Print();
-            /*if (i > 0) {
-                break;
-            }
-            i++;*/
         }
 
 

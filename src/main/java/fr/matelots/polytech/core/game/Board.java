@@ -3,7 +3,10 @@ package fr.matelots.polytech.core.game;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
-import java.util.stream.Stream;
+
+/**
+ * @author Gabriel Cogne
+ */
 
 public class Board {
     // Attributes
@@ -35,7 +38,6 @@ public class Board {
     }
 
     public boolean addParcel (int x, int y, int z, Parcel p) {
-
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position<>(x, y, z), p);
             return true;

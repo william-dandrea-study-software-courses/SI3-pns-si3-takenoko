@@ -6,6 +6,10 @@ import fr.matelots.polytech.core.game.GoalCards.AlignedParcelGoal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Gabriel Cogne
+ */
+
 public class IndividualBoard {
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
