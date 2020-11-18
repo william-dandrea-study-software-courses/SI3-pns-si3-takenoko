@@ -13,11 +13,15 @@ import java.util.List;
  * @author Yann Clodong
  */
 public class Game {
+
+    private static int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
+
     // Attributes
     private final List<Bot> bots;
     private final Board board;
     private final BoardDrawer drawer;
     //private Player winner;
+    private boolean lastTurn = false;
 
     // Constructors
     public Game () {
@@ -46,8 +50,14 @@ public class Game {
 
         drawer.print();
 
-        while (getWinner() == null) {
+        while (getWinner() == null && !lastTurn) {
             bots.forEach(Bot::playTurn);
+
+            bots.forEach(bot -> {
+                bot.playTurn();
+                if (bot.getIndividualBoard().countUnfinishedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
+                    lastTurn = true;
+            });
 
             drawer.print();
         }
