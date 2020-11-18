@@ -29,6 +29,12 @@ public class BoardTest {
     }
 
     @Test
+    public void testValiditePositionPourVoisineAVoisineALEtang () {
+        board.addParcel(1, -1, 0, new Parcel());
+        assertTrue(board.isPlaceValid(2, -2, 0));
+    }
+
+    @Test
     public void testInvalidPositionCarPAsVoisine () {
         assertFalse(board.isPlaceValid(2, -1, -1));
     }
