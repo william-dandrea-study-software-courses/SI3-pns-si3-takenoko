@@ -17,6 +17,7 @@ public class IndividualBoard {
 
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
+    // List of the objectives
     private final List<CardObjectiveParcel> objectiveParcels;
 
     public IndividualBoard() {
@@ -40,20 +41,7 @@ public class IndividualBoard {
     }
 
     // @return the number of completed objectives (all types of objectives)
-    public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
-        ArrayList<CardObjectiveParcel> result = new ArrayList<>();
-        for(var obj : objectiveParcels) {
-            if(!obj.isCompleted())
-                result.add(obj);
-        }
-        return result;
-    }
-
-    public int countUnfinishedParcelObjectives () {
-        return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
-    }
-
-    public int getCompletedGoals() {
+    public int getCompletedObjectives() {
         int n = 0;
         for(var goal : objectiveParcels) {
             if(goal.isCompleted()) n++;
@@ -77,12 +65,7 @@ public class IndividualBoard {
 
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
 
-    // @return the number of unfinished PARCEL objectives
-    public int countUnfinishedParcelObjectives () {
-        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
-    }
-
-    // @return one unfinished PARCEL objective among the list of PARCEL objectives
+    // @return the number of completed objectives (all types of objectives)
     public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
         ArrayList<CardObjectiveParcel> result = new ArrayList<>();
         for(var obj : objectiveParcels) {
@@ -90,6 +73,10 @@ public class IndividualBoard {
                 result.add(obj);
         }
         return result;
+    }
+
+    public int countUnfinishedParcelObjectives () {
+        return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
 
