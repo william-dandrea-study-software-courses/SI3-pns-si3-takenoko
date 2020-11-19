@@ -1,5 +1,6 @@
-package fr.matelots.polytech.core.game;
+package fr.matelots.polytech.core.game.goalcards;
 
+import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.Set;
@@ -9,11 +10,16 @@ import java.util.Set;
  */
 public class CardObjectiveParcel {
 
-    private boolean completed;
     private final Board board;
+    private final int score;
+    private boolean completed;
 
-    public CardObjectiveParcel(Board board) {
+    public CardObjectiveParcel(Board board, int score) {
         this.board = board;
+        this.score = Math.max(score, 1); //éviter score <= 0
+        /*
+        new Position(0, -1, 1), new..., new... -> forme de triangle
+         */
     }
 
     public boolean verify() {
@@ -29,5 +35,9 @@ public class CardObjectiveParcel {
 
     public boolean isCompleted() {
         return completed;
+    }
+
+    public int getScore() {
+        return score;
     }
 }
