@@ -1,6 +1,7 @@
 package fr.matelots.polytech.engine.util;
 
 /**
+ * This class describe a position of a point in a normed system
  * @author Gabriel Cogne
  */
 

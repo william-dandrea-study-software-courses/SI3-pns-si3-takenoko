@@ -6,18 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class describe a Player board. A board is composed of :
+ *      - All the bamboo eat by the panda
+ *      - The reserve of irrigations
+ *      - The reserve of amenagements
+ *      - List of each type of objectives
  * @author Gabriel Cogne
  */
 public class IndividualBoard {
 
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
+    // List of the objectives
     private final List<AlignedParcelGoal> objectiveParcels;
 
+    // Constructor
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
     }
 
+    // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
+
+    // @return a objective in the list of objectives who is not completed
     public AlignedParcelGoal getNextParcelGoal() {
         for(var objs : objectiveParcels) {
             if(!objs.getComplete())
@@ -26,25 +36,14 @@ public class IndividualBoard {
         return null;
     }
 
-
+    // @return the number of unfinished objectives (all types of objectives)
     public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives();
     }
 
-    public ArrayList<AlignedParcelGoal> getUnfinishedParcelObjectives() {
-        ArrayList<AlignedParcelGoal> result = new ArrayList<>();
-        for(var obj : objectiveParcels) {
-            if(!obj.getComplete())
-                result.add(obj);
-        }
-        return result;
-    }
 
-    public int countUnfinishedParcelObjectives () {
-        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
-    }
-
-    public int getCompletedGoals() {
+    // @return the number of completed objectives (all types of objectives)
+    public int getCompletedObjectives() {
         int n = 0;
         for(var goal : objectiveParcels) {
             if(goal.getComplete()) n++;
@@ -65,4 +64,25 @@ public class IndividualBoard {
 
         return objectiveParcels.add(parcelObjective);
     }
+
+    // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
+
+    // @return the number of unfinished PARCEL objectives
+    public int countUnfinishedParcelObjectives () {
+        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
+    }
+
+    // @return one unfinished PARCEL objective among the list of PARCEL objectives
+    public ArrayList<AlignedParcelGoal> getUnfinishedParcelObjectives() {
+        ArrayList<AlignedParcelGoal> result = new ArrayList<>();
+        for(var obj : objectiveParcels) {
+            if(!obj.getComplete())
+                result.add(obj);
+        }
+        return result;
+    }
+
+
+
+
 }
