@@ -1,6 +1,6 @@
 package fr.matelots.polytech.core.game;
 
-import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
@@ -69,7 +69,7 @@ public class Game {
      * This return the hidden top card of the parcel objective deck
      * @return the hidden top card of the parcel objective deck
      */
-    public AlignedParcelGoal getNextParcelObjective () {
+    public CardObjectiveParcel getNextParcelObjective () {
         if (board.getDeckParcelObjective().canPick())
             return board.getDeckParcelObjective().pick();
         return null;

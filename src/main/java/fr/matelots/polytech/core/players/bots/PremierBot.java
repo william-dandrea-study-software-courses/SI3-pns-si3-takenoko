@@ -1,16 +1,15 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.goalresolvers.ParcelLineResolver;
 
 /**
  * @author Yann Clodong
  */
 public class PremierBot extends Bot {
 
-    private AlignedParcelGoal currentGoal;
+    private CardObjectiveParcel currentGoal;
 
     private boolean filling = true;
 
@@ -35,9 +34,10 @@ public class PremierBot extends Bot {
     }
 
     private void attemptToPlaceParcelWithGoal() {
-        ParcelLineResolver resolver = new ParcelLineResolver(board);
+        this.currentGoal.verify();
+        /*ParcelLineResolver resolver = new ParcelLineResolver(board);
         boolean resolved = resolver.attemptResolve(currentGoal);
-        if(resolved) currentGoal.setComplete();
+        if(resolved) currentGoal.setComplete();*/
     }
 
     private void pickGoal() {

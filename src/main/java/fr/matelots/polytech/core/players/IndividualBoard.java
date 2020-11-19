@@ -1,6 +1,6 @@
 package fr.matelots.polytech.core.players;
 
-import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +12,15 @@ public class IndividualBoard {
 
     private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
-    private final List<AlignedParcelGoal> objectiveParcels;
+    private final List<CardObjectiveParcel> objectiveParcels;
 
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
     }
 
-    public AlignedParcelGoal getNextParcelGoal() {
+    public CardObjectiveParcel getNextParcelGoal() {
         for(var objs : objectiveParcels) {
-            if(!objs.getComplete())
+            if(!objs.isCompleted())
                 return objs;
         }
         return null;
@@ -31,23 +31,23 @@ public class IndividualBoard {
         return countUnfinishedParcelObjectives();
     }
 
-    public ArrayList<AlignedParcelGoal> getUnfinishedParcelObjectives() {
-        ArrayList<AlignedParcelGoal> result = new ArrayList<>();
+    public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
+        ArrayList<CardObjectiveParcel> result = new ArrayList<>();
         for(var obj : objectiveParcels) {
-            if(!obj.getComplete())
+            if(!obj.isCompleted())
                 result.add(obj);
         }
         return result;
     }
 
     public int countUnfinishedParcelObjectives () {
-        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
+        return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
     public int getCompletedGoals() {
         int n = 0;
         for(var goal : objectiveParcels) {
-            if(goal.getComplete()) n++;
+            if(goal.isCompleted()) n++;
         }
         return n;
     }
@@ -59,7 +59,7 @@ public class IndividualBoard {
      * @param parcelObjective The new picked objective
      * @return false if you can pick the new objective or true if you can
      */
-    public boolean addNewParcelObjective (AlignedParcelGoal parcelObjective) {
+    public boolean addNewParcelObjective (CardObjectiveParcel parcelObjective) {
         if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
             return false;
 
