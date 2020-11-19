@@ -31,7 +31,7 @@ public abstract class Bot {
     }
 
     public boolean isVictorious() {
-        return getIndividualBoard().getCompletedGoals() >= nCardsForVictory;
+        return getIndividualBoard().getCompletedObjectives() >= nCardsForVictory;
     }
 
     public abstract void playTurn ();

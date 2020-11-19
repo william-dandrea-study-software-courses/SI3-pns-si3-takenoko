@@ -5,6 +5,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.*;
 
 /**
+ * This class describe the main game board 
  * @author Gabriel Cogne
  */
 public class Board {

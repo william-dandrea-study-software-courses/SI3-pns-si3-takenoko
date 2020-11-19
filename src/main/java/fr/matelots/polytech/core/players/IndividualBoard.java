@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class describe a Player board. A board is composed of :
+ *      - All the bamboo eat by the panda
+ *      - The reserve of irrigations
+ *      - The reserve of amenagements
+ *      - List of each type of objectives
  * @author Gabriel Cogne
  */
 public class IndividualBoard {
@@ -18,6 +23,9 @@ public class IndividualBoard {
         objectiveParcels = new ArrayList<>();
     }
 
+    // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
+
+    // @return a objective in the list of objectives who is not completed
     public CardObjectiveParcel getNextParcelGoal() {
         for(var objs : objectiveParcels) {
             if(!objs.isCompleted())
@@ -26,11 +34,12 @@ public class IndividualBoard {
         return null;
     }
 
-
+    // @return the number of unfinished objectives (all types of objectives)
     public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives();
     }
 
+    // @return the number of completed objectives (all types of objectives)
     public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
         ArrayList<CardObjectiveParcel> result = new ArrayList<>();
         for(var obj : objectiveParcels) {
@@ -65,4 +74,25 @@ public class IndividualBoard {
 
         return objectiveParcels.add(parcelObjective);
     }
+
+    // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
+
+    // @return the number of unfinished PARCEL objectives
+    public int countUnfinishedParcelObjectives () {
+        return (int) objectiveParcels.stream().filter(obj -> !obj.getComplete()).count();
+    }
+
+    // @return one unfinished PARCEL objective among the list of PARCEL objectives
+    public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
+        ArrayList<CardObjectiveParcel> result = new ArrayList<>();
+        for(var obj : objectiveParcels) {
+            if(!obj.isCompleted())
+                result.add(obj);
+        }
+        return result;
+    }
+
+
+
+
 }

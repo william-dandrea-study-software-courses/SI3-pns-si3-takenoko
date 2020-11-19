@@ -3,6 +3,7 @@ package fr.matelots.polytech.engine.util;
 import java.util.Objects;
 
 /**
+ * This class describe a position of a point in a normed system
  * @author Gabriel Cogne
  */
 
