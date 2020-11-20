@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Parcel;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.players.Bot;
 
@@ -22,8 +23,9 @@ public class PremierBot extends Bot {
         if(filling)
             pickGoal();
         else {
-            selectGoal();
-            attemptToPlaceParcelWithGoal();
+            if(checkGoal()) {
+                attemptToPlaceParcelWithGoal();
+            }
         }
         strategie();
     }
@@ -34,7 +36,15 @@ public class PremierBot extends Bot {
     }
 
     private void attemptToPlaceParcelWithGoal() {
-        this.currentGoal.verify();
+        var goodPlaces = currentGoal.getMissingPositionsToComplete();
+
+        for (var position : goodPlaces) {
+            if(board.isPlaceValid(position)) {
+                board.addParcel(position, new Parcel());
+                return;
+            }
+        }
+
         /*ParcelLineResolver resolver = new ParcelLineResolver(board);
         boolean resolved = resolver.attemptResolve(currentGoal);
         if(resolved) currentGoal.setComplete();*/
@@ -42,6 +52,20 @@ public class PremierBot extends Bot {
 
     private void pickGoal() {
         pickParcelObjective();
+    }
+
+    private boolean checkGoal() {
+        if(this.currentGoal == null)
+            selectGoal();
+
+        this.currentGoal.verify();
+        if(currentGoal.isCompleted())
+        {
+            selectGoal();
+            if(this.currentGoal == null) return false;
+        }
+
+        return true;
     }
 
     private void selectGoal() {

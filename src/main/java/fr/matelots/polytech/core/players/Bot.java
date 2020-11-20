@@ -1,7 +1,6 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
