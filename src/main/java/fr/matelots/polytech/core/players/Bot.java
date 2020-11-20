@@ -3,7 +3,7 @@ package fr.matelots.polytech.core.players;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.AlignedParcelGoal;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
 /**
  * @author Gabriel Cogne
@@ -32,7 +32,7 @@ public abstract class Bot {
     }
 
     public boolean isVictorious() {
-        return getIndividualBoard().getCompletedGoals() >= nCardsForVictory;
+        return getIndividualBoard().getCompletedObjectives() >= nCardsForVictory;
     }
 
     public abstract void playTurn ();

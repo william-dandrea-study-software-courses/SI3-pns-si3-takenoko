@@ -6,6 +6,7 @@ import fr.matelots.polytech.engine.util.Vector;
 import java.util.*;
 
 /**
+ * This class describe the main game board 
  * @author Gabriel Cogne
  */
 public class Board {

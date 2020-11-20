@@ -1,20 +1,17 @@
 package fr.matelots.polytech.core.players.bots;
 
-import fr.matelots.polytech.core.game.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.Parcel;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.engine.util.Position;
-import java.util.Random;
-import java.util.Set;
 
-
+/**
+ * @author Yann Clodong
+ */
 public class PremierBot extends Bot {
 
     private CardObjectiveParcel currentGoal;
 
     private boolean filling = true;
-    private boolean deckEmpty = false;
 
     public PremierBot (Game game) {
         super (game);
@@ -22,18 +19,10 @@ public class PremierBot extends Bot {
 
     @Override
     public void playTurn() {
-        if(filling) {
-            boolean hasPickGoal = pickGoal();
-            if(!hasPickGoal) deckEmpty = true;
-        }
+        if(filling)
+            pickGoal();
         else {
-            if(currentGoal == null)
-                selectGoal();
-
-            currentGoal.verify();
-            if(currentGoal.isCompleted())
-                selectGoal();
-
+            selectGoal();
             attemptToPlaceParcelWithGoal();
         }
         strategie();
@@ -41,33 +30,26 @@ public class PremierBot extends Bot {
 
     public void strategie() {
         if(getIndividualBoard().countUnfinishedParcelObjectives() == 0 && !filling) filling = true;
-        else if((getIndividualBoard().countUnfinishedParcelObjectives() >= 5 || deckEmpty) && filling) filling = false;
+        else if(getIndividualBoard().countUnfinishedParcelObjectives() >= 5 && filling) filling = false;
     }
 
-
-    /**
-     * Place a parcel at random place
-     */
-    private void attemptToPlaceParcelWithGoal(){
-        Set<Position> validPlace = board.getValidPlaces();
-        Random rnd = new Random();
-
-        Position[] positions = validPlace.toArray(new Position[] {});
-        Position position = positions[rnd.nextInt(positions.length)];
-
-        board.addParcel(position, new Parcel());
+    private void attemptToPlaceParcelWithGoal() {
+        this.currentGoal.verify();
+        /*ParcelLineResolver resolver = new ParcelLineResolver(board);
+        boolean resolved = resolver.attemptResolve(currentGoal);
+        if(resolved) currentGoal.setComplete();*/
     }
 
-    private boolean pickGoal() {
-        return pickParcelObjective();
+    private void pickGoal() {
+        pickParcelObjective();
     }
 
-
-    /**
-     * The bot select a goal
-     */
     private void selectGoal() {
         currentGoal = getIndividualBoard().getNextParcelGoal();
+        /*if(currentGoal == null || currentGoal.isCompleted()) {
+            List<CardObjectiveParcel> unfinished = getIndividualBoard().getUnfinishedParcelObjectives();
+            currentGoal = unfinished.get(0);
+        }*/
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.matelots.polytech.engine.util;
 
 /**
+ * This class describe a vector in 3 dimensions and can do operations on 3 dimensions vectors
  * @author Yann CLODONG
  */
 public class Vector {

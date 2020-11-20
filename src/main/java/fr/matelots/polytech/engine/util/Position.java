@@ -1,6 +1,9 @@
 package fr.matelots.polytech.engine.util;
 
+import java.util.Objects;
+
 /**
+ * This class describe a position of a point in a normed system
  * @author Gabriel Cogne
  */
 
@@ -48,6 +51,13 @@ public class Position {
         return new Position(x, y, z);
     }
 
+    public Position add(Position position) {
+        int x = this.getX() + position.getX();
+        int y = this.getY() + position.getY();
+        int z = this.getZ() + position.getZ();
+        return new Position(x, y, z);
+    }
+
 
     public static Vector substract(Position a, Position b) {
         return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
@@ -67,5 +77,10 @@ public class Position {
         builder.append(", z=");
         builder.append(getZ());
         return builder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 }
