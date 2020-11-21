@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
 
@@ -21,7 +22,7 @@ public class Board {
         grid = new HashMap<>();
         this.deckParcelObjective = new DeckParcelObjective(this);
         // On ajout l'étang
-        grid.put(new Position(0, 0, 0), new Parcel());
+        grid.put(new Position(0, 0, 0), new Parcel(true));
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -55,10 +56,17 @@ public class Board {
     }
 
     public boolean isPlaceValid (int x, int y, int z) {
-        return isPlaceValid(new Position(x, y, z));
+        List<Parcel> neighbours = getNeighbours(x, y, z);
+
+        if (neighbours.size() > 1)
+            return true;
+        else if (neighbours.stream().filter(Parcel::isLake).count()>0)
+            return true;
+        else
+            return false;
     }
     public boolean isPlaceValid (Position position) {
-        return getNbNeighbors(position.getX(), position.getY(), position.getZ()) > 0 && !containTile(position);
+        return isPlaceValid(position.getX(), position.getY(), position.getZ());
     }
 
     public Set<Position> getValidPlaces() {
@@ -83,26 +91,16 @@ public class Board {
         return validPlaces;
     }
 
-    public int getNbNeighbors(int x, int y, int z) {
-        List<Position> cubeDirections = Arrays.asList(
-                new Position(1, -1, 0),
-                new Position(0, -1, 1),
-                new Position(-1, 0, 1),
-                new Position(-1, 1, 0),
-                new Position(0, 1, -1),
-                new Position(1, 0, -1)
-                );
+    public List<Parcel> getNeighbours(int x, int y, int z) {
+        final List<Parcel> res = new ArrayList<>();
 
-        int nb = 0;
-        Position tmp;
-        for (Position pos : grid.keySet()) {
-            tmp = new Position(pos.getX() - x, pos.getY() - y, pos.getZ() - z);
-            if (cubeDirections.contains(tmp)) {
-                nb++;
-            }
-        }
+        Config.CUBE_DIRECTIONS.forEach(direction -> {
+                Parcel tmp = getParcel(x + direction.getX(), y + direction.getY(), z + direction.getZ());
+                if (tmp != null)
+                    res.add(tmp);
+        });
 
-        return nb;
+        return res;
     }
 
     @Override

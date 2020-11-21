@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,10 +33,16 @@ public class BoardTest {
     }
 
     @Test
-    public void testValiditePositionPour2VoisinesSiNonVoisineALEtang () {
+    public void testValidePositionPour2VoisinesSiNonVoisineALEtang () {
         board.addParcel(1, -1, 0, new Parcel());
         board.addParcel(0, -1, 1, new Parcel());
         assertTrue(board.isPlaceValid(1, -2, 1));
+    }
+
+    @Test
+    public void testInvalidePositionPour1VoisineSiNonVoisineALEtang () {
+        board.addParcel(1, -1, 0, new Parcel());
+        assertFalse(board.isPlaceValid(1, -2, 1));
     }
 
     @Test
