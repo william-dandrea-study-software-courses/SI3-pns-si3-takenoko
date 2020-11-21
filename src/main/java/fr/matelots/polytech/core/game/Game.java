@@ -33,20 +33,32 @@ public class Game {
         drawer = new BoardDrawer(board);
     }
 
-    public Bot getWinner () {
-        for (Bot bot : bots) {
-            if (bot.isVictorious()) return bot;
-        }
-        return null;
-    }
+
 
     // Methods
+    public Bot getWinner () {
+        Bot winner = null;
+        int bestScore = 0;
+        for (Bot bot : bots) {
+            int score = bot.getIndividualBoard().getPlayerScore();
+            if(score > bestScore) {
+                winner = bot;
+                bestScore = score;
+            }
+        }
+        return winner;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
     public void run () {
         System.out.print("Joueurs: ");
         bots.forEach(System.out::println);
         System.out.println();
 
-        bots.forEach(bot -> bot.setBoard(board));
+        //bots.forEach(bot -> bot.setBoard(board));
 
         drawer.print();
 

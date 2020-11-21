@@ -30,4 +30,8 @@ public class BotTest {
 
         assertFalse(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }
+
+    @Test
+    public void TestStrategie() {
+    }
 }

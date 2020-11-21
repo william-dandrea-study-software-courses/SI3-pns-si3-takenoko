@@ -12,12 +12,19 @@ public class PremierBot extends Bot {
 
     private CardObjectiveParcel currentGoal;
 
+    // Represent the phase of the bot :
+    // True => Fill the board;
+    // False => Attempt to resolve goal
     private boolean filling = true;
 
     public PremierBot (Game game) {
         super (game);
     }
 
+
+    /**
+     * Emulate the turn of the bot
+     */
     @Override
     public void playTurn() {
         if(filling)
@@ -30,11 +37,19 @@ public class PremierBot extends Bot {
         strategie();
     }
 
-    public void strategie() {
+    /**
+     * Represent strategie of the bot.
+     * Here the bot do have to pass one for fill his board of 5 objectives
+     * another to accomplish the objectives
+     */
+    private void strategie() {
         if(getIndividualBoard().countUnfinishedParcelObjectives() == 0 && !filling) filling = true;
         else if(getIndividualBoard().countUnfinishedParcelObjectives() >= 5 && filling) filling = false;
     }
 
+    /**
+     * Represent the attempt of the bot to resolve the goal
+     */
     private void attemptToPlaceParcelWithGoal() {
         var goodPlaces = currentGoal.getMissingPositionsToComplete();
 
@@ -50,10 +65,17 @@ public class PremierBot extends Bot {
         if(resolved) currentGoal.setComplete();*/
     }
 
+    /**
+     * The bot take a Parcel goal card
+     */
     private void pickGoal() {
         pickParcelObjective();
     }
 
+    /**
+     * The bot check if the goal is complete
+     * @return if the bot can attempt to resolve the goal
+     */
     private boolean checkGoal() {
         if(this.currentGoal == null)
             selectGoal();
@@ -68,6 +90,10 @@ public class PremierBot extends Bot {
         return true;
     }
 
+
+    /**
+     * the bot select the goal card in the deck
+     */
     private void selectGoal() {
         currentGoal = getIndividualBoard().getNextParcelGoal();
         /*if(currentGoal == null || currentGoal.isCompleted()) {

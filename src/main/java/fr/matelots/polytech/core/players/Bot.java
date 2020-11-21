@@ -16,6 +16,8 @@ public abstract class Bot {
 
     public Bot(Game game) {
         this.game = game;
+        this.board = game.getBoard();
+
         individualBoard = new IndividualBoard();
     }
 
@@ -36,7 +38,7 @@ public abstract class Bot {
 
     public abstract void playTurn ();
 
-    public void setBoard(Board board) {
+    /*public void setBoard(Board board) {
         this.board = board;
-    }
+    }*/
 }

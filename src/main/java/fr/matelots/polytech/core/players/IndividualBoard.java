@@ -12,6 +12,7 @@ import java.util.List;
  *      - The reserve of amenagements
  *      - List of each type of objectives
  * @author Gabriel Cogne
+ * @author Clodong Yann
  */
 public class IndividualBoard {
 
@@ -23,6 +24,16 @@ public class IndividualBoard {
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
     }
+
+
+    /**
+     * Get the score of the player
+     * @return Number representing the score of the player
+     */
+    public int getPlayerScore() {
+        return objectiveParcels.stream().filter(o -> o.isCompleted()).mapToInt(o -> o.getScore()).sum();
+    }
+
 
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
