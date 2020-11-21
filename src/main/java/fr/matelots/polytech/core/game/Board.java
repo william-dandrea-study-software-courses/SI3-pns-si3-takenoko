@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
 
@@ -13,6 +14,7 @@ public class Board {
     // Attributes
     private final Map<Position, Parcel> grid;
     private final DeckParcelObjective deckParcelObjective;
+    private final int parcelLeftToPlace;
 
     // Constructors
     public Board () {
@@ -20,6 +22,8 @@ public class Board {
         this.deckParcelObjective = new DeckParcelObjective(this);
         // On ajout l'étang
         grid.put(new Position(0, 0, 0), new Parcel());
+
+        parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
 
     // Methods and Function
@@ -35,7 +39,10 @@ public class Board {
         return null;
     }
 
-    public boolean addParcel (int x, int y, int z, Parcel p) {
+    public boolean addParcel (int x, int y, int z, Parcel p) throws NoParcelLeftToPlaceException {
+        if (parcelLeftToPlace <= 0)
+            throw new NoParcelLeftToPlaceException();
+
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position(x, y, z), p);
             return true;
@@ -43,7 +50,7 @@ public class Board {
         return false;
     }
 
-    public boolean addParcel(Position position, Parcel p) {
+    public boolean addParcel(Position position, Parcel p) throws NoParcelLeftToPlaceException {
         return addParcel(position.getX(), position.getY(), position.getZ(), p);
     }
 
