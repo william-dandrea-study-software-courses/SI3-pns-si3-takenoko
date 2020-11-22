@@ -60,6 +60,12 @@ public class IndividualBoard {
         return n;
     }
 
+    public int countCompletedObjectives() {
+        int score = 0;
+        score += (int)objectiveParcels.stream().filter(o -> o.isCompleted()).count();
+        return score;
+    }
+
     /**
      * This method allow to pick another parcel objective to complete.
      * It will return if it's possible to pick a new objective and if true if the objective has been successfully added

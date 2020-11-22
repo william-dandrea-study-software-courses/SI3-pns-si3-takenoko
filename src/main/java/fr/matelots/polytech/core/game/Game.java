@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +27,11 @@ public class Game {
     // Constructors
     public Game () {
         bots = new ArrayList<>();
+        board = new Board();
+
         bots.add(new PremierBot(this));
         //bots.add(new PremierBot(this));
 
-        board = new Board();
         drawer = new BoardDrawer(board);
     }
 
@@ -62,17 +64,22 @@ public class Game {
 
         drawer.print();
 
-        while (getWinner() == null && !lastTurn) {
-            bots.forEach(Bot::playTurn);
+        while (!lastTurn) {
+            //bots.forEach(Bot::playTurn);
 
             bots.forEach(bot -> {
                 bot.playTurn();
-                if (bot.getIndividualBoard().countUnfinishedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
+                if (bot.getIndividualBoard().countCompletedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
+                System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
+                drawer.print();
             });
 
-            drawer.print();
+            //drawer.print();
         }
+
+        // this is the winner ! ;)
+        var winner = getWinner();
 
 
     }

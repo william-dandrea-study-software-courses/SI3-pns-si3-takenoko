@@ -4,6 +4,10 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.engine.util.Position;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Yann Clodong
@@ -30,11 +34,36 @@ public class PremierBot extends Bot {
         if(filling)
             pickGoal();
         else {
-            if(checkGoal()) {
-                attemptToPlaceParcelWithGoal();
+            if(board.getParcelCount() == 1) {
+                // si le plateau est vierge, le bot ajoute une tuile au hasard
+                placeRandom();
+            }
+            else {
+                selectGoalIfEmpty();
+
+                if(currentGoal == null)
+                {
+                    // Le bot a déjà tenté de séléctionner un objectif mais tous ceux qu'il a sont déjà complété
+                    pickGoal();
+                }
+                else attemptToPlaceParcelWithGoal();
             }
         }
         strategie();
+    }
+
+    private void selectGoalIfEmpty() {
+        if(currentGoal != null && currentGoal.verify()) currentGoal = null;
+
+        while(currentGoal == null && getIndividualBoard().getUnfinishedParcelObjectives().size() > 0) {
+
+            if (currentGoal == null) selectGoal(); // Verifie que current goal n'est pas nul, on l'affecte sinon
+
+            if (currentGoal.verify()) {
+                // L'objectif est atteint
+                selectGoal();
+            }
+        }
     }
 
     /**
@@ -51,18 +80,35 @@ public class PremierBot extends Bot {
      * Represent the attempt of the bot to resolve the goal
      */
     private void attemptToPlaceParcelWithGoal() {
-        var goodPlaces = currentGoal.getMissingPositionsToComplete();
-
-        for (var position : goodPlaces) {
-            if(board.isPlaceValid(position)) {
-                board.addParcel(position, new Parcel());
-                return;
-            }
+        if(board.getParcelCount() == 1) {
+            placeRandom();
+            return;
         }
 
-        /*ParcelLineResolver resolver = new ParcelLineResolver(board);
-        boolean resolved = resolver.attemptResolve(currentGoal);
-        if(resolved) currentGoal.setComplete();*/
+        currentGoal.verify();
+        var goodPlaces = currentGoal.getMissingPositionsToComplete();
+        var listPlaces = new ArrayList<Position>();
+
+        goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(new Position(0, 0, 0))).forEach(p -> listPlaces.add(p));
+
+        if(listPlaces.size() == 0)
+            placeRandom();
+        else
+            board.addParcel(listPlaces.get(0), new Parcel());
+    }
+
+
+    /**
+     * Place une parcel sur le board au hasard
+     */
+    private void placeRandom() {
+        var validPlacesSet = board.getValidPlaces();
+        var validPlaces = new ArrayList<>(validPlacesSet);
+
+        var rnd = new Random();
+        var position = validPlaces.get(rnd.nextInt(validPlaces.size()));
+
+        board.addParcel(position, new Parcel());
     }
 
     /**
@@ -72,34 +118,12 @@ public class PremierBot extends Bot {
         pickParcelObjective();
     }
 
-    /**
-     * The bot check if the goal is complete
-     * @return if the bot can attempt to resolve the goal
-     */
-    private boolean checkGoal() {
-        if(this.currentGoal == null)
-            selectGoal();
-
-        this.currentGoal.verify();
-        if(currentGoal.isCompleted())
-        {
-            selectGoal();
-            if(this.currentGoal == null) return false;
-        }
-
-        return true;
-    }
-
 
     /**
      * the bot select the goal card in the deck
      */
     private void selectGoal() {
         currentGoal = getIndividualBoard().getNextParcelGoal();
-        /*if(currentGoal == null || currentGoal.isCompleted()) {
-            List<CardObjectiveParcel> unfinished = getIndividualBoard().getUnfinishedParcelObjectives();
-            currentGoal = unfinished.get(0);
-        }*/
     }
 
     @Override

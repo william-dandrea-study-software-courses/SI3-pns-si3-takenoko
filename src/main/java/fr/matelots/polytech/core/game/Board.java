@@ -128,4 +128,8 @@ public class Board {
     public DeckParcelObjective getDeckParcelObjective() {
         return deckParcelObjective;
     }
+
+    public int getParcelCount() {
+        return grid.size();
+    }
 }
