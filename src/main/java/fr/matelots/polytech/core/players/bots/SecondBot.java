@@ -2,7 +2,14 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.engine.util.Position;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Set;
 
 
 /**
@@ -10,7 +17,6 @@ import fr.matelots.polytech.core.players.Bot;
  * Je choisi un emplacement random pour accomplir mon objectif.
  * @author williamdandrea
  *
- * TODO: 22/11/2020 Implement the strategy method with the current bot strategy
  * TODO: 22/11/2020 Test the methods
  * TODO: 22/11/2020 Implement the SecondBot in the game
  */
@@ -39,6 +45,8 @@ public class SecondBot extends Bot {
             // We have any objective so we will pick a new parcel objective
             pickAnObjectiveAndAddToPlayerBoard();
             selectObjectiveFromPlayerDeck();
+            // We launch the strategy
+            strategy();
         }
     }
 
@@ -75,10 +83,56 @@ public class SecondBot extends Bot {
     }
 
     /**
-     * This method represent the bot strategie, it is this method who represent the game strategie of the bot (alias
+     * This method represent the bot strategy, it is this method who represent the game strategy of the bot (alias
      * the player)
      */
     private void strategy() {
+
+        // We check if the game board is just composed of the pond (etang) or if we have more parcels
+        if (board.getParcelCount() ==  1) {
+            // We need to place a parcel anywhere in the game board
+            placeAnParcelAnywhere();
+        } else {
+
+            // We check the place where we can place a new parcel
+            Set<Position> placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete();
+            ArrayList<Position> positionsWeChoose = new ArrayList<Position>();
+
+            // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
+            placeWhereWeCanPlaceAnParcel.stream().filter(p -> board.isPlaceValid(p) && !p.equals(new Position(0, 0, 0))).forEach(p -> positionsWeChoose.add(p));
+
+            if(positionsWeChoose.size() != 0) {
+                // We have an place to put the new parcel
+
+                // We choose a random parcel in the potential list
+                Random randomNumber = new Random();
+                int position = randomNumber.nextInt(positionsWeChoose.size());
+
+                // We add the new parcel
+                board.addParcel(positionsWeChoose.get(position), new Parcel());
+            } else {
+                // We put a parcel anywhere
+                placeAnParcelAnywhere();
+            }
+
+        }
+
+    }
+
+    /**
+     * This method will place a parcel anywhere in the board
+     */
+    private void placeAnParcelAnywhere() {
+        // We check where we can put an parcel
+        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<Position>(board.getValidPlaces());
+        // Now, we have an ArrayList of the potentials places where we can add a parcel
+
+        // We choose a random parcel in the potential list
+        Random randomNumber = new Random();
+        int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+
+        // We finally add to the board the new parcel
+        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new Parcel());
 
     }
 
