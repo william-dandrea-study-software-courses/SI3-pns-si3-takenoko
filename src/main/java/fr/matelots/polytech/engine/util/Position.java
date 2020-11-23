@@ -58,6 +58,29 @@ public class Position {
         return new Position(x, y, z);
     }
 
+    /**
+     * Calcul une position avec les coordonnées de cette position, soustrait avec les coordonnées de {@param position}
+     * @param position La position avec qui soustraire
+     * @return Une nouvelle instance de position qui est le résultat de ce calcul
+     */
+    public Position remove(Position position) {
+        int x = this.getX() - position.getX();
+        int y = this.getY() - position.getY();
+        int z = this.getZ() - position.getZ();
+        return new Position(x, y, z);
+    }
+
+    /**
+     * Multiplie les coordonnées par {@param i} et retourne le résultat par une nouvelle instance
+     * @param i Le nombre par lequel mutliplier les coordonées
+     * @return Une nouvelle instance de Poistion qui est le résultat de ce calcul
+     */
+    public Position mul(int i) {
+        int x = i * this.x;
+        int y = i * this.y;
+        int z = i * this.z;
+        return new Position(x, y, z);
+    }
 
     public static Vector substract(Position a, Position b) {
         return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
@@ -69,13 +92,14 @@ public class Position {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder("[");
         builder.append("x=");
         builder.append(getX());
         builder.append(", y=");
         builder.append(getY());
         builder.append(", z=");
         builder.append(getZ());
+        builder.append("]");
         return builder.toString();
     }
 

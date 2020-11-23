@@ -70,4 +70,22 @@ public class LinePatternTest {
         assertEquals(new HashSet<>(), Patterns.LINE.check(this.positions));
     }
 
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve au centre")
+    public void checkNotReturnPondCenter() {
+        this.positions.add(new Position(0, 1, -1));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(0, 2, -2));
+        expected.add(new Position(0, 3, -3));
+        assertTrue(expected.containsAll(Patterns.LINE.check(this.positions)));
+    }
+
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve en haut")
+    public void checkNotReturnPondDown() { //checkNotReturnPondCenter le fait déjà en soit
+        this.positions.add(new Position(0, 2, -2));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(0, 1, -1));
+        expected.add(new Position(0, 3, -3));
+        assertTrue(expected.containsAll(Patterns.LINE.check(this.positions)));
+    }
+
 }

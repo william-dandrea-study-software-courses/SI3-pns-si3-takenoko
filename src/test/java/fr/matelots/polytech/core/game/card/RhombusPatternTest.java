@@ -114,5 +114,36 @@ public class RhombusPatternTest {
         this.positions.add(new Position(2, 0, -2));
         assertEquals(new HashSet<>(), Patterns.RHOMBUS.check(this.positions));
     }
+
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve dans l'angle gauche")
+    public void checkNotReturnPondLeft() {
+        this.positions.add(new Position(0, -1, 1));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(0, -2, 2));
+        expected.add(new Position(1, -2, 1));
+        expected.add(new Position(1, -1, 0));
+        assertTrue(expected.containsAll(Patterns.RHOMBUS.check(this.positions)));
+    }
+
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve dans l'angle droite")
+    public void checkNotReturnPondRight() {
+        this.positions.add(new Position(-1, 0, 1));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(-2, 0, 2));
+        expected.add(new Position(-2, 1, 1));
+        expected.add(new Position(-1, 1, 0));
+        assertTrue(expected.containsAll(Patterns.RHOMBUS.check(this.positions)));
+    }
+
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve dans l'angle en haut")
+    public void checkNotReturnPondUp() {
+        this.positions.add(new Position(-1, -1, 2));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(-1, -2, 3));
+        expected.add(new Position(0, -2, 2));
+        expected.add(new Position(0, -1, 1));
+        assertTrue(expected.containsAll(Patterns.RHOMBUS.check(this.positions)));
+    }
+
     
 }

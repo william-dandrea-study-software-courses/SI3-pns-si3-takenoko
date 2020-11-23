@@ -71,4 +71,22 @@ public class CPatternTest {
         assertEquals(new HashSet<>(), Patterns.C.check(this.positions));
     }
 
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve au centre")
+    public void checkNotReturnPondCenter() {
+        this.positions.add(new Position(0, -1, 1));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(0, -2, 2));
+        expected.add(new Position(1, -1, 0));
+        assertTrue(expected.containsAll(Patterns.C.check(this.positions)));
+    }
+
+    @Test @DisplayName("check ne retourne pas l'étang qui se trouve en haut")
+    public void checkNotReturnPondUp() {
+        this.positions.add(new Position(-1, -1, 2));
+        HashSet<Position> expected = new HashSet<>();
+        expected.add(new Position(-1, -2, 3));
+        expected.add(new Position(0, -1, 1));
+        assertTrue(expected.containsAll(Patterns.C.check(this.positions)));
+    }
+
 }
