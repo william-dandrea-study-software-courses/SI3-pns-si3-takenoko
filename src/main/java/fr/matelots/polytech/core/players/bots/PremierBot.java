@@ -32,7 +32,9 @@ public class PremierBot extends Bot {
      */
     @Override
     public void playTurn() {
-        if(board.getParcelCount() > 1) getIndividualBoard().checkAllParcelGoal();
+        //if(board.getParcelCount() > 1) getIndividualBoard().checkAllParcelGoal();
+        if(!canPlay())
+            return; // le bot ne peut pas jouer alors il passe son tour
 
         if(filling)
             pickGoal();
@@ -57,8 +59,9 @@ public class PremierBot extends Bot {
 
     @Override
     public boolean canPlay() {
+        boolean canPick = canPickParcelCard();
         return canPlaceParcel() &&  // il peut placer des parcels et
-                (canPickParcelCard() && getIndividualBoard().countUnfinishedParcelObjectives() > 0); // soit il lui reste des objectifs soit il peut en piocher
+                (canPick || getIndividualBoard().countUnfinishedParcelObjectives() > 0); // soit il lui reste des objectifs soit il peut en piocher
     }
 
     private boolean canPickParcelCard() {
@@ -89,8 +92,9 @@ public class PremierBot extends Bot {
      * another to accomplish the objectives
      */
     private void strategie() {
-        if(getIndividualBoard().countUnfinishedParcelObjectives() == 0 && !filling) filling = true;
-        else if(getIndividualBoard().countUnfinishedParcelObjectives() >= 5 && filling) filling = false;
+        int nParcelGoal = getIndividualBoard().countUnfinishedParcelObjectives();
+        if(nParcelGoal == 0 && !filling) filling = true;
+        else if(nParcelGoal >= 5 && filling) filling = false;
     }
 
     /**
@@ -132,7 +136,7 @@ public class PremierBot extends Bot {
      * The bot take a Parcel goal card
      */
     private void pickGoal() {
-        pickParcelObjective();
+        boolean canPick = pickParcelObjective();
     }
 
 
