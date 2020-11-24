@@ -35,6 +35,10 @@ public class IndividualBoard {
     }
 
 
+    public void checkAllParcelGoal() {
+        objectiveParcels.forEach(CardObjectiveParcel::verify);
+    }
+
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
     // @return a objective in the list of objectives who is not completed

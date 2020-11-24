@@ -38,6 +38,8 @@ public abstract class Bot {
 
     public abstract void playTurn ();
 
+    public abstract boolean canPlay();
+
     /*public void setBoard(Board board) {
         this.board = board;
     }*/

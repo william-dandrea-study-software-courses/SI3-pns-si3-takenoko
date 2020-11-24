@@ -30,6 +30,7 @@ public class Game {
         board = new Board();
 
         bots.add(new PremierBot(this));
+        bots.add(new PremierBot(this));
         //bots.add(new PremierBot(this));
 
         drawer = new BoardDrawer(board);
@@ -72,15 +73,28 @@ public class Game {
                 if (bot.getIndividualBoard().countCompletedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
                 System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
+
+
+                //System.out.println("Deck empty ? " + (getNextParcelObjective() == null));
+                //System.out.println("Can add parcel ? " + (board.getParcelLeftToPlace() == 0));
+
+
                 drawer.print();
             });
 
+            if(bots.stream().allMatch(b -> !b.canPlay())) // Si aucun bot ne peut jouer, on coupe la partie.
+                break;
             //drawer.print();
         }
 
         // this is the winner ! ;)
         var winner = getWinner();
+        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
 
+        for(Bot bot : bots) {
+            if(winner == bot) continue;
+            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());
+        }
 
     }
 

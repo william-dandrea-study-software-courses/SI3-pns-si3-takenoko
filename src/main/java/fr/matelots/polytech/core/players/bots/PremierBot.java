@@ -20,6 +20,7 @@ public class PremierBot extends Bot {
     // True => Fill the board;
     // False => Attempt to resolve goal
     private boolean filling = true;
+    private String name = "";
 
     public PremierBot (Game game) {
         super (game);
@@ -31,6 +32,8 @@ public class PremierBot extends Bot {
      */
     @Override
     public void playTurn() {
+        if(board.getParcelCount() > 1) getIndividualBoard().checkAllParcelGoal();
+
         if(filling)
             pickGoal();
         else {
@@ -50,6 +53,20 @@ public class PremierBot extends Bot {
             }
         }
         strategie();
+    }
+
+    @Override
+    public boolean canPlay() {
+        return canPlaceParcel() &&  // il peut placer des parcels et
+                (canPickParcelCard() && getIndividualBoard().countUnfinishedParcelObjectives() > 0); // soit il lui reste des objectifs soit il peut en piocher
+    }
+
+    private boolean canPickParcelCard() {
+        return board.getDeckParcelObjective().canPick();
+    }
+
+    private boolean canPlaceParcel()  {
+        return board.getParcelLeftToPlace() > 0;
     }
 
     private void selectGoalIfEmpty() {

@@ -132,4 +132,8 @@ public class Board {
     public int getParcelCount() {
         return grid.size();
     }
+
+    public int getParcelLeftToPlace() {
+        return parcelLeftToPlace;
+    }
 }

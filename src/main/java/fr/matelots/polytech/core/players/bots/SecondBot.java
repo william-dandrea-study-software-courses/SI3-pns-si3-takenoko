@@ -50,6 +50,10 @@ public class SecondBot extends Bot {
         }
     }
 
+    @Override
+    public boolean canPlay() {
+        return false;
+    }
 
     /**
      * This function pick an new objective and add this objective to the player deck
