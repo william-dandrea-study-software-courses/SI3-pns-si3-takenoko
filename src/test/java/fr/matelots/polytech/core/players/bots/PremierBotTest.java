@@ -1,7 +1,10 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.DeckParcelObjective;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.IndividualBoard;
 import fr.matelots.polytech.engine.util.Position;
@@ -49,7 +52,7 @@ public class PremierBotTest {
 
     @Test
     public void testBotCantPickParcelGoal() {
-        for(int i = 0; i <= DeckParcelObjective.DECK_SIZE; i++) {
+        for(int i = 0; i <= Config.DECK_SIZE; i++) {
             game.getNextParcelObjective();
         }
         //game.run();
@@ -65,7 +68,7 @@ public class PremierBotTest {
             ArrayList<Position> valids = new ArrayList<>(game.getBoard().getValidPlaces());
             if(valids.size() == 0) assertTrue(false); // No valid places
             else {
-                game.getBoard().addParcel(valids.get(0), new Parcel());
+                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.green));
 
                 // dodge infinite loop
                 if(game.getBoard().getParcelLeftToPlace() >= oldVal) throw  new Exception("The system of parcel limitation dont working properly, now");

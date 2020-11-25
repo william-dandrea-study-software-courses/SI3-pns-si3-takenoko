@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
+import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Pond;
 import fr.matelots.polytech.engine.util.Position;
@@ -129,5 +130,16 @@ public class Board {
 
     public int getParcelLeftToPlace() {
         return parcelLeftToPlace;
+    }
+
+    /**
+     * Place a game pawn on a parcel defined by her position
+     * @param gardener The pawn to place
+     * @param position The position of the parcel
+     */
+    public void placePawn (Gardener gardener, Position position) {
+        Parcel tmp = getParcel(position);
+        if (tmp != null)
+            tmp.placeOn(gardener);
     }
 }

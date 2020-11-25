@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
@@ -108,7 +109,7 @@ public class SecondBot extends Bot {
                 int position = randomNumber.nextInt(positionsWeChoose.size());
 
                 // We add the new parcel
-                board.addParcel(positionsWeChoose.get(position), new BambooPlantation());
+                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.green));
             } else {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();
@@ -131,7 +132,7 @@ public class SecondBot extends Bot {
         int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
         // We finally add to the board the new parcel
-        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation());
+        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.green));
 
     }
 

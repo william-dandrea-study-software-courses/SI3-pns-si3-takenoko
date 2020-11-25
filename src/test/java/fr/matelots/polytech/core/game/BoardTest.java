@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.PickDeckEmptyException;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +40,14 @@ public class BoardTest {
 
     @Test
     public void testValidePositionPour2VoisinesSiNonVoisineALEtang () {
-        board.addParcel(1, -1, 0, new BambooPlantation());
-        board.addParcel(0, -1, 1, new BambooPlantation());
+        board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green));
+        board.addParcel(0, -1, 1, new BambooPlantation(BambooColor.green));
         assertTrue(board.isPlaceValid(1, -2, 1));
     }
 
     @Test
     public void testInvalidePositionPour1VoisineSiNonVoisineALEtang () {
-        board.addParcel(1, -1, 0, new BambooPlantation());
+        board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green));
         assertFalse(board.isPlaceValid(1, -2, 1));
     }
 
@@ -57,45 +58,45 @@ public class BoardTest {
 
     @Test
     public void testPoseParcelVoisineALEtang () {
-        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation()));
+        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green)));
         assertNotNull(board.getParcel(1, -1, 0));
     }
 
     @Test
     public void testPoseParcelVoisineARien () {
-        assertFalse(board.addParcel(2, -1, -1, new BambooPlantation()));
+        assertFalse(board.addParcel(2, -1, -1, new BambooPlantation(BambooColor.green)));
         assertNull(board.getParcel(2, -1, -1));
     }
 
     @Test
     public void testPoseParcelVoisineAVoisineEtang () {
-        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation()));
-        assertTrue(board.addParcel(1, 0, -1, new BambooPlantation()));
-        assertTrue(board.addParcel(2, -1, -1, new BambooPlantation()));
+        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green)));
+        assertTrue(board.addParcel(1, 0, -1, new BambooPlantation(BambooColor.green)));
+        assertTrue(board.addParcel(2, -1, -1, new BambooPlantation(BambooColor.green)));
         assertNotNull(board.getParcel(2, -1, -1));
     }
 
     @Test
     public void testAlreadyUsedLocationByParcel () {
-        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation()));
-        assertFalse(board.addParcel(1, -1, 0, new BambooPlantation()));
+        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green)));
+        assertFalse(board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green)));
     }
 
     @Test
     public void testNumberOfParcelLeftToPlaceGoingDown () {
-        board.addParcel(1, -1, 0, new BambooPlantation());
+        board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.green));
         assertEquals(Config.NB_PLACEABLE_PARCEL - 1, board.getParcelLeftToPlace());
     }
 
     @Test
     public void testNoParcelLeftToPlace () {
-        board.addParcel(1, 0, -1, new BambooPlantation());
+        board.addParcel(1, 0, -1, new BambooPlantation(BambooColor.green));
         for (int i = 1; i < Config.NB_PLACEABLE_PARCEL / 2 + 1; i++) {
-            board.addParcel(i, -i, 0, new BambooPlantation());
-            board.addParcel(i+1, -i, -1, new BambooPlantation());
+            board.addParcel(i, -i, 0, new BambooPlantation(BambooColor.green));
+            board.addParcel(i+1, -i, -1, new BambooPlantation(BambooColor.green));
         }
 
         assertThrows(NoParcelLeftToPlaceException.class,
-                () -> board.addParcel(-1, 1, 0, new BambooPlantation()));
+                () -> board.addParcel(-1, 1, 0, new BambooPlantation(BambooColor.green)));
     }
 }
