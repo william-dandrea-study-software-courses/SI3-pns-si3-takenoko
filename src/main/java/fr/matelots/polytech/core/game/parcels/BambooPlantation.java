@@ -5,9 +5,11 @@ package fr.matelots.polytech.core.game.parcels;
  */
 public class BambooPlantation extends Parcel {
     private int bambooSize;
+    private BambooColor bambooColor;
 
-    public BambooPlantation () {
+    public BambooPlantation (BambooColor color) {
         bambooSize = 0;
+        this.bambooColor = color;
     }
 
     /**
@@ -17,6 +19,10 @@ public class BambooPlantation extends Parcel {
     @Override
     public int getBambooSize () {
         return bambooSize;
+    }
+
+    public BambooColor getBambooColor() {
+        return bambooColor;
     }
 
     /**

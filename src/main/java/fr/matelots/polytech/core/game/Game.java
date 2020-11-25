@@ -29,14 +29,19 @@ public class Game {
         bots = new ArrayList<>();
         board = new Board();
 
+
         bots.add(new PremierBot(this));
         bots.add(new SecondBot(this));
+
         //bots.add(new PremierBot(this));
 
         drawer = new BoardDrawer(board);
     }
 
-
+    public void addBot(Bot bot) {
+        if(bots.contains(bot)) return; // Eviter les doubles coups ;)
+        bots.add(bot);
+    }
 
     // Methods
     public Bot getWinner () {
@@ -57,6 +62,11 @@ public class Game {
     }
 
     public void run () {
+        if(bots.size() == 0) {
+            System.out.println("No players !");
+            return;
+        }
+
         System.out.print("Joueurs: ");
         bots.forEach(System.out::println);
         System.out.println();

@@ -43,14 +43,6 @@ public class Position {
         return false;
     }
 
-    public static Position add(Position position, Vector vector) {
-        int x = position.getX() + vector.getX();
-        int y = position.getY() + vector.getY();
-        int z = position.getZ() + vector.getZ();
-
-        return new Position(x, y, z);
-    }
-
     public Position add(Position position) {
         int x = this.getX() + position.getX();
         int y = this.getY() + position.getY();
@@ -80,14 +72,6 @@ public class Position {
         int y = i * this.y;
         int z = i * this.z;
         return new Position(x, y, z);
-    }
-
-    public static Vector substract(Position a, Position b) {
-        return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
-    }
-
-    public static Position translate(Position depart, Vector direction, int distance) {
-        return add(depart, Vector.multiply(direction, distance));
     }
 
     @Override
