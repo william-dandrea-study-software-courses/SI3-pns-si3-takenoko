@@ -15,7 +15,7 @@ public class Board {
     // Attributes
     private final Map<Position, Parcel> grid;
     private final DeckParcelObjective deckParcelObjective;
-    private final int parcelLeftToPlace;
+    private int parcelLeftToPlace;
 
     // Constructors
     public Board () {
@@ -46,6 +46,7 @@ public class Board {
 
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position(x, y, z), p);
+            parcelLeftToPlace--;
             return true;
         }
         return false;
