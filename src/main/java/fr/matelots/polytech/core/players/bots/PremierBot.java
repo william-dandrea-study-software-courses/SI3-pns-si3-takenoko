@@ -1,8 +1,9 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -20,7 +21,7 @@ public class PremierBot extends Bot {
     // True => Fill the board;
     // False => Attempt to resolve goal
     private boolean filling = true;
-    private String name = "";
+    private final String name = "";
 
     public PremierBot (Game game) {
         super (game);
@@ -106,7 +107,7 @@ public class PremierBot extends Bot {
         var goodPlaces = currentGoal.getMissingPositionsToComplete();
         var listPlaces = new ArrayList<Position>();
 
-        goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(new Position(0, 0, 0))).forEach(p -> listPlaces.add(p));
+        goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION)).forEach(listPlaces::add);
 
         if(listPlaces.size() == 0)
             placeRandom();

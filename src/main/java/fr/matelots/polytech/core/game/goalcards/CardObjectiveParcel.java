@@ -34,11 +34,6 @@ public class CardObjectiveParcel {
         Set<Position> positions = this.board.getPositions();
         this.missingPositions = new HashSet<>(this.pattern.check(positions));
         this.completed = this.missingPositions.isEmpty();
-        /*positions.removeIf(pos -> pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0); //On enlève l'étang
-        for (Position position : positions) {
-            if (this.board.getNbNeighbors(position.getX(), position.getY(), position.getZ()) >= 2)
-                return this.completed = true;
-        }*/
         return this.completed;
     }
 

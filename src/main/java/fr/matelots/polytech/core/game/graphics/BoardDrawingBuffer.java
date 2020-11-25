@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game.graphics;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.engine.util.Position;
 import fr.matelots.polytech.engine.util.Vector;
 import fr.matelots.polytech.engine.util.Vector2Int;
@@ -30,7 +31,7 @@ public class BoardDrawingBuffer {
 
 
     void drawHexas() {
-        beginDraw(new Position(0, 0, 0), new Vector2Int(0, 0));
+        beginDraw(Config.BOND_POSITION, new Vector2Int(0, 0));
         print();
     }
 

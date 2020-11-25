@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.goalcards.pattern;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.HashSet;
@@ -14,7 +15,6 @@ import java.util.Set;
  */
 public class PatternChecker {
 
-    private static final Position POND = new Position(0, 0, 0);
     private final Position[][] offsets;
 
     public PatternChecker(Position... offsets) {
@@ -42,7 +42,7 @@ public class PatternChecker {
      * @throws IllegalArgumentException si @param positions est vide ou contient seulement l'étang
      */
     public Set<Position> check(Set<Position> positions) {
-        positions.removeIf(pos -> pos.equals(POND)); //On enlève l'étang
+        positions.removeIf(pos -> pos.equals(Config.BOND_POSITION)); //On enlève l'étang
         if (positions.isEmpty())
             throw new IllegalArgumentException("Aucune position !");
         Set<Position> patternPos = new HashSet<>(); //Les positions manquantes pour compléter l'objectif. En contient le moins possible
@@ -58,7 +58,7 @@ public class PatternChecker {
                         posBuffer.add(offsetsBuffer[offsetPos]);
                     offsetPos++;
                 }
-                if(!posBuffer.contains(POND))
+                if(!posBuffer.contains(Config.BOND_POSITION))
                     break;
                 offsetPos = 0;
                 posBuffer.clear();
