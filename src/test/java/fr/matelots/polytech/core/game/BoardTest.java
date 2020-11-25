@@ -76,6 +76,12 @@ public class BoardTest {
     }
 
     @Test
+    public void testAlreadyUsedLocationByParcel () {
+        assertTrue(board.addParcel(1, -1, 0, new BambooPlantation()));
+        assertFalse(board.addParcel(1, -1, 0, new BambooPlantation()));
+    }
+
+    @Test
     public void testNumberOfParcelLeftToPlaceGoingDown () {
         board.addParcel(1, -1, 0, new BambooPlantation());
         assertEquals(Config.NB_PLACEABLE_PARCEL - 1, board.getParcelLeftToPlace());

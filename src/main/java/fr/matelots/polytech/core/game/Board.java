@@ -57,6 +57,9 @@ public class Board {
     }
 
     public boolean isPlaceValid (int x, int y, int z) {
+        if (getParcel(x, y, z) != null)
+            return false;
+
         List<Parcel> neighbours = getNeighbours(x, y, z);
 
         if (neighbours.size() > 1)
