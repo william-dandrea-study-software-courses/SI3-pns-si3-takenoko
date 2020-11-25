@@ -3,20 +3,19 @@ package fr.matelots.polytech.core.game.parcels;
 /**
  * @author Gabriel Cogne
  */
-public class Parcel {
+public abstract class Parcel {
     private final boolean lake;
 
     // Constructors
     public Parcel()  {
         this.lake = false;
     }
-    public Parcel(boolean isLake)  {
-        this.lake = isLake;
-    }
 
-    public boolean isLake() {
-        return lake;
-    }
+    public abstract boolean isPond();
+
+    public abstract int getBambooSize ();
+
+    public abstract void growBamboo ();
 
     // Methods
     @Override

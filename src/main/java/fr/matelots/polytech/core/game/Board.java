@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.game.parcels.Pond;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class Board {
         grid = new HashMap<>();
         this.deckParcelObjective = new DeckParcelObjective(this);
         // On ajoute l'étang
-        grid.put(Config.BOND_POSITION, new Parcel(true));
+        grid.put(Config.BOND_POSITION, new Pond());
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -61,7 +62,7 @@ public class Board {
         if (neighbours.size() > 1)
             return true;
         else
-            return neighbours.stream().anyMatch(Parcel::isLake);
+            return neighbours.stream().anyMatch(Parcel::isPond);
     }
     public boolean isPlaceValid (Position position) {
         return isPlaceValid(position.getX(), position.getY(), position.getZ());

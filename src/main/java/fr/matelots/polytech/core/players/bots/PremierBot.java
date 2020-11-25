@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
@@ -112,7 +113,7 @@ public class PremierBot extends Bot {
         if(listPlaces.size() == 0)
             placeRandom();
         else
-            board.addParcel(listPlaces.get(0), new Parcel());
+            board.addParcel(listPlaces.get(0), new BambooPlantation());
     }
 
 
@@ -126,7 +127,7 @@ public class PremierBot extends Bot {
         var rnd = new Random();
         var position = validPlaces.get(rnd.nextInt(validPlaces.size()));
 
-        board.addParcel(position, new Parcel());
+        board.addParcel(position, new BambooPlantation());
     }
 
     /**
