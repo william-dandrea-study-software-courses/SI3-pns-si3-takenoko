@@ -3,8 +3,6 @@ package fr.matelots.polytech.core.game.graphics;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.engine.util.Position;
-import fr.matelots.polytech.engine.util.Vector;
-import fr.matelots.polytech.engine.util.Vector2Int;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +29,19 @@ public class BoardDrawingBuffer {
 
 
     void drawHexas() {
-        beginDraw(Config.BOND_POSITION, new Vector2Int(0, 0));
+        beginDraw(Config.BOND_POSITION, new Position(0, 0, 0));
         print();
     }
 
-    void beginDraw(Position currentParcel, Vector2Int position) {
+    void beginDraw(Position currentParcel, Position position) {
         if(board.containTile(currentParcel) && !allReadyDrawn.contains(currentParcel)) {
             Hexagone hexa = new Hexagone(position);
             // Parcel  parcel = board.getParcel(currentParcel);
             allReadyDrawn.add(currentParcel);
             hexa.printHexa(this);
 
-            hexa.getNeighbours().forEach((Vector p, Vector2Int rp) ->
-                    beginDraw(Position.add(currentParcel, p), Vector2Int.add(position, rp))
+            hexa.getNeighbours().forEach((Position p, Position rp) ->
+                    beginDraw(currentParcel.add(p), position.add(rp))
             );
         }
     }

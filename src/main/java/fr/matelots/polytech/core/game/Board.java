@@ -73,14 +73,6 @@ public class Board {
 
     public Set<Position> getValidPlaces() {
         Set<Position> validPlaces = new HashSet<>();
-        /*List<Vector> cubeDirections = Arrays.asList(
-                new Vector(1, -1, 0),
-                new Vector(0, -1, 1),
-                new Vector(-1, 0, 1),
-                new Vector(-1, 1, 0),
-                new Vector(0, 1, -1),
-                new Vector(1, 0, -1)
-        );*/
         var positions = getPositions();
         for(var position : positions) {
             for (var direction : Config.CUBE_DIRECTIONS) {
