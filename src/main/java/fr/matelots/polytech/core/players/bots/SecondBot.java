@@ -87,19 +87,25 @@ public class SecondBot extends Bot {
     private void strategy() {
 
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
-        if (board.getParcelCount() ==  1) {
+        if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
             placeAnParcelAnywhere();
         } else {
 
+
             // We check the place where we can place a new parcel
-            Set<Position> placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete();
+            Set<Position> placeWhereWeCanPlaceAnParcel = null;
+            if (currentObjective != null) {
+                placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete();
+            }
             ArrayList<Position> positionsWeChoose = new ArrayList<>();
 
+
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
-            placeWhereWeCanPlaceAnParcel.stream()
-                    .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
-                    .forEach(positionsWeChoose::add);
+            if (placeWhereWeCanPlaceAnParcel != null)
+                placeWhereWeCanPlaceAnParcel.stream()
+                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
+                        .forEach(positionsWeChoose::add);
 
             if(positionsWeChoose.size() != 0) {
                 // We have an place to put the new parcel
@@ -134,6 +140,11 @@ public class SecondBot extends Bot {
         // We finally add to the board the new parcel
         board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.green));
 
+    }
+
+    @Override
+    public String toString() {
+        return "Bot 2";
     }
 
 

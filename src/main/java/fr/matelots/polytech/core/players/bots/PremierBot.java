@@ -152,6 +152,6 @@ public class PremierBot extends Bot {
 
     @Override
     public String toString() {
-        return "Bot 1 ready to play";
+        return "Bot 1";
     }
 }
