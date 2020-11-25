@@ -28,8 +28,11 @@ public class Gardener {
     public void makeAction () {
         List<Parcel> neighbours = board.getNeighbours(position.getX(),
                 position.getY(), position.getZ());
+        Parcel current = board.getParcel(position);
+        current.growBamboo();
 
-        neighbours.forEach(Parcel::growBamboo);
-        board.getParcel(position).growBamboo();
+        neighbours.stream()
+                .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
+                .forEach(Parcel::growBamboo);
     }
 }

@@ -24,4 +24,9 @@ public class Pond extends Parcel {
     public boolean isPond() {
         return true;
     }
+
+    @Override
+    public BambooColor getBambooColor() {
+        return null;
+    }
 }

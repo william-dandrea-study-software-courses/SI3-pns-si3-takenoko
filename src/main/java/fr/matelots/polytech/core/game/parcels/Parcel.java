@@ -21,6 +21,8 @@ public abstract class Parcel {
 
     public abstract void growBamboo ();
 
+    public abstract BambooColor getBambooColor();
+
     public boolean placeOn (Gardener gardener) {
         this.gardener = gardener;
         return this.gardener != null;
