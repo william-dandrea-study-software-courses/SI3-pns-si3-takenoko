@@ -2,8 +2,8 @@ package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.game.parcels.Pond;
 import fr.matelots.polytech.engine.util.Position;
-import fr.matelots.polytech.engine.util.Vector;
 
 import java.util.*;
 
@@ -15,14 +15,14 @@ public class Board {
     // Attributes
     private final Map<Position, Parcel> grid;
     private final DeckParcelObjective deckParcelObjective;
-    private final int parcelLeftToPlace;
+    private int parcelLeftToPlace;
 
     // Constructors
     public Board () {
         grid = new HashMap<>();
         this.deckParcelObjective = new DeckParcelObjective(this);
-        // On ajout l'étang
-        grid.put(new Position(0, 0, 0), new Parcel(true));
+        // On ajoute l'étang
+        grid.put(Config.BOND_POSITION, new Pond());
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -46,6 +46,7 @@ public class Board {
 
         if (isPlaceValid(x, y, z)) {
             grid.put(new Position(x, y, z), p);
+            parcelLeftToPlace--;
             return true;
         }
         return false;
@@ -60,10 +61,8 @@ public class Board {
 
         if (neighbours.size() > 1)
             return true;
-        else if (neighbours.stream().filter(Parcel::isLake).count()>0)
-            return true;
         else
-            return false;
+            return neighbours.stream().anyMatch(Parcel::isPond);
     }
     public boolean isPlaceValid (Position position) {
         return isPlaceValid(position.getX(), position.getY(), position.getZ());
@@ -71,18 +70,18 @@ public class Board {
 
     public Set<Position> getValidPlaces() {
         Set<Position> validPlaces = new HashSet<>();
-        List<Vector> cubeDirections = Arrays.asList(
+        /*List<Vector> cubeDirections = Arrays.asList(
                 new Vector(1, -1, 0),
                 new Vector(0, -1, 1),
                 new Vector(-1, 0, 1),
                 new Vector(-1, 1, 0),
                 new Vector(0, 1, -1),
                 new Vector(1, 0, -1)
-        );
+        );*/
         var positions = getPositions();
         for(var position : positions) {
-            for (var direction : cubeDirections) {
-                Position checkingPosition = Position.add(position, direction);
+            for (var direction : Config.CUBE_DIRECTIONS) {
+                Position checkingPosition = position.add(direction);
                 if(isPlaceValid(checkingPosition))
                     validPlaces.add(checkingPosition);
             }

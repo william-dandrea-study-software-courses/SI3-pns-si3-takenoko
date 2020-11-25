@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class DeckParcelObjective {
 
-    public static final int DECK_SIZE = 15;
     private final List<CardObjectiveParcel> objectives;
 
     public DeckParcelObjective(Board board) {
@@ -25,9 +24,9 @@ public class DeckParcelObjective {
             this.objectives.add(new CardObjectiveParcel(board, 1, Patterns.LINE));
         for(int i = 0; i < 3; i++)
             this.objectives.add(new CardObjectiveParcel(board, 1, Patterns.C));
-        if(this.objectives.size() != DECK_SIZE)
+        if(this.objectives.size() != Config.DECK_SIZE)
             throw new RuntimeException("La taille du paquet est de "+this.objectives.size()
-                    + " alors qu'elle devrait être de "+DECK_SIZE);
+                    + " alors qu'elle devrait être de "+Config.DECK_SIZE);
     }
 
     public CardObjectiveParcel pick() {

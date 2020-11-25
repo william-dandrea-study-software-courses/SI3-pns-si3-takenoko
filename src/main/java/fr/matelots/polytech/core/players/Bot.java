@@ -8,7 +8,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
  * @author Gabriel Cogne
  */
 public abstract class Bot {
-    private final int nCardsForVictory = 9;
+
     private final Game game;
     protected Board board;
 
@@ -32,15 +32,8 @@ public abstract class Bot {
         return individualBoard.addNewParcelObjective(obj);
     }
 
-    public boolean isVictorious() {
-        return getIndividualBoard().getCompletedObjectives() >= nCardsForVictory;
-    }
-
     public abstract void playTurn ();
 
     public abstract boolean canPlay();
 
-    /*public void setBoard(Board board) {
-        this.board = board;
-    }*/
 }

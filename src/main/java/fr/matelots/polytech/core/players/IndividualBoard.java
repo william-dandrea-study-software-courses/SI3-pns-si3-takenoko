@@ -31,7 +31,8 @@ public class IndividualBoard {
      * @return Number representing the score of the player
      */
     public int getPlayerScore() {
-        return objectiveParcels.stream().filter(o -> o.isCompleted()).mapToInt(o -> o.getScore()).sum();
+        return objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted)
+                .mapToInt(CardObjectiveParcel::getScore).sum();
     }
 
 
@@ -41,11 +42,11 @@ public class IndividualBoard {
 
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
-    // @return a objective in the list of objectives who is not completed
+    /** @return a objective in the list of objectives who is not completed*/
     public CardObjectiveParcel getNextParcelGoal() {
-        for(var objs : objectiveParcels) {
-            if(!objs.isCompleted())
-                return objs;
+        for(var obj : objectiveParcels) {
+            if(!obj.isCompleted())
+                return obj;
         }
         return null;
     }
@@ -66,7 +67,7 @@ public class IndividualBoard {
 
     public int countCompletedObjectives() {
         int score = 0;
-        score += (int)objectiveParcels.stream().filter(o -> o.isCompleted()).count();
+        score += (int)objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
         return score;
     }
 
@@ -87,8 +88,8 @@ public class IndividualBoard {
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
 
     // @return the number of completed objectives (all types of objectives)
-    public ArrayList<CardObjectiveParcel> getUnfinishedParcelObjectives() {
-        ArrayList<CardObjectiveParcel> result = new ArrayList<>();
+    public List<CardObjectiveParcel> getUnfinishedParcelObjectives() {
+        List<CardObjectiveParcel> result = new ArrayList<>();
         for(var obj : objectiveParcels) {
             if(!obj.isCompleted())
                 result.add(obj);

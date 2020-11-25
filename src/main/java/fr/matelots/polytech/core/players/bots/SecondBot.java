@@ -1,12 +1,13 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
@@ -16,16 +17,11 @@ import java.util.Set;
  * Je pioche un objectif, je l'accompli, j'en pioche un autre... jusqu'à la fin de la partie.
  * Je choisi un emplacement random pour accomplir mon objectif.
  * @author williamdandrea
- *
- * TODO: 22/11/2020 Test the methods
- * TODO: 22/11/2020 Implement the SecondBot in the game
  */
 public class SecondBot extends Bot {
 
     private CardObjectiveParcel currentObjective;
     private boolean state = false;
-
-
 
     public SecondBot(Game game) {
         super(game);
@@ -71,19 +67,16 @@ public class SecondBot extends Bot {
 
     /**
      * This function check the current objective
-     * @return true if the currentObjective is in progress
-     * @return false if there is any currentObjective or if the currentObjective is finish
+     * @return true if the currentObjective is in progress or false if there is any currentObjective or if
+     * the currentObjective is finish
      */
     private boolean checkCurrentObjective() {
 
         // If the currentObjective == null, or if the current goal
         // is finish (the function verify return true if an objective is completed)
-        if (this.currentObjective == null || currentObjective.verify()) {
-            return false;
-        }
+        return this.currentObjective != null && !currentObjective.verify();
 
         // Else, we return true because the objective in progress
-        return true;
     }
 
     /**
@@ -100,10 +93,12 @@ public class SecondBot extends Bot {
 
             // We check the place where we can place a new parcel
             Set<Position> placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete();
-            ArrayList<Position> positionsWeChoose = new ArrayList<Position>();
+            ArrayList<Position> positionsWeChoose = new ArrayList<>();
 
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
-            placeWhereWeCanPlaceAnParcel.stream().filter(p -> board.isPlaceValid(p) && !p.equals(new Position(0, 0, 0))).forEach(p -> positionsWeChoose.add(p));
+            placeWhereWeCanPlaceAnParcel.stream()
+                    .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
+                    .forEach(positionsWeChoose::add);
 
             if(positionsWeChoose.size() != 0) {
                 // We have an place to put the new parcel
@@ -113,7 +108,7 @@ public class SecondBot extends Bot {
                 int position = randomNumber.nextInt(positionsWeChoose.size());
 
                 // We add the new parcel
-                board.addParcel(positionsWeChoose.get(position), new Parcel());
+                board.addParcel(positionsWeChoose.get(position), new BambooPlantation());
             } else {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();
@@ -128,7 +123,7 @@ public class SecondBot extends Bot {
      */
     private void placeAnParcelAnywhere() {
         // We check where we can put an parcel
-        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<Position>(board.getValidPlaces());
+        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
         // Now, we have an ArrayList of the potentials places where we can add a parcel
 
         // We choose a random parcel in the potential list
@@ -136,7 +131,7 @@ public class SecondBot extends Bot {
         int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
         // We finally add to the board the new parcel
-        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new Parcel());
+        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation());
 
     }
 

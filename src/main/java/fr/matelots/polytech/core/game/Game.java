@@ -5,7 +5,6 @@ import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 
-import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
  */
 public class Game {
 
-    private static int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
+    private static final int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
 
     // Attributes
     private final List<Bot> bots;
@@ -68,31 +67,18 @@ public class Game {
         System.out.print("Joueurs: ");
         bots.forEach(System.out::println);
         System.out.println();
-
-        //bots.forEach(bot -> bot.setBoard(board));
-
         drawer.print();
-
         while (!lastTurn) {
-            //bots.forEach(Bot::playTurn);
-
             bots.forEach(bot -> {
                 bot.playTurn();
                 if (bot.getIndividualBoard().countCompletedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
                 System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
-
-
-                //System.out.println("Deck empty ? " + (getNextParcelObjective() == null));
-                //System.out.println("Can add parcel ? " + (board.getParcelLeftToPlace() == 0));
-
-
                 drawer.print();
             });
 
-            if(bots.stream().allMatch(b -> !b.canPlay())) // Si aucun bot ne peut jouer, on coupe la partie.
+            if(bots.stream().noneMatch(Bot::canPlay)) // Si aucun bot ne peut jouer, on coupe la partie.
                 break;
-            //drawer.print();
         }
 
         // this is the winner ! ;)

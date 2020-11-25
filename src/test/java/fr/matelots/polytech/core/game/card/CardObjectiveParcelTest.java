@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game.card;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
@@ -30,17 +31,17 @@ public class CardObjectiveParcelTest {
 
     @Test @DisplayName("test card objective success")
     public void objectiveAccomplished() {
-        this.board.addParcel(0, 1, -1, new Parcel());
-        this.board.addParcel(1, 0, -1, new Parcel());
-        this.board.addParcel(1, 1, -2, new Parcel());
+        this.board.addParcel(0, 1, -1, new BambooPlantation());
+        this.board.addParcel(1, 0, -1, new BambooPlantation());
+        this.board.addParcel(1, 1, -2, new BambooPlantation());
         assertTrue(obj.verify());
     }
 
     @Test @DisplayName("test card objective completed")
     public void objectiveCompleted() {
-        this.board.addParcel(0, 1, -1, new Parcel());
-        this.board.addParcel(1, 0, -1, new Parcel());
-        this.board.addParcel(1, 1, -2, new Parcel());
+        this.board.addParcel(0, 1, -1, new BambooPlantation());
+        this.board.addParcel(1, 0, -1, new BambooPlantation());
+        this.board.addParcel(1, 1, -2, new BambooPlantation());
         obj.verify();
         assertTrue(obj.isCompleted());
     }
@@ -52,8 +53,8 @@ public class CardObjectiveParcelTest {
 
     @Test @DisplayName("test missing parcels position to complete return right positions")
     public void missingParcelsRightPositions() {
-        this.board.addParcel(0, 1, -1, new Parcel());
-        this.board.addParcel(1, 0, -1, new Parcel());
+        this.board.addParcel(0, 1, -1, new BambooPlantation());
+        this.board.addParcel(1, 0, -1, new BambooPlantation());
         Set<Position> positions = new HashSet<>();
         positions.add(new Position(1, 1, -2));
         obj.verify();
@@ -62,15 +63,15 @@ public class CardObjectiveParcelTest {
 
     @Test @DisplayName("test card objective fail")
     public void objectiveFail() {
-        this.board.addParcel(0, 1, -1, new Parcel());
-        this.board.addParcel(1, -1, 0, new Parcel());
+        this.board.addParcel(0, 1, -1, new BambooPlantation());
+        this.board.addParcel(1, -1, 0, new BambooPlantation());
         assertFalse(obj.verify());
     }
 
     @Test @DisplayName("test card objective not completed")
     public void objectiveNotCompleted() {
-        this.board.addParcel(0, 1, -1, new Parcel());
-        this.board.addParcel(1, -1, 0, new Parcel());
+        this.board.addParcel(0, 1, -1, new BambooPlantation());
+        this.board.addParcel(1, -1, 0, new BambooPlantation());
         obj.verify();
         assertFalse(obj.isCompleted());
     }

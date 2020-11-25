@@ -44,9 +44,9 @@ public class Position {
     }
 
     public static Position add(Position position, Vector vector) {
-        int x = Integer.sum(position.getX(), vector.getX());
-        int y = Integer.sum(position.getY(), vector.getY());
-        int z = Integer.sum(position.getZ(), vector.getZ());
+        int x = position.getX() + vector.getX();
+        int y = position.getY() + vector.getY();
+        int z = position.getZ() + vector.getZ();
 
         return new Position(x, y, z);
     }
@@ -92,15 +92,11 @@ public class Position {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder("[");
-        builder.append("x=");
-        builder.append(getX());
-        builder.append(", y=");
-        builder.append(getY());
-        builder.append(", z=");
-        builder.append(getZ());
-        builder.append("]");
-        return builder.toString();
+        return "Position{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 
     @Override

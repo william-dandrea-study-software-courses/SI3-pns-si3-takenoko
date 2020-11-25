@@ -36,13 +36,13 @@ public class DeckParcelObjectiveTest {
 
     @Test @DisplayName("Aucune cartes null")
     public void noNullCardTest() {
-        for (int i = 0; i < DeckParcelObjective.DECK_SIZE; i++)
+        for (int i = 0; i < Config.DECK_SIZE; i++)
             assertNotNull(this.deck.pick());
     }
 
     @Test @DisplayName("Peut-on tirer toute les cartes")
     public void canPickAllCardTest() {
-        for (int i = 0; i < DeckParcelObjective.DECK_SIZE; i++) {
+        for (int i = 0; i < Config.DECK_SIZE; i++) {
             assertTrue(this.deck.canPick());
             this.deck.pick();
         }
@@ -50,14 +50,14 @@ public class DeckParcelObjectiveTest {
 
     @Test @DisplayName("Peut-on tirer une carte d'un paquet vide")
     public void canPickEmptyDeckTest() {
-        for (int i = 0; i < DeckParcelObjective.DECK_SIZE; i++)
+        for (int i = 0; i < Config.DECK_SIZE; i++)
             this.deck.pick();
         assertFalse(this.deck.canPick());
     }
 
     @Test @DisplayName("Tirer une carte d'un paquet vide")
     public void pickEmptyDeckTest() {
-        for (int i = 0; i < DeckParcelObjective.DECK_SIZE; i++)
+        for (int i = 0; i < Config.DECK_SIZE; i++)
             this.deck.pick();
         assertThrows(PickDeckEmptyException.class, () -> this.deck.pick());
     }
