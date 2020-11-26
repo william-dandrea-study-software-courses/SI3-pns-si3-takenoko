@@ -6,6 +6,9 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.List;
 
+/**
+ * @author Gabriel Cogne
+ */
 public class Gardener {
     private final Board board;
     private Position position;
@@ -15,6 +18,13 @@ public class Gardener {
         this.position = pos;
     }
 
+    /**
+     * Move the pawn to the given location
+     * @param x location on x axis
+     * @param y location on y axis
+     * @param z location on z axis
+     * @return is the movement success ?
+     */
     public boolean moveTo (int x, int y, int z) {
         Position tmp = new Position(x, y, z);
         if (board.placePawn(this, tmp)) {
@@ -25,6 +35,10 @@ public class Gardener {
             return false;
     }
 
+    /**
+     * Make the bamboo grow on is current position and all neighbour parcel that is the
+     * same bamboo color
+     */
     public void makeAction () {
         List<Parcel> neighbours = board.getNeighbours(position.getX(),
                 position.getY(), position.getZ());

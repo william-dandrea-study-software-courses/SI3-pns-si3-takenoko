@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Gabriel Cogne
+ */
 public class GardenerTest {
     private Board board;
     private Gardener gardener;
