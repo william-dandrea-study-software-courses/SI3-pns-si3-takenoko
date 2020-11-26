@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -14,20 +15,19 @@ import java.util.Set;
  * Il en existe 15, qui peuvent prendre 4 formes différentes ainsi que des couleurs différentes.
  * Le nombre de point dépend généralement de la difficulté à les compléter.
  */
-public class CardObjectiveParcel {
+public class CardObjectiveParcel extends CardObjective {
 
     private final Board board;
-    private final int score;
     private final Patterns pattern;
     private Set<Position> missingPositions;
-    private boolean completed;
 
     public CardObjectiveParcel(Board board, int score, Patterns pattern) {
+        super(board, score);
         this.board = board;
-        this.score = Math.max(score, 1); //éviter score <= 0
         this.pattern = pattern;
     }
 
+    @Override
     public boolean verify() {
         if(this.completed)
             return true;
@@ -45,11 +45,19 @@ public class CardObjectiveParcel {
         return this.missingPositions;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CardObjectiveParcel that = (CardObjectiveParcel) o;
+        return board.equals(that.board) &&
+                pattern == that.pattern &&
+                Objects.equals(missingPositions, that.missingPositions);
     }
 
-    public int getScore() {
-        return score;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), board, pattern, missingPositions);
     }
 }

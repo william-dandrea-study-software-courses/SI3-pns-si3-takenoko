@@ -1,21 +1,17 @@
-package fr.matelots.polytech.core.game;
+package fr.matelots.polytech.core.game.deck;
 
-import fr.matelots.polytech.core.PickDeckEmptyException;
+import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alexandre Arcil
  */
-public class DeckParcelObjective {
-
-    private final List<CardObjectiveParcel> objectives;
+public class DeckParcelObjective extends DeckObjective<CardObjectiveParcel> {
 
     public DeckParcelObjective(Board board) {
-        this.objectives = new ArrayList<>();
+        super(board);
         for(int i = 0; i < 3; i++)
             this.objectives.add(new CardObjectiveParcel(board, 1, Patterns.TRIANGLE));
         for(int i = 0; i < 6; i++)
@@ -27,17 +23,6 @@ public class DeckParcelObjective {
         if(this.objectives.size() != Config.DECK_SIZE)
             throw new RuntimeException("La taille du paquet est de "+this.objectives.size()
                     + " alors qu'elle devrait être de "+Config.DECK_SIZE);
-    }
-
-    public CardObjectiveParcel pick() {
-        if(this.canPick())
-            return this.objectives.remove(0);
-        else
-            throw new PickDeckEmptyException();
-    }
-
-    public boolean canPick() {
-        return !this.objectives.isEmpty();
     }
 
 }

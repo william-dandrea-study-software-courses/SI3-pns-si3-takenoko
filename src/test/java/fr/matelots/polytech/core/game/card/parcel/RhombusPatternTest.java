@@ -1,4 +1,4 @@
-package fr.matelots.polytech.core.game.card;
+package fr.matelots.polytech.core.game.card.parcel;
 
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.engine.util.Position;
