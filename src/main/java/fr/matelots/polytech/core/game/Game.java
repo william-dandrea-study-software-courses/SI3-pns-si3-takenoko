@@ -4,6 +4,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
+import fr.matelots.polytech.core.players.bots.SecondBot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,10 @@ public class Game {
         bots = new ArrayList<>();
         board = new Board();
 
-        addBot(new PremierBot(this));
-        addBot(new PremierBot(this));
+
+        bots.add(new PremierBot(this));
+        bots.add(new SecondBot(this));
+
         //bots.add(new PremierBot(this));
 
         drawer = new BoardDrawer(board);
@@ -74,6 +77,7 @@ public class Game {
                 if (bot.getIndividualBoard().countCompletedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
                 System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
+                System.out.println("Player : " + bot.toString());
                 drawer.print();
             });
 
@@ -83,10 +87,12 @@ public class Game {
 
         // this is the winner ! ;)
         var winner = getWinner();
+        System.out.println("Winner is : " + winner.toString());
         System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
 
         for(Bot bot : bots) {
             if(winner == bot) continue;
+            System.out.println("Loser is : " + bot.toString());
             System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());
         }
 

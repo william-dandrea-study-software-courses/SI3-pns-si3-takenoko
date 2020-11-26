@@ -28,6 +28,7 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         // On ajoute l'étang
         grid.put(Config.BOND_POSITION, new Pond());
+        placePawn(new Gardener(this, Config.BOND_POSITION), Config.BOND_POSITION);
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -145,9 +146,20 @@ public class Board {
      * @param gardener The pawn to place
      * @param position The position of the parcel
      */
-    public void placePawn (Gardener gardener, Position position) {
+    public boolean placePawn (Gardener gardener, Position position) {
         Parcel tmp = getParcel(position);
-        if (tmp != null)
-            tmp.placeOn(gardener);
+        if (tmp != null) {
+            return tmp.placeOn(gardener);
+        } else {
+            return false;
+        }
+    }
+
+    public Gardener getGardener () {
+        for (Parcel p : grid.values()) {
+            if (p.getGardener() != null)
+                return p.getGardener();
+        }
+        return null;
     }
 }
