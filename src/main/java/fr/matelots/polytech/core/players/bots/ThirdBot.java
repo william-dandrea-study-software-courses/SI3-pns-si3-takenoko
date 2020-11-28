@@ -45,7 +45,6 @@ public class ThirdBot extends Bot {
     }
 
     // Random functions
-
     private <T> T getRandomIn(List<? super T> objs) {
         return (T)objs.get(rnd.nextInt(objs.size()));
     }
@@ -68,7 +67,7 @@ public class ThirdBot extends Bot {
         List<Position> accessibleMissing = new ArrayList<>();
 
         var missing = parcelGoal.getMissingPositionsToComplete();
-        missing.stream().filter(p -> board.isPlaceValid(p)).forEach(p -> accessibleMissing.add(p));
+        missing.stream().filter(p -> board.isPlaceValid(p)).forEach(accessibleMissing::add);
 
         if(accessibleMissing.isEmpty()) {
             // est insoluble
@@ -108,7 +107,7 @@ public class ThirdBot extends Bot {
         List<Position> accessibleMissing = new ArrayList<>();
 
         var missing = parcelGoal.getMissingPositionsToComplete();
-        missing.stream().filter(p -> board.isPlaceValid(p)).forEach(p -> accessibleMissing.add(p));
+        missing.stream().filter(p -> board.isPlaceValid(p)).forEach(accessibleMissing::add);
 
         return !accessibleMissing.isEmpty();
     }
@@ -120,8 +119,8 @@ public class ThirdBot extends Bot {
                         board.getParcel(p).getBambooSize() < gardenerG.getSize())
                 .max(Comparator.comparingInt( (Position p) -> board.getParcel(p).getBambooSize() ));
 
-        if(position == null ) // il n'y a pas de parcels qui peuvent accueillir le bambou
-            return board.getParcelLeftToPlace() == 0; // si on peu placer une parcel alors c'est bon !
+        if(position.isEmpty() ) // il n'y a pas de parcels qui peuvent accueillir le bambou
+            return board.getParcelLeftToPlace() == 0; // si on peut placer une parcel alors c'est bon !
         else return true; // la il y a un endroit que l'on peut valider pour finir !
     }
     /**
@@ -131,7 +130,7 @@ public class ThirdBot extends Bot {
     private CardObjectiveParcel getSolvableGoal() {
         if(getIndividualBoard().countUnfinishedGardenerObjectives() == 0) {
 
-            var result = getIndividualBoard().getUnfinishedParcelObjectives().stream().filter(p -> parcelGoalIsSolvableNow(p));
+            var result = getIndividualBoard().getUnfinishedParcelObjectives().stream().filter(this::parcelGoalIsSolvableNow);
             if(result.count() == 0) {
                 placeBambooSomewhere();
                 return parcelGoal;
@@ -162,7 +161,6 @@ public class ThirdBot extends Bot {
     private void selectGoal() {
         if(!canSelectGoal() || filling) {
             filling = true;
-            return;
         }
         else {
             var unfinishedGardeners = getIndividualBoard().getUnfinishedGardenerObjectives();
@@ -179,7 +177,7 @@ public class ThirdBot extends Bot {
             else {
                 // On choisit entre les deux
 
-                if(rnd.nextBoolean()) {
+                if(rnd.nextBoolean()) { // William D'Andrea, ici on choisi entre si on resout un objectif jardinier ou un objectif parcel (si les deux sont disponible).
                     // Jardinier
                     gardenerGoal = getRandomIn(unfinishedGardeners);
                 }
@@ -207,7 +205,7 @@ public class ThirdBot extends Bot {
         return board.getDeckGardenerObjective().canPick() && getIndividualBoard().countUnfinishedGardenerObjectives() < NPARCEL;
     }
     private boolean haveGardenerGoal() {
-        return canPickGardener() || getIndividualBoard().getUnfinishedGardenerObjectives().stream().anyMatch(p -> gardenerGoalIsSolvable(p));
+        return canPickGardener() || getIndividualBoard().getUnfinishedGardenerObjectives().stream().anyMatch(this::gardenerGoalIsSolvable);
     }
 
     @Override
