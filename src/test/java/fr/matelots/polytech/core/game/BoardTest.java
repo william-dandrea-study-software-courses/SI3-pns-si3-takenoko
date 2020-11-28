@@ -1,14 +1,10 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
-import fr.matelots.polytech.core.PickDeckEmptyException;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,5 +94,15 @@ public class BoardTest {
 
         assertThrows(NoParcelLeftToPlaceException.class,
                 () -> board.addParcel(-1, 1, 0, new BambooPlantation(BambooColor.green)));
+    }
+
+    @Test
+    public void testGetValidPlace_TestValid() {
+        var validPlaces = board.getValidPlaces();
+
+        for(var validPlace : validPlaces) {
+            assertFalse(board.containTile(validPlace));
+            assertTrue(board.isPlaceValid(validPlace));
+        }
     }
 }
