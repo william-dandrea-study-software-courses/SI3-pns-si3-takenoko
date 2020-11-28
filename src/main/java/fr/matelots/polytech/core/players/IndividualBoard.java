@@ -1,5 +1,7 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.game.goalcards.CardObjective;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
 import java.util.ArrayList;
@@ -20,9 +22,11 @@ public class IndividualBoard {
 
     // List of the objectives
     private final List<CardObjectiveParcel> objectiveParcels;
+    private final List<CardObjectiveGardener> objectiveGardeners;
 
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
+        objectiveGardeners = new ArrayList<>();
     }
 
 
@@ -39,7 +43,14 @@ public class IndividualBoard {
     public void checkAllParcelGoal() {
         objectiveParcels.forEach(CardObjectiveParcel::verify);
     }
+    public void checkAllGoal() {
+        checkAllParcelGoal();
+        checkAllGardenerGoal();
+    }
 
+    public void checkAllGardenerGoal() {
+        objectiveGardeners.forEach(CardObjectiveGardener::verify);
+    }
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
     /** @return a objective in the list of objectives who is not completed*/
@@ -53,22 +64,23 @@ public class IndividualBoard {
 
     // @return the number of unfinished objectives (all types of objectives)
     public int countUnfinishedObjectives () {
-        return countUnfinishedParcelObjectives();
+        return countUnfinishedParcelObjectives()
+                + countUnfinishedGardenerObjectives();
     }
 
     // @return the number of completed objectives (all types of objectives)
     public int getCompletedObjectives() {
         int n = 0;
-        for(var goal : objectiveParcels) {
-            if(goal.isCompleted()) n++;
-        }
+        n += objectiveParcels.stream().filter(o -> o.isCompleted()).count();
+        n += objectiveGardeners.stream().filter(o -> o.isCompleted()).count();
         return n;
     }
 
     public int countCompletedObjectives() {
-        int score = 0;
-        score += (int)objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
-        return score;
+        int n = 0;
+        n += (int)objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
+        n += (int)objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
+        return n;
     }
 
     /**
@@ -85,6 +97,13 @@ public class IndividualBoard {
         return objectiveParcels.add(parcelObjective);
     }
 
+    public boolean addNewGardenerObjective(CardObjectiveGardener gardenerObjective) {
+        if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
+            return false;
+
+        return objectiveGardeners.add(gardenerObjective);
+    }
+
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
 
     // @return the number of completed objectives (all types of objectives)
@@ -97,10 +116,21 @@ public class IndividualBoard {
         return result;
     }
 
+    public List<CardObjectiveGardener> getUnfinishedGardenerObjectives() {
+        List<CardObjectiveGardener> result = new ArrayList<>();
+        objectiveGardeners.stream()
+                .filter(o -> !o.isCompleted())
+                .forEach(result::add);
+        return result;
+    }
+
     public int countUnfinishedParcelObjectives () {
         return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
+    public int countUnfinishedGardenerObjectives () {
+        return (int) objectiveGardeners.stream().filter(obj -> !obj.isCompleted()).count();
+    }
 
 
 

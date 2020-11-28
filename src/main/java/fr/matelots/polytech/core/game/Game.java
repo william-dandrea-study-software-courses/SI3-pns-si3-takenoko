@@ -1,10 +1,12 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.SecondBot;
+import fr.matelots.polytech.core.players.bots.ThirdBot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,11 @@ public class Game {
         board = new Board();
 
 
-        bots.add(new PremierBot(this));
+        /*bots.add(new PremierBot(this));
+        bots.add(new SecondBot(this));*/
+        bots.add(new ThirdBot(this));
         bots.add(new SecondBot(this));
+        //bots.add(new ThirdBot(this));
 
         //bots.add(new PremierBot(this));
 
@@ -105,6 +110,16 @@ public class Game {
     public CardObjectiveParcel getNextParcelObjective () {
         if (board.getDeckParcelObjective().canPick())
             return board.getDeckParcelObjective().pick();
+        return null;
+    }
+
+    /**
+     * Same
+     * @return
+     */
+    public CardObjectiveGardener getNextGardenerObjective() {
+        if (board.getDeckGardenerObjective().canPick())
+            return board.getDeckGardenerObjective().pick();
         return null;
     }
 }

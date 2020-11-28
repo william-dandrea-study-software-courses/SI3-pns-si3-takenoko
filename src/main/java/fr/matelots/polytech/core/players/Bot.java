@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
 /**
@@ -30,6 +31,13 @@ public abstract class Bot {
         if (obj == null)
             return false;
         return individualBoard.addNewParcelObjective(obj);
+    }
+
+    public boolean pickGardenerObjective() {
+        CardObjectiveGardener obj = game.getNextGardenerObjective();
+        if (obj == null)
+            return false;
+        return individualBoard.addNewGardenerObjective(obj);
     }
 
     public abstract void playTurn ();

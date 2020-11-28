@@ -4,6 +4,8 @@ import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
 import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
 import fr.matelots.polytech.core.game.movables.Gardener;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Pond;
 import fr.matelots.polytech.engine.util.Position;
@@ -62,6 +64,17 @@ public class Board {
         return addParcel(position.getX(), position.getY(), position.getZ(), p);
     }
 
+    public boolean addBambooPlantation(Position position) {
+        // Will change with the parcel deck
+        // Will be renamed with others parcels
+
+        Random rnd = new Random();
+        var colors = BambooColor.values();
+        var color = colors[rnd.nextInt(colors.length)];
+
+        return addParcel(position, new BambooPlantation(color));
+    }
+
     public boolean isPlaceValid (int x, int y, int z) {
         if (getParcel(x, y, z) != null)
             return false;
@@ -96,7 +109,7 @@ public class Board {
 
         Config.CUBE_DIRECTIONS.forEach(direction -> {
                 Parcel tmp = getParcel(x + direction.getX(), y + direction.getY(), z + direction.getZ());
-                if (tmp != null)
+                if (tmp != null) // containTile? ;)
                     res.add(tmp);
         });
 

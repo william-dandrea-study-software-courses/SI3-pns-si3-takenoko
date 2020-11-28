@@ -41,6 +41,14 @@ public class CardObjectiveGardener extends CardObjective {
         return this.completed;
     }
 
+    public BambooColor getColor() {
+        return color;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
