@@ -60,4 +60,17 @@ public class CardObjectiveParcel extends CardObjective {
     public int hashCode() {
         return Objects.hash(super.hashCode(), board, pattern, missingPositions);
     }
+
+    public Patterns getPattern() {
+        return pattern;
+    }
+
+    @Override
+    public String toString() {
+        return "CardObjectiveParcel{" +
+                "board=" + board +
+                ", pattern=" + pattern +
+                ", missingPositions=" + missingPositions +
+                '}';
+    }
 }

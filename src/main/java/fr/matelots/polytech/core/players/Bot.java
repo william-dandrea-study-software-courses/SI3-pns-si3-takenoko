@@ -4,6 +4,12 @@ import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.engine.util.Position;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Gabriel Cogne
@@ -14,7 +20,7 @@ public abstract class Bot {
     private final Game game;
     protected Board board;
 
-    private final IndividualBoard individualBoard;
+    protected final IndividualBoard individualBoard;
 
     public Bot(Game game) {
         this.game = game;
@@ -48,5 +54,22 @@ public abstract class Bot {
     public abstract void playTurn ();
 
     public abstract boolean canPlay();
+
+    /**
+     * This method will place a parcel anywhere in the board
+     */
+    public void placeAnParcelAnywhere() {
+        // We check where we can put an parcel
+        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
+        // Now, we have an ArrayList of the potentials places where we can add a parcel
+
+        // We choose a random parcel in the potential list
+        Random randomNumber = new Random();
+        int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+
+        // We finally add to the board the new parcel
+        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.green));
+
+    }
 
 }

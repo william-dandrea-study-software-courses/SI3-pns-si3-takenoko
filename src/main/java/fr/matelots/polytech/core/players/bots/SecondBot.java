@@ -129,22 +129,7 @@ public class SecondBot extends Bot {
 
     }
 
-    /**
-     * This method will place a parcel anywhere in the board
-     */
-    void placeAnParcelAnywhere() {
-        // We check where we can put an parcel
-        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
-        // Now, we have an ArrayList of the potentials places where we can add a parcel
 
-        // We choose a random parcel in the potential list
-        Random randomNumber = new Random();
-        int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
-
-        // We finally add to the board the new parcel
-        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.green));
-
-    }
 
     @Override
     public String toString() {
