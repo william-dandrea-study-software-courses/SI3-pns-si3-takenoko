@@ -47,6 +47,10 @@ public class SecondBot extends Bot {
         }
     }
 
+    public CardObjectiveParcel getCurrentObjective() {
+        return currentObjective;
+    }
+
     @Override
     public boolean canPlay() {
         return false;
@@ -55,14 +59,14 @@ public class SecondBot extends Bot {
     /**
      * This function pick an new objective and add this objective to the player deck
      */
-    private void pickAnObjectiveAndAddToPlayerBoard() {
+    void pickAnObjectiveAndAddToPlayerBoard() {
         pickParcelObjective();
     }
 
     /**
      * This method take an active objective in the player deck
      */
-    private void selectObjectiveFromPlayerDeck() {
+    void selectObjectiveFromPlayerDeck() {
         currentObjective = getIndividualBoard().getNextParcelGoal();
     }
 
@@ -71,7 +75,7 @@ public class SecondBot extends Bot {
      * @return true if the currentObjective is in progress or false if there is any currentObjective or if
      * the currentObjective is finish
      */
-    private boolean checkCurrentObjective() {
+    boolean checkCurrentObjective() {
 
         // If the currentObjective == null, or if the current goal
         // is finish (the function verify return true if an objective is completed)
@@ -84,7 +88,7 @@ public class SecondBot extends Bot {
      * This method represent the bot strategy, it is this method who represent the game strategy of the bot (alias
      * the player)
      */
-    private void strategy() {
+    void strategy() {
 
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
         if (board.getParcelCount() == 1) {
@@ -128,7 +132,7 @@ public class SecondBot extends Bot {
     /**
      * This method will place a parcel anywhere in the board
      */
-    private void placeAnParcelAnywhere() {
+    void placeAnParcelAnywhere() {
         // We check where we can put an parcel
         ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
         // Now, we have an ArrayList of the potentials places where we can add a parcel

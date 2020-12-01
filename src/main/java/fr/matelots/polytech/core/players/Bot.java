@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 
 /**
  * @author Gabriel Cogne
+ * @author D'Andrea William
  */
 public abstract class Bot {
 
@@ -24,6 +25,10 @@ public abstract class Bot {
 
     public IndividualBoard getIndividualBoard() {
         return individualBoard;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public boolean pickParcelObjective () {
