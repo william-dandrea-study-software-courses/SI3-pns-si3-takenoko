@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.Game;
  */
 public class Takenoko {
 
+
     public static void main(String[] args) {
         Game game = new Game();
         game.run();
