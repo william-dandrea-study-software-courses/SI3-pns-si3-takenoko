@@ -4,8 +4,6 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.FourthBot;
-import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
@@ -87,9 +85,10 @@ public class Game {
                 drawer.print();
             });
 
-            if(bots.stream().noneMatch(Bot::canPlay)) // Si aucun bot ne peut jouer, on coupe la partie.
+            if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
                 System.out.println("aucun bot ne peux jouer la partie, on l'annule");
                 break;
+            }
         }
 
         // this is the winner ! ;)
