@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.parcels;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.graphics.ConsoleColor;
 import fr.matelots.polytech.core.game.graphics.HexagonePosition;
 import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
@@ -34,8 +35,14 @@ public class BambooPlantation extends Parcel {
      */
     @Override
     public void growBamboo () {
-        if (bambooSize < 4)
+        if (bambooSize < Config.MAX_SIZE_BAMBOO)
             bambooSize++;
+    }
+
+    @Override
+    public void destroyUnitOfBamboo() {
+        if (bambooSize > Config.MIN_SIZE_BAMBOO)
+            bambooSize--;
     }
 
     @Override

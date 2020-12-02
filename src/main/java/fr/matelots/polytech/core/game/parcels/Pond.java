@@ -25,6 +25,9 @@ public class Pond extends Parcel {
     public void growBamboo () {}
 
     @Override
+    public void destroyUnitOfBamboo () {}
+
+    @Override
     public boolean isPond() {
         return true;
     }

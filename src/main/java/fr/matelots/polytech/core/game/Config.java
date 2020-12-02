@@ -28,6 +28,9 @@ public class Config {
     /** Nombre d'objectif à compléter pour atteindre le dernier tour*/
     public static final int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
 
+    public static final int MIN_SIZE_BAMBOO = 0;
+    public static final int MAX_SIZE_BAMBOO = 4;
+
     private Config () throws InstantiationException {
         throw new InstantiationException("This is a static class");
     }

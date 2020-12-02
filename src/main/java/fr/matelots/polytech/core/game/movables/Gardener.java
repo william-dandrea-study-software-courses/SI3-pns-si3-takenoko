@@ -9,45 +9,21 @@ import java.util.List;
 /**
  * @author Gabriel Cogne
  */
-public class Gardener {
-
-    private final Board board;
-    private Position position;
+public class Gardener extends Pawn {
 
     public Gardener (Board board, Position pos) {
-        this.board = board;
-        this.position = pos;
-    }
-
-    /**
-     * Move the pawn to the given location
-     * @param x location on x axis
-     * @param y location on y axis
-     * @param z location on z axis
-     * @return is the movement success ?
-     */
-    public boolean moveTo (int x, int y, int z) {
-        Position tmp = new Position(x, y, z);
-        if (board.placePawn(this, tmp)) {
-            position = tmp;
-            makeAction();
-            return true;
-        } else
-            return false;
-    }
-
-    public Position getPosition() {
-        return position;
+        super(board, pos);
     }
 
     /**
      * Make the bamboo grow on is current position and all neighbour parcel that is the
      * same bamboo color
      */
+    @Override
     public void makeAction () {
-        List<Parcel> neighbours = board.getNeighbours(position.getX(),
-                position.getY(), position.getZ());
-        Parcel current = board.getParcel(position);
+        List<Parcel> neighbours = getBoard().getNeighbours(getPosition().getX(),
+                getPosition().getY(), getPosition().getZ());
+        Parcel current = getBoard().getParcel(getPosition());
         current.growBamboo();
 
         neighbours.stream()

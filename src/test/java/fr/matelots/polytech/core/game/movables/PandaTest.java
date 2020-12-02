@@ -5,27 +5,27 @@ import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Gabriel Cogne
  */
-public class GardenerTest {
+public class PandaTest {
     private Board board;
-    private Gardener gardener;
+    private Panda panda;
 
     @BeforeEach
     public void init () {
         board = new Board();
-        gardener = board.getGardener();
+        panda = board.getPanda();
     }
 
     @Test
-    public void testInitialisation () {
-        assertNotNull(board.getParcel(Config.BOND_POSITION).getGardener());
+    public void testInitPlacement () {
+        assertNotNull(board.getParcel(Config.BOND_POSITION).getPanda());
     }
 
     @Test
@@ -36,45 +36,30 @@ public class GardenerTest {
         board.addParcel(1, -1, 0, p1);
         board.addParcel(-1, 1, 0, p2);
 
-        assertTrue(gardener.moveTo(1, -1, 0));
-        assertNotNull(p1.getGardener());
-        assertTrue(gardener.moveTo(-1, 1, 0));
-        assertNotNull(p2.getGardener());
-    }
-
-    @Test
-    public void testActionWithoutConstraints() {
-        Parcel p1 = new BambooPlantation(BambooColor.GREEN);
-        Parcel p2 = new BambooPlantation(BambooColor.GREEN);
-        Parcel p3 = new BambooPlantation(BambooColor.GREEN);
-
-        board.addParcel(1, -1, 0, p1);
-        board.addParcel(1, 0, -1, p2);
-        board.addParcel(-1, 1, 0, p3);
-
-        assertTrue(gardener.moveTo(1, -1, 0));
-
-        assertEquals(1, p1.getBambooSize());
-        assertEquals(1, p2.getBambooSize());
-        assertEquals(0, p3.getBambooSize());
-        assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
+        assertTrue(panda.moveTo(1, -1, 0));
+        assertNotNull(p1.getPanda());
+        assertTrue(panda.moveTo(-1, 1, 0));
+        assertNotNull(p2.getPanda());
     }
 
     @Test
     public void testActionWithConstraints () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.growBamboo();p1.growBamboo();
         Parcel p2 = new BambooPlantation(BambooColor.PINK);
-        Parcel p3 = new BambooPlantation(BambooColor.GREEN);
+        p2.growBamboo();p2.growBamboo();
+        Parcel p3 = new BambooPlantation(BambooColor.PINK);
+        p3.growBamboo();p3.growBamboo();
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(1, 0, -1, p2);
         board.addParcel(-1, 1, 0, p3);
 
-        assertTrue(gardener.moveTo(1, -1, 0));
+        assertTrue(panda.moveTo(1, -1, 0));
 
         assertEquals(1, p1.getBambooSize());
-        assertEquals(0, p2.getBambooSize());
-        assertEquals(0, p3.getBambooSize());
+        assertEquals(2, p2.getBambooSize());
+        assertEquals(2, p3.getBambooSize());
         assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
     }
 
@@ -88,11 +73,11 @@ public class GardenerTest {
         board.addParcel(1, 0, -1, p2);
         board.addParcel(-1, 1, 0, p3);
 
-        assertTrue(gardener.moveTo(1, -1, 0));
+        assertTrue(panda.moveTo(1, -1, 0));
 
-        assertTrue(gardener.moveTo(-1, 1, 0));
+        assertTrue(panda.moveTo(-1, 1, 0));
 
-        assertNotNull(p3.getGardener());
-        assertNull(p1.getGardener());
+        assertNotNull(p3.getPanda());
+        assertNull(p1.getPanda());
     }
 }

@@ -4,6 +4,8 @@ import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
 import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
 import fr.matelots.polytech.core.game.movables.Gardener;
+import fr.matelots.polytech.core.game.movables.Panda;
+import fr.matelots.polytech.core.game.movables.Pawn;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
@@ -23,6 +25,7 @@ public class Board {
     private final DeckGardenerObjective deckGardenerObjective;
     private int parcelLeftToPlace;
     private final Gardener gardener;
+    private final Panda panda;
 
     // Constructors
     public Board () {
@@ -33,6 +36,8 @@ public class Board {
         grid.put(Config.BOND_POSITION, new Pond());
         gardener = new Gardener(this, Config.BOND_POSITION);
         placePawn(gardener, Config.BOND_POSITION);
+        panda = new Panda(this, Config.BOND_POSITION);
+        placePawn(panda, Config.BOND_POSITION);
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -158,19 +163,23 @@ public class Board {
 
     /**
      * Place a game pawn on a parcel defined by her position
-     * @param gardener The pawn to place
+     * @param pawn The pawn to place
      * @param position The position of the parcel
      */
-    public boolean placePawn (Gardener gardener, Position position) {
+    public boolean placePawn (Pawn pawn, Position position) {
         Parcel tmp = getParcel(position);
         if (tmp != null) {
-            getParcel(gardener.getPosition()).removeGardener();
-            return tmp.placeOn(gardener);
+            getParcel(pawn.getPosition()).removePawn(pawn);
+            return tmp.placeOn(pawn);
         }
         return false;
     }
 
     public Gardener getGardener () {
         return gardener;
+    }
+
+    public Panda getPanda () {
+        return panda;
     }
 }

@@ -13,7 +13,7 @@ public class BambooPlantationTest {
 
     @BeforeEach
     public void init () {
-        parcel = new BambooPlantation(BambooColor.green);
+        parcel = new BambooPlantation(BambooColor.GREEN);
     }
 
     @Test
