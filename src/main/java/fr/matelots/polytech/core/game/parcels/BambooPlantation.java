@@ -38,4 +38,9 @@ public class BambooPlantation extends Parcel {
     public boolean isPond() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return getBambooSize() + getBambooColor().toString();
+    }
 }

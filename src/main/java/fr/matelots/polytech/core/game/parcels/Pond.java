@@ -29,4 +29,9 @@ public class Pond extends Parcel {
     public BambooColor getBambooColor() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "B";
+    }
 }
