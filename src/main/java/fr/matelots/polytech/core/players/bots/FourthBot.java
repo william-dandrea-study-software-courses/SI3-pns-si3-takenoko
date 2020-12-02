@@ -1,14 +1,17 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Piocher 2/3 obj parcelles et 2/3 jardinier, je choisi a l’instant t l’objectif le plus intéressant
@@ -17,23 +20,23 @@ import java.util.Set;
  * - [OK] Tirer 2 objectifs jardinier       [TESTED]
  * - [OK] Tirer 2 objectifs parcelles      [TESTED]
  *
- * - [EN COURS] Analyser les objectifs parcelle
- *     - [EN COURS] Prendre la carte objectif jardinier ayant le pattern le plus petit
- *     - [EN COURS] Regarder si on peut le résoudre
- * - [EN COURS] Analyser les objectifs jardinier
- *     - [EN COURS] Prendre la carte objectif avec le moins de bambou
- *     - [EN COURS] Regarder si on peu le résoudre
- * - [ ] Regarder qui est le plus facile à résoudre entre les 2 objectifs choisies
- * - [ ] Si objectif parcelle plus facile à résoudre
- *     - [ ] Placer une case au bon endroit
- *     - [ ] Vérifier si l’objectif est valider
- *         - [ ] VALIDE :
- *             - [ ] On tire un nouvel objectif
- *             - [ ] On analyse a nouveau lequel est le plus facile à résoudre
- *         - [ ] NON VALIDE :
- *             - [ ] On analyse quel objectif est le plus facile à résoudre parmi la liste
- *                 - [ ] Si c’est toujours celui la, on essaye de le résoudre en rajoutant des cases
- *                 - [ ] Sinon, on passe à l’objectif le plus simple à résoudre
+ * - [OK] Analyser les objectifs parcelle
+ *     - [OK] Prendre la carte objectif jardinier ayant le pattern le plus petit
+ *     - [OK] Regarder si on peut le résoudre
+ * - [OK] Analyser les objectifs jardinier
+ *     - [OK] Prendre la carte objectif avec le moins de bambou
+ *     - [OK] Regarder si on peu le résoudre
+ * - [OK] Regarder qui est le plus facile à résoudre entre les 2 objectifs choisies
+ * - [OK] Si objectif parcelle plus facile à résoudre
+ *     - [OK] Placer une case au bon endroit
+ *     - [OK] Vérifier si l’objectif est valider
+ *         - [OK] VALIDE :
+ *             - [OK] On tire un nouvel objectif
+ *             - [OK] On analyse a nouveau lequel est le plus facile à résoudre
+ *         - [OK] NON VALIDE :
+ *             - [OK] On analyse quel objectif est le plus facile à résoudre parmi la liste
+ *                 - [OK] Si c’est toujours celui la, on essaye de le résoudre en rajoutant des cases
+ *                 - [OK] Sinon, on passe à l’objectif le plus simple à résoudre
  * - [ ] Si objectif jardinier plus facile à résoudre
  *     - [ ] Placer le jardinier au bon endroit (verifier si la case est valide, et quand il arrive il peut faire pousser un bambou)
  *     - [ ] Vérifier si l’objectif est valider
@@ -62,13 +65,19 @@ public class FourthBot extends Bot {
     @Override
     public void playTurn() {
 
+        System.out.println("salut");
+        System.out.println(getIndividualBoard().getCompletedObjectives());
+
         // If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
         // (number in parameters). After this brackets, we will be not in the first launch, so we will try to analyse
         // directly the objectives.
         if (firstLaunch) {
             firstLaunchPickObjectives();
+            placeAnParcelAnywhere();
             firstLaunch = false;
         } else {
+
+            checkTheObjectives();
 
             // If we have any parcels on the game board, we need to place parcels
 
@@ -76,6 +85,8 @@ public class FourthBot extends Bot {
             // Now we will analyse the parcels objectives and put the more easier to the currentParcelObjective variable
             analyzeParcelsObjectives();
             analyzeGardenerObjectives();
+
+
 
             // Now we need to compare the easiest objective to resolve
             CardObjective easiestObjective = easiestObjectiveToResolve();
@@ -93,6 +104,7 @@ public class FourthBot extends Bot {
 
             }
             if (easiestObjective instanceof CardObjectiveGardener) {
+                System.out.println("easiestObjectiveToResolve() => gardener");
                 // We try to resolve the objective
                 tryToResolveGardenerObjective();
 
@@ -137,7 +149,31 @@ public class FourthBot extends Bot {
         pickGardenerObjective();
     }
 
+    /**
+     * This function will check if we have currents objectives to resolve
+     */
+    void checkTheObjectives() {
+        int unfinishedParcelObjectives = getIndividualBoard().countUnfinishedParcelObjectives();
+        int unfinishedGardenerObjectives = getIndividualBoard().countUnfinishedGardenerObjectives();
 
+        if (unfinishedParcelObjectives <= 0) {
+            pickAnParcelObjectiveAndAddToPlayerBoard();
+            pickAnParcelObjectiveAndAddToPlayerBoard();
+        }
+        if (unfinishedGardenerObjectives <= 0) {
+            pickAnGardenerObjectiveAndAddToPlayerBoard();
+            pickAnGardenerObjectiveAndAddToPlayerBoard();
+        }
+        if (unfinishedParcelObjectives == 1) {
+            pickAnParcelObjectiveAndAddToPlayerBoard();
+
+        }
+        if (unfinishedGardenerObjectives == 1) {
+            pickAnGardenerObjectiveAndAddToPlayerBoard();
+
+        }
+
+    }
 
     /**
      * This function check the current objective
@@ -175,13 +211,19 @@ public class FourthBot extends Bot {
         // choose the easiest objective
 
         List<CardObjectiveParcel> unfinishedParcelsObjectives = getIndividualBoard().getUnfinishedParcelObjectives();
-        
 
+        System.out.println("================= unfinishedParcelsObjectives");
+        System.out.println(unfinishedParcelsObjectives.size());
+        System.out.println(" ");
         // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
         // Less this number is, more easy the objective will be resolve
 
-        if (unfinishedParcelsObjectives.get(0).getMissingPositionsToComplete() != null &&
-                unfinishedParcelsObjectives.get(1).getMissingPositionsToComplete() != null) {
+        for (int i = 0; i<unfinishedParcelsObjectives.size(); i++) {
+            unfinishedParcelsObjectives.get(i).verify();
+        }
+
+
+        if (unfinishedParcelsObjectives.size() >= 2) {
 
             if (unfinishedParcelsObjectives.get(0).getMissingPositionsToComplete().size() <=
                     unfinishedParcelsObjectives.get(1).getMissingPositionsToComplete().size()) {
@@ -202,24 +244,45 @@ public class FourthBot extends Bot {
     void analyzeGardenerObjectives() {
         List<CardObjectiveGardener> unfinishedGardenersObjectives = getIndividualBoard().getUnfinishedGardenerObjectives();
 
-        // TODO: 01/12/2020 Analyze the easiest card
-        if (unfinishedGardenersObjectives.get(0) != null &&
-                unfinishedGardenersObjectives.get(1)!= null) {
+        System.out.println("================= GARDEN");
+        System.out.println(unfinishedGardenersObjectives.size());
+        System.out.println(" ");
+
+
+        for (int i = 0; i<unfinishedGardenersObjectives.size(); i++) {
+            unfinishedGardenersObjectives.get(i).verify();
+        }
+
+
+
+        if (unfinishedGardenersObjectives.size() >= 2 ) {
+
+            if (unfinishedGardenersObjectives.get(0).getSize() <= unfinishedGardenersObjectives.get(0).getSize()) {
+                currentGardenerObjective = unfinishedGardenersObjectives.get(0);
+            } else {
+                currentGardenerObjective = unfinishedGardenersObjectives.get(1);
+            }
 
         }
     }
 
 
+    static int value = 0;
     /**
      * This function will compare the currentGardenerObjective and currentParcelObjective to determine witch is
-     * the easiest to resolve
+     * the easiest to resolve. The easier is the objective with the less score
+     *
      */
     CardObjective easiestObjectiveToResolve() {
 
-        // Here, we regard the number of parcels we need to resolve the current parcel objective
-        //int numberOfParcelsToResolveCurrentParcelObjective = currentParcelObjective.getMissingPositionsToComplete().size();
+        // TODO: 02/12/2020 creer une vrai methode qui permet de voir lequel est le plus facile
 
-        // Here, we regard how many bamboo we need to complete one of the objective
+        //if (currentParcelObjective.getScore() <= currentGardenerObjective.getScore()) {
+        if (value == 0) {
+            value =1;
+            return currentParcelObjective;
+        }
+        value = 0;
         return currentGardenerObjective;
 
     }
@@ -227,10 +290,79 @@ public class FourthBot extends Bot {
 
     void tryToResolveParcelObjective() {
 
+        System.out.println("try to resolve parcel");
+        // We check if the game board is just composed of the pond (etang) or if we have more parcels
+        if (board.getParcelCount() == 1) {
+            // We need to place a parcel anywhere in the game board
+            placeAnParcelAnywhere();
+        } else {
+
+
+            // We check the place where we can place a new parcel
+            Set<Position> placeWhereWeCanPlaceAnParcel = null;
+            if (currentParcelObjective != null) {
+                placeWhereWeCanPlaceAnParcel = currentParcelObjective.getMissingPositionsToComplete();
+            }
+            ArrayList<Position> positionsWeChoose = new ArrayList<>();
+
+
+            // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
+            if (placeWhereWeCanPlaceAnParcel != null)
+                placeWhereWeCanPlaceAnParcel.stream()
+                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
+                        .forEach(positionsWeChoose::add);
+
+            if(positionsWeChoose.size() != 0) {
+                // We have an place to put the new parcel
+
+                // We choose a random parcel in the potential list
+                Random randomNumber = new Random();
+                int position = randomNumber.nextInt(positionsWeChoose.size());
+
+                // We add the new parcel
+                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.green));
+            } else {
+                // We put a parcel anywhere
+                placeAnParcelAnywhere();
+            }
+
+        }
+    }
+
+    private <T> T getRandomIn(List<? super T> objs) {
+        Random rnd = new Random();
+        return (T)objs.get(rnd.nextInt(objs.size()));
+    }
+    private void placeParcelSomewhere(Parcel parcel) {
+        List<Position> positions = new ArrayList<>(board.getValidPlaces());
+        var position = getRandomIn(positions);
+        board.addParcel(position, parcel);
     }
 
     void tryToResolveGardenerObjective() {
 
+        System.out.println("try to resolve garden");
+        var position = board.getPositions().stream()
+                .filter(p ->
+                        !board.getParcel(p).isPond() &&
+                                board.getParcel(p).getBambooColor().equals(currentGardenerObjective.getColor()) &&
+                                board.getParcel(p).getBambooSize() < currentGardenerObjective.getSize())
+                .max(Comparator.comparingInt( (Position p) -> board.getParcel(p).getBambooSize() ));
+
+        if(position.isEmpty()) {
+            // Aucune parcel ne peut resoudre l'objectif : soit la hauteur de bamboo est trop grande soit elle n'est pas de la bonne couleur.
+            placeParcelSomewhere(new BambooPlantation(currentGardenerObjective.getColor()));
+        }
+        else {
+            // si cette parcelle existe alors on bouge le jardinier dessus.
+            board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Bot 4";
     }
 
 }
