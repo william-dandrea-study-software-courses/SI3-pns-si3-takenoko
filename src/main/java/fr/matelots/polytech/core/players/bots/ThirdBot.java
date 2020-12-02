@@ -123,6 +123,7 @@ public class ThirdBot extends Bot {
             return board.getParcelLeftToPlace() == 0; // si on peut placer une parcel alors c'est bon !
         else return true; // la il y a un endroit que l'on peut valider pour finir !
     }
+
     /**
      * If the bot have not gardenerGoal and all of his parcelGoal are unsolvable,
      * the bot will placeAnywhere else the bot will pass the goal
@@ -131,11 +132,11 @@ public class ThirdBot extends Bot {
         if(getIndividualBoard().countUnfinishedGardenerObjectives() == 0) {
 
             var result = getIndividualBoard().getUnfinishedParcelObjectives().stream().filter(this::parcelGoalIsSolvableNow);
-            if(result.count() == 0) {
+            if(result.count() == 0) { // === result.findFirst().isEmpty
                 placeBambooSomewhere();
                 return parcelGoal;
             } else {
-                return result.findFirst().get();
+                return result.findFirst().get(); // cf ^
             }
         }
         return null;// Sera redefinie automatiquement plus tard
@@ -148,8 +149,8 @@ public class ThirdBot extends Bot {
             attemptResolveGardener();
     }
     private void fill() {
-        if(getIndividualBoard().countUnfinishedGardenerObjectives() < NGARDENER) pickGardenerGoal();
-        else if(getIndividualBoard().countUnfinishedParcelObjectives() < NPARCEL) pickParcelGoal();
+        if(getIndividualBoard().countUnfinishedGardenerObjectives() < NGARDENER && board.getDeckGardenerObjective().canPick()) pickGardenerGoal();
+        else if(getIndividualBoard().countUnfinishedParcelObjectives() < NPARCEL && board.getDeckParcelObjective().canPick()) pickParcelGoal();
         else filling = false;
     }
 
@@ -228,5 +229,10 @@ public class ThirdBot extends Bot {
     @Override
     public boolean canPlay() {
         return haveGardenerGoal() || (haveParcelGoal() && canPlaceParcel());
+    }
+
+    @Override
+    public String toString() {
+        return "Bot 3";
     }
 }

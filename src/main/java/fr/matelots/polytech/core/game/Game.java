@@ -8,6 +8,7 @@ import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,17 +30,13 @@ public class Game {
     public Game () {
         bots = new ArrayList<>();
         board = new Board();
-
-
-        //bots.add(new PremierBot(this));
-        bots.add(new SecondBot(this));
-        bots.add(new ThirdBot(this));
-        //bots.add(new FourthBot(this));
-
-
-        //bots.add(new PremierBot(this));
-
         drawer = new BoardDrawer(board);
+    }
+
+    private void setDemoBots() {
+        //bots.add(new SecondBot(this));
+        bots.add(new ThirdBot(this));
+        bots.add(new SecondBot(this));
     }
 
     public void addBot(Bot bot) {
@@ -66,6 +63,8 @@ public class Game {
     }
 
     public void run () {
+        setDemoBots();
+
         if(bots.size() == 0) {
             System.out.println("No players !");
             return;
@@ -75,6 +74,24 @@ public class Game {
         bots.forEach(System.out::println);
         System.out.println();
         drawer.print();
+
+
+        launchTurnLoop();
+
+        // this is the winner ! ;)
+        var winner = getWinner();
+        System.out.println("Winner is : " + winner.toString());
+        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
+
+        for(Bot bot : bots) {
+            if(winner == bot) continue;
+            System.out.println("Loser is : " + bot.toString());
+            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());
+        }
+
+    }
+
+    public void launchTurnLoop() {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 bot.playTurn();
@@ -90,21 +107,6 @@ public class Game {
                 break;
             }
         }
-
-        // this is the winner ! ;)
-        var winner = getWinner();
-
-        System.out.println("Winner is : " + winner.toString());
-        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
-
-
-
-        for(Bot bot : bots) {
-            if(winner == bot) continue;
-            System.out.println("Loser is : " + bot.toString());
-            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());
-        }
-
     }
 
     /**
