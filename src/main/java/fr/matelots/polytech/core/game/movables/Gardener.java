@@ -35,6 +35,10 @@ public class Gardener {
             return false;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
     /**
      * Make the bamboo grow on is current position and all neighbour parcel that is the
      * same bamboo color

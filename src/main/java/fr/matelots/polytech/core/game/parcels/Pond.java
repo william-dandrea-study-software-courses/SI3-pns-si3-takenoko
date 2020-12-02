@@ -1,5 +1,9 @@
 package fr.matelots.polytech.core.game.parcels;
 
+import fr.matelots.polytech.core.game.graphics.ConsoleColor;
+import fr.matelots.polytech.core.game.graphics.HexagonePosition;
+import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
+
 /**
  * @author Gabriel Cogne
  */
@@ -31,7 +35,7 @@ public class Pond extends Parcel {
     }
 
     @Override
-    public String toString() {
-        return "B";
+    public void draw(ParcelDrawer drawer) {
+        drawer.set(HexagonePosition.center, ConsoleColor.none, 'B');
     }
 }

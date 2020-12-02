@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.parcels;
 
+import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
 import fr.matelots.polytech.core.game.movables.Gardener;
 
 /**
@@ -35,6 +36,8 @@ public abstract class Parcel {
     public Gardener getGardener () {
         return gardener;
     }
+
+    public abstract void draw(ParcelDrawer drawer);
 
     // Methods
     @Override

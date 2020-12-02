@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.graphics;
 
+import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -18,17 +19,22 @@ public class Hexagone {
 
 
     private final int radius = 2;
-    private final Position position;
+    private final Position consolePosition;
+    private final Position boardPosition;
 
-    public Hexagone(Position position) {
-        this.position = position;
+    public Hexagone(Position consolePosition, Position boardPosition) {
+        this.boardPosition = boardPosition;
+        this.consolePosition = consolePosition;
     }
 
-    public void printHexa(BoardDrawingBuffer buffer, Parcel parcel) {
-        int x = position.getX();
-        int y = position.getY();
+    public void printHexa(BoardDrawingBuffer buffer, Board board) {
+        int x = consolePosition.getX();
+        int y = consolePosition.getY();
 
-        String plantationStr = parcel.toString();
+        if(boardPosition.equals(board.getGardener().getPosition()))
+            buffer.setCharacter(x, y - radius / 2, 'G');
+
+        Parcel parcel = board.getParcel(boardPosition);
         buffer.setCharacter(x - radius, y, '|');
         buffer.setCharacter(x + radius, y, '|');
         buffer.setCharacter(x - radius / 2, y + radius / 2, '\\');
@@ -36,13 +42,8 @@ public class Hexagone {
         buffer.setCharacter(x - radius / 2, y - radius / 2, '/');
         buffer.setCharacter(x + radius / 2, y + radius / 2, '/');
 
-        if(plantationStr.length() > 1)
-            buffer.setCharacter(x - radius / 2, y, plantationStr.charAt(0));
-        else if(plantationStr.length() == 1)
-            buffer.setCharacter(x, y, plantationStr.charAt(0));
-
-        if(plantationStr.length() >= 2)
-            buffer.setCharacter(x + radius / 2, y, plantationStr.charAt(1));
+        ParcelDrawer drawer = new ParcelDrawer(buffer, consolePosition);
+        parcel.draw(drawer);
     }
 
     public Map<Position, Position> getNeighbours() {

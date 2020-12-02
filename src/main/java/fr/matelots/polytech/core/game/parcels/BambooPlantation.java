@@ -1,5 +1,9 @@
 package fr.matelots.polytech.core.game.parcels;
 
+import fr.matelots.polytech.core.game.graphics.ConsoleColor;
+import fr.matelots.polytech.core.game.graphics.HexagonePosition;
+import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
+
 /**
  * @author Gabriel Cogne
  */
@@ -40,7 +44,9 @@ public class BambooPlantation extends Parcel {
     }
 
     @Override
-    public String toString() {
-        return getBambooSize() + getBambooColor().toString();
+    public void draw(ParcelDrawer drawer) {
+        drawer.set(HexagonePosition.center,
+                ConsoleColor.getFromBambooColor(getBambooColor()),
+                String.valueOf(getBambooSize()).charAt(0));
     }
 }

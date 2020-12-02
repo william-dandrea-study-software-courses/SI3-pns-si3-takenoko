@@ -27,6 +27,11 @@ public class ThirdBot extends Bot {
         rnd = new Random();
     }
 
+    public ThirdBot(Game game, Random rnd) {
+        super(game);
+        this.rnd = rnd;
+    }
+
     // Bot actions
     private void pickParcelGoal() {
         havePlayed = pickParcelObjective();
