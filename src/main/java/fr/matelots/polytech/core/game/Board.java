@@ -22,6 +22,7 @@ public class Board {
     private final DeckParcelObjective deckParcelObjective;
     private final DeckGardenerObjective deckGardenerObjective;
     private int parcelLeftToPlace;
+    private final Gardener gardener;
 
     // Constructors
     public Board () {
@@ -30,7 +31,8 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         // On ajoute l'étang
         grid.put(Config.BOND_POSITION, new Pond());
-        placePawn(new Gardener(this, Config.BOND_POSITION), Config.BOND_POSITION);
+        gardener = new Gardener(this, Config.BOND_POSITION);
+        placePawn(gardener, Config.BOND_POSITION);
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }
@@ -162,17 +164,15 @@ public class Board {
     public boolean placePawn (Gardener gardener, Position position) {
         Parcel tmp = getParcel(position);
         if (tmp != null) {
-            return tmp.placeOn(gardener);
-        } else {
-            return false;
+            if (tmp.placeOn(gardener)) {
+                getParcel(gardener.getPosition()).removeGardener();
+                return true;
+            }
         }
+        return false;
     }
 
     public Gardener getGardener () {
-        for (Parcel p : grid.values()) {
-            if (p.getGardener() != null)
-                return p.getGardener();
-        }
-        return null;
+        return gardener;
     }
 }

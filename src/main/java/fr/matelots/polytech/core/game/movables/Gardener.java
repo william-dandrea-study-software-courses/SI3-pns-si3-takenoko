@@ -49,4 +49,8 @@ public class Gardener {
                 .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
                 .forEach(Parcel::growBamboo);
     }
+
+    public Position getPosition() {
+        return position;
+    }
 }
