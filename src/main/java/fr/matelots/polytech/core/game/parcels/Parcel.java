@@ -28,6 +28,10 @@ public abstract class Parcel {
         return this.gardener != null;
     }
 
+    public void removeGardener () {
+        this.gardener = null;
+    }
+
     public Gardener getGardener () {
         return gardener;
     }

@@ -38,7 +38,7 @@ public class BoardDrawingBuffer {
             Hexagone hexa = new Hexagone(position);
             // Parcel  parcel = board.getParcel(currentParcel);
             allReadyDrawn.add(currentParcel);
-            hexa.printHexa(this);
+            hexa.printHexa(this, board.getParcel(currentParcel));
 
             hexa.getNeighbours().forEach((Position p, Position rp) ->
                     beginDraw(currentParcel.add(p), position.add(rp))

@@ -77,4 +77,22 @@ public class GardenerTest {
         assertEquals(0, p3.getBambooSize());
         assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
     }
+
+    @Test
+    public void testEstPartiEnBougeant () {
+        Parcel p1 = new BambooPlantation(BambooColor.green);
+        Parcel p2 = new BambooPlantation(BambooColor.pink);
+        Parcel p3 = new BambooPlantation(BambooColor.green);
+
+        board.addParcel(1, -1, 0, p1);
+        board.addParcel(1, 0, -1, p2);
+        board.addParcel(-1, 1, 0, p3);
+
+        assertTrue(gardener.moveTo(1, -1, 0));
+
+        assertTrue(gardener.moveTo(-1, 1, 0));
+
+        assertNotNull(p3.getGardener());
+        assertNull(p1.getGardener());
+    }
 }
