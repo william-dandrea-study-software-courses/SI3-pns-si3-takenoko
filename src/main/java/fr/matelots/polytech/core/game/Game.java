@@ -88,13 +88,17 @@ public class Game {
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) // Si aucun bot ne peut jouer, on coupe la partie.
+                System.out.println("aucun bot ne peux jouer la partie, on l'annule");
                 break;
         }
 
         // this is the winner ! ;)
         var winner = getWinner();
+
         System.out.println("Winner is : " + winner.toString());
         System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
+
+
 
         for(Bot bot : bots) {
             if(winner == bot) continue;

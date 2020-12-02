@@ -53,13 +53,14 @@ public class FourthBotTest {
         assertFalse(bot.isFirstLaunch());
     }
 
+
     /**
      * Here, we test the after start
      */
     @Test
     public void gameTest(){
 
-        // We launch the bot
+        // We launch the bot one time
         bot.playTurn();
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
@@ -67,5 +68,23 @@ public class FourthBotTest {
 
         // Now we relauch a turn
         bot.playTurn();
+        System.out.println(game.getBoard().toString());
+
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
+        bot.playTurn();
+        System.out.println(game.getBoard().toString());
     }
 }
