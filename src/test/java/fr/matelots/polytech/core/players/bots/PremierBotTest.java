@@ -66,7 +66,7 @@ public class PremierBotTest {
             ArrayList<Position> valids = new ArrayList<>(game.getBoard().getValidPlaces());
             if(valids.size() == 0) assertTrue(false); // No valid places
             else {
-                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.green));
+                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.GREEN));
 
                 // dodge infinite loop
                 if(game.getBoard().getParcelLeftToPlace() >= oldVal) throw  new Exception("The system of parcel limitation dont working properly, now");

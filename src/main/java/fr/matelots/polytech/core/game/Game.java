@@ -8,7 +8,6 @@ import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,14 +16,11 @@ import java.util.List;
  */
 public class Game {
 
-    private static final int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
-
     // Attributes
     private final List<Bot> bots;
     private final Board board;
     private final BoardDrawer drawer;
-    //private Player winner;
-    private boolean lastTurn = false;
+    private boolean lastTurn;
 
     // Constructors
     public Game () {
@@ -58,10 +54,6 @@ public class Game {
         return winner;
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
     public void run () {
         setDemoBots();
 
@@ -74,7 +66,6 @@ public class Game {
         bots.forEach(System.out::println);
         System.out.println();
         drawer.print();
-
 
         launchTurnLoop();
 
@@ -95,7 +86,7 @@ public class Game {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 bot.playTurn();
-                if (bot.getIndividualBoard().countCompletedObjectives() >= OBJ_TO_COMPLETE_FOR_LAST_TURN)
+                if (bot.getIndividualBoard().countCompletedObjectives() >= Config.OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
                 System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());
@@ -120,12 +111,17 @@ public class Game {
     }
 
     /**
-     * Same
-     * @return
+     * This return the hidden top card of the gardener objective deck
+     * @return the hidden top card of the gardener objective deck
      */
     public CardObjectiveGardener getNextGardenerObjective() {
         if (board.getDeckGardenerObjective().canPick())
             return board.getDeckGardenerObjective().pick();
         return null;
     }
+
+    public Board getBoard() {
+        return board;
+    }
+
 }

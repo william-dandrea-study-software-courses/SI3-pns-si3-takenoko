@@ -5,7 +5,6 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -22,7 +21,6 @@ import java.util.Set;
 public class SecondBot extends Bot {
 
     private CardObjectiveParcel currentObjective;
-    private boolean state = false;
 
     public SecondBot(Game game) {
         super(game);
@@ -32,19 +30,15 @@ public class SecondBot extends Bot {
     public void playTurn() {
 
         // State represent the state of the objective, if an objective is in progress, he is true, else he is false
-        state = checkCurrentObjective();
+        boolean state = checkCurrentObjective();
 
-        if (state) {
-            // An objective is chosen and this objective is in progress, we can continue (or start) or bot strategy
-            strategy();
-
-        } else {
+        if (!state) {
             // We have any objective so we will pick a new parcel objective
             pickAnObjectiveAndAddToPlayerBoard();
             selectObjectiveFromPlayerDeck();
             // We launch the strategy
-            strategy();
         }
+        strategy();
     }
 
     public CardObjectiveParcel getCurrentObjective() {
@@ -90,7 +84,7 @@ public class SecondBot extends Bot {
      */
     void strategy() {
 
-        // We check if the game board is just composed of the pond (etang) or if we have more parcels
+        // We check if the game board is just composed of the pond (étang) or if we have more parcels
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
             placeAnParcelAnywhere();
@@ -119,7 +113,7 @@ public class SecondBot extends Bot {
                 int position = randomNumber.nextInt(positionsWeChoose.size());
 
                 // We add the new parcel
-                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.green));
+                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
             } else {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();

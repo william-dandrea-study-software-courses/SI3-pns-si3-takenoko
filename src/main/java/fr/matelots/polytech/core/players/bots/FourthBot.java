@@ -249,8 +249,8 @@ public class FourthBot extends Bot {
         System.out.println(" ");
 
 
-        for (int i = 0; i<unfinishedGardenersObjectives.size(); i++) {
-            unfinishedGardenersObjectives.get(i).verify();
+        for (CardObjectiveGardener unfinishedGardenersObjective : unfinishedGardenersObjectives) {
+            unfinishedGardenersObjective.verify();
         }
 
 
@@ -279,7 +279,7 @@ public class FourthBot extends Bot {
 
         //if (currentParcelObjective.getScore() <= currentGardenerObjective.getScore()) {
         if (value == 0) {
-            value =1;
+            value = 1;
             return currentParcelObjective;
         }
         value = 0;
@@ -320,7 +320,7 @@ public class FourthBot extends Bot {
                 int position = randomNumber.nextInt(positionsWeChoose.size());
 
                 // We add the new parcel
-                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.green));
+                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
             } else {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();
@@ -329,7 +329,7 @@ public class FourthBot extends Bot {
         }
     }
 
-    private <T> T getRandomIn(List<? super T> objs) {
+    private <T> T getRandomIn(List<T> objs) {
         Random rnd = new Random();
         return (T)objs.get(rnd.nextInt(objs.size()));
     }

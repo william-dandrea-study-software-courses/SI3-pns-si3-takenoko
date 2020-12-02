@@ -7,9 +7,7 @@ import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.runner.RunWith;
 
-import java.time.Duration;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertFalse;
@@ -83,7 +81,7 @@ public class ThirdBotTest {
             ArrayList<Position> valids = new ArrayList<>(game.getBoard().getValidPlaces());
             if(valids.size() == 0) throw new Exception("No place valid !");
             else {
-                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.green));
+                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.GREEN));
 
                 // dodge infinite loop
                 if(game.getBoard().getParcelLeftToPlace() >= oldVal) throw  new Exception("The system of parcel limitation dont working properly, now");

@@ -25,6 +25,9 @@ public class Config {
     /**Position de l'étang*/
     public static final Position BOND_POSITION = new Position(0, 0, 0);
 
+    /** Nombre d'objectif à compléter pour atteindre le dernier tour*/
+    public static final int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;
+
     private Config () throws InstantiationException {
         throw new InstantiationException("This is a static class");
     }

@@ -1,17 +1,18 @@
 package fr.matelots.polytech.core.game.parcels;
 
 public enum BambooColor {
-    green() {
+
+    GREEN() {
         @Override
         public String toString() {
             return "G";
         }
-    }, pink() {
+    }, PINK() {
         @Override
         public String toString() {
             return "P";
         }
-    }, yellow() {
+    }, YELLOW() {
         @Override
         public String toString() {
             return "Y";

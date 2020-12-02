@@ -24,7 +24,7 @@ public class BoardDrawingBuffer {
     public BoardDrawingBuffer(Board board) {
         this.board = board;
         buffer.add(new ArrayList<>());
-        buffer.get(0).add(new ColoredCharacters(ConsoleColor.none, ' '));
+        buffer.get(0).add(new ColoredCharacters(ConsoleColor.NONE, ' '));
     }
 
 
@@ -57,8 +57,9 @@ public class BoardDrawingBuffer {
     }
 
     void setCharacter(int x, int y, char c) {
-        setCharacter(x, y, c, ConsoleColor.none);
+        setCharacter(x, y, c, ConsoleColor.NONE);
     }
+
     void setCharacter(int x, int y, char c, ConsoleColor color) {
         int tX = x + offsetX;
         int tY = y + offsetY;
@@ -92,7 +93,7 @@ public class BoardDrawingBuffer {
     private void addColumnStart() {
         offsetX++;
         for(int i = 0; i < height; i++) {
-            var c = new ColoredCharacters(ConsoleColor.none, ' ');
+            var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
             buffer.get(i).add(0, c);
         }
         width++;
@@ -100,7 +101,7 @@ public class BoardDrawingBuffer {
 
     private void addColumnEnd() {
         for(int i = 0; i < height; i++) {
-            var c = new ColoredCharacters(ConsoleColor.none, ' ');
+            var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
             buffer.get(i).add(c);
         }
         width++;
@@ -108,22 +109,22 @@ public class BoardDrawingBuffer {
 
     private void addLineStart() {
         offsetY++;
-        ArrayList<ColoredCharacters> t = new ArrayList<>();
+        ArrayList<ColoredCharacters> line = new ArrayList<>();
         for(int i = 0; i < width; i++) {
-            var c = new ColoredCharacters(ConsoleColor.none, ' ');
-            t.add(c);
+            var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
+            line.add(c);
         }
         height++;
-        buffer.add(0, t);
+        buffer.add(0, line);
     }
 
     private void addLineEnd() {
-        ArrayList<ColoredCharacters> t = new ArrayList<>();
+        ArrayList<ColoredCharacters> line = new ArrayList<>();
         for(int i = 0; i < width; i++) {
-            var c = new ColoredCharacters(ConsoleColor.none, ' ');
-            t.add(c);
+            var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
+            line.add(c);
         }
         height++;
-        buffer.add(t);
+        buffer.add(line);
     }
 }

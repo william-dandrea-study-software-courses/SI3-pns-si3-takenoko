@@ -7,15 +7,10 @@ import fr.matelots.polytech.core.game.movables.Gardener;
  * @author Gabriel Cogne
  */
 public abstract class Parcel {
-    private final boolean lake;
 
     private Gardener gardener;
 
     // Constructors
-    public Parcel()  {
-        this.lake = false;
-    }
-
     public abstract boolean isPond();
 
     public abstract int getBambooSize ();

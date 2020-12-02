@@ -88,6 +88,7 @@ public class Board {
         else
             return neighbours.stream().anyMatch(Parcel::isPond);
     }
+
     public boolean isPlaceValid (Position position) {
         return isPlaceValid(position.getX(), position.getY(), position.getZ());
     }
@@ -128,7 +129,6 @@ public class Board {
             builder.append(grid.get(pos));
             builder.append(")\n");
         });
-
         return "Plateau: \n" + builder.toString();
     }
 

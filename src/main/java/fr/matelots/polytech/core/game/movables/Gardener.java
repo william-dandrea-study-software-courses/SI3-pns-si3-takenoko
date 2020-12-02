@@ -10,6 +10,7 @@ import java.util.List;
  * @author Gabriel Cogne
  */
 public class Gardener {
+
     private final Board board;
     private Position position;
 

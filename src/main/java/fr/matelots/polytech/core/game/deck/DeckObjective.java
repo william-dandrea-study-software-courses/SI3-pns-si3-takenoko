@@ -20,6 +20,8 @@ public class DeckObjective<T extends CardObjective> {
         this.objectives = new ArrayList<>();
     }
 
+    //abstract fill
+
     public T pick() {
         if(this.canPick())
             return this.objectives.remove(0);

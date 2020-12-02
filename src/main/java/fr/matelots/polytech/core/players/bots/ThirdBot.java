@@ -11,6 +11,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.*;
 
 public class ThirdBot extends Bot {
+
     private static final int NGARDENER = 2;
     private static final int NPARCEL = 2;
 
@@ -31,28 +32,34 @@ public class ThirdBot extends Bot {
     private void pickParcelGoal() {
         havePlayed = pickParcelObjective();
     }
+
     private void pickGardenerGoal() {
         havePlayed = pickGardenerObjective();
     }
+
     private void moveGardener(Position position) {
         havePlayed = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
     }
+
     private void placeParcel(Position position, Parcel parcel) {
         havePlayed = board.addParcel(position, parcel);
     }
+
     private void placeBambooPlantation(Position position) {
         havePlayed = board.addBambooPlantation(position);
     }
 
     // Random functions
-    private <T> T getRandomIn(List<? super T> objs) {
-        return (T)objs.get(rnd.nextInt(objs.size()));
+    private <T> T getRandomIn(List<T> objs) {
+        return objs.get(rnd.nextInt(objs.size()));
     }
+
     private void placeParcelSomewhere(Parcel parcel) {
         List<Position> positions = new ArrayList<>(board.getValidPlaces());
         var position = getRandomIn(positions);
         placeParcel(position, parcel);
     }
+
     private void placeBambooSomewhere() {
         List<Position> positions = new ArrayList<>(board.getValidPlaces());
         var position = getRandomIn(positions);

@@ -2,12 +2,10 @@ package fr.matelots.polytech.core.game.graphics;
 
 import fr.matelots.polytech.engine.util.Position;
 
-import java.io.Console;
-
 public class ParcelDrawer {
 
-    private Position pos;
-    private BoardDrawingBuffer buffer;
+    private final Position pos;
+    private final BoardDrawingBuffer buffer;
 
     public ParcelDrawer(BoardDrawingBuffer buffer, Position boardPosition) {
         this.pos = boardPosition;

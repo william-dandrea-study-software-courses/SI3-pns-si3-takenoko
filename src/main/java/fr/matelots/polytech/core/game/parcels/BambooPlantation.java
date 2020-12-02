@@ -8,8 +8,9 @@ import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
  * @author Gabriel Cogne
  */
 public class BambooPlantation extends Parcel {
+
     private int bambooSize;
-    private BambooColor bambooColor;
+    private final BambooColor bambooColor;
 
     public BambooPlantation (BambooColor color) {
         bambooSize = 0;
@@ -17,8 +18,7 @@ public class BambooPlantation extends Parcel {
     }
 
     /**
-     * Return the current size of the bamboo
-     * @return
+     * @return the current size of the bamboo
      */
     @Override
     public int getBambooSize () {
@@ -45,7 +45,7 @@ public class BambooPlantation extends Parcel {
 
     @Override
     public void draw(ParcelDrawer drawer) {
-        drawer.set(HexagonePosition.center,
+        drawer.set(HexagonePosition.CENTER,
                 ConsoleColor.getFromBambooColor(getBambooColor()),
                 String.valueOf(getBambooSize()).charAt(0));
     }

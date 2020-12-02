@@ -68,7 +68,7 @@ public abstract class Bot {
         int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
         // We finally add to the board the new parcel
-        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.green));
+        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
 
     }
 

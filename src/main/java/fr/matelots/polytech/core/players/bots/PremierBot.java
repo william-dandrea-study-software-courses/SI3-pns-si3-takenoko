@@ -22,7 +22,6 @@ public class PremierBot extends Bot {
     // True => Fill the board;
     // False => Attempt to resolve goal
     private boolean filling = true;
-    private final String name = "";
 
     public PremierBot (Game game) {
         super (game);
@@ -48,15 +47,14 @@ public class PremierBot extends Bot {
             else {
                 selectGoalIfEmpty();
 
-                if(currentGoal == null)
-                {
+                if(currentGoal == null) {
                     // Le bot a déjà tenté de séléctionner un objectif mais tous ceux qu'il a sont déjà complété
                     pickGoal();
                 }
                 else attemptToPlaceParcelWithGoal();
             }
         }
-        strategie();
+        strategy();
     }
 
     @Override
@@ -89,11 +87,11 @@ public class PremierBot extends Bot {
     }
 
     /**
-     * Represent strategie of the bot.
-     * Here the bot do have to pass one for fill his board of 5 objectives
+     * Represent strategy of the bot.
+     * Here the bot have to pass once to fill his board of 5 objectives
      * another to accomplish the objectives
      */
-    private void strategie() {
+    private void strategy() {
         int nParcelGoal = getIndividualBoard().countUnfinishedParcelObjectives();
         if(nParcelGoal == 0 && !filling) filling = true;
         else if(nParcelGoal >= 5 && filling) filling = false;
@@ -117,7 +115,7 @@ public class PremierBot extends Bot {
         if(listPlaces.size() == 0)
             placeRandom();
         else
-            board.addParcel(listPlaces.get(0), new BambooPlantation(BambooColor.green));
+            board.addParcel(listPlaces.get(0), new BambooPlantation(BambooColor.GREEN));
     }
 
 
@@ -131,14 +129,14 @@ public class PremierBot extends Bot {
         var rnd = new Random();
         var position = validPlaces.get(rnd.nextInt(validPlaces.size()));
 
-        board.addParcel(position, new BambooPlantation(BambooColor.green));
+        board.addParcel(position, new BambooPlantation(BambooColor.GREEN));
     }
 
     /**
      * The bot take a Parcel goal card
      */
     private void pickGoal() {
-        boolean canPick = pickParcelObjective();
+        pickParcelObjective();
     }
 
 
