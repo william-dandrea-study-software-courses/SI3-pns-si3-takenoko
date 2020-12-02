@@ -164,10 +164,8 @@ public class Board {
     public boolean placePawn (Gardener gardener, Position position) {
         Parcel tmp = getParcel(position);
         if (tmp != null) {
-            if (tmp.placeOn(gardener)) {
-                getParcel(gardener.getPosition()).removeGardener();
-                return true;
-            }
+            getParcel(gardener.getPosition()).removeGardener();
+            return tmp.placeOn(gardener);
         }
         return false;
     }
