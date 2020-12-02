@@ -78,7 +78,31 @@ public class FourthBot extends Bot {
             analyzeGardenerObjectives();
 
             // Now we need to compare the easiest objective to resolve
-            easiestObjectiveToResolve();
+            CardObjective easiestObjective = easiestObjectiveToResolve();
+
+            // Now we will resolve the easiest objectives
+            if (easiestObjective instanceof CardObjectiveParcel) {
+                // We try to resolve the objective
+                tryToResolveParcelObjective();
+
+                // Now we check if the objective is completed
+                if (checkObjective(easiestObjective)) {
+                    // We select a new parcel objective
+                    pickParcelObjective();
+                }
+
+            }
+            if (easiestObjective instanceof CardObjectiveGardener) {
+                // We try to resolve the objective
+                tryToResolveGardenerObjective();
+
+                // Now we check if the objective is completed
+                if (checkObjective(easiestObjective)) {
+                    // We select a new parcel objective
+                    pickGardenerObjective();
+                }
+
+            }
 
         }
 
@@ -113,6 +137,22 @@ public class FourthBot extends Bot {
         pickGardenerObjective();
     }
 
+
+
+    /**
+     * This function check the current objective
+     * @return true if the currentObjective is in progress or false if there is any currentObjective or if
+     * the currentObjective is finish
+     */
+    boolean checkObjective(CardObjective objective) {
+
+        // If the currentObjective == null, or if the current goal
+        // is finish (the function verify return true if an objective is completed)
+        return objective != null && !objective.verify();
+
+        // Else, we return true because the objective in progress
+    }
+
     /**
      * If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
      * (number in parameters)
@@ -133,13 +173,25 @@ public class FourthBot extends Bot {
     void analyzeParcelsObjectives() {
         // We put the unfinished parcels objectives into the variable unfinishedParcelsObjectives in order to
         // choose the easiest objective
-        List<CardObjectiveParcel> unfinishedParcelsObjectives = individualBoard.getUnfinishedParcelObjectives();
+
+        List<CardObjectiveParcel> unfinishedParcelsObjectives = getIndividualBoard().getUnfinishedParcelObjectives();
+        
 
         // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
         // Less this number is, more easy the objective will be resolve
 
-        // TODO: 01/12/2020 Analyze the easiest card
-        currentParcelObjective = unfinishedParcelsObjectives.get(1);
+        if (unfinishedParcelsObjectives.get(0).getMissingPositionsToComplete() != null &&
+                unfinishedParcelsObjectives.get(1).getMissingPositionsToComplete() != null) {
+
+            if (unfinishedParcelsObjectives.get(0).getMissingPositionsToComplete().size() <=
+                    unfinishedParcelsObjectives.get(1).getMissingPositionsToComplete().size()) {
+                currentParcelObjective = unfinishedParcelsObjectives.get(0);
+            } else {
+                currentParcelObjective = unfinishedParcelsObjectives.get(1);
+            }
+        } else {
+            currentParcelObjective = unfinishedParcelsObjectives.get(0);
+        }
 
     }
 
@@ -148,10 +200,13 @@ public class FourthBot extends Bot {
      * currentParcelObjective variable
      */
     void analyzeGardenerObjectives() {
-        List<CardObjectiveGardener> unfinishedGardenersObjectives = individualBoard.getUnfinishedGardenerObjectives();
+        List<CardObjectiveGardener> unfinishedGardenersObjectives = getIndividualBoard().getUnfinishedGardenerObjectives();
 
         // TODO: 01/12/2020 Analyze the easiest card
-        currentGardenerObjective = unfinishedGardenersObjectives.get(1);
+        if (unfinishedGardenersObjectives.get(0) != null &&
+                unfinishedGardenersObjectives.get(1)!= null) {
+
+        }
     }
 
 
@@ -159,14 +214,23 @@ public class FourthBot extends Bot {
      * This function will compare the currentGardenerObjective and currentParcelObjective to determine witch is
      * the easiest to resolve
      */
-    void easiestObjectiveToResolve() {
+    CardObjective easiestObjectiveToResolve() {
 
         // Here, we regard the number of parcels we need to resolve the current parcel objective
-        int numberOfParcelsToResolveCurrentParcelObjective = currentParcelObjective.getMissingPositionsToComplete().size();
+        //int numberOfParcelsToResolveCurrentParcelObjective = currentParcelObjective.getMissingPositionsToComplete().size();
 
         // Here, we regard how many bamboo we need to complete one of the objective
+        return currentGardenerObjective;
 
     }
 
+
+    void tryToResolveParcelObjective() {
+
+    }
+
+    void tryToResolveGardenerObjective() {
+
+    }
 
 }
