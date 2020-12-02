@@ -6,7 +6,8 @@ public enum ConsoleColor {
     none("\u001B[0m"),
     green("\u001B[32m"),
     yellow("\u001B[33m"),
-    pink("\u001B[35m");
+    pink("\u001B[35m"),
+    blue("\u001B[36m");
 
     private String colorCode;
     ConsoleColor(String colorCode) {

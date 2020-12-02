@@ -36,6 +36,6 @@ public class Pond extends Parcel {
 
     @Override
     public void draw(ParcelDrawer drawer) {
-        drawer.set(HexagonePosition.center, ConsoleColor.none, 'B');
+        drawer.set(HexagonePosition.center, ConsoleColor.blue, 'B');
     }
 }
