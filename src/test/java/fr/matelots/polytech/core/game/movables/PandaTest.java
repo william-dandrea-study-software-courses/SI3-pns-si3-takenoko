@@ -2,9 +2,12 @@ package fr.matelots.polytech.core.game.movables;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
+import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.PremierBot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -16,11 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PandaTest {
     private Board board;
     private Panda panda;
+    private Bot bot;
 
     @BeforeEach
     public void init () {
         board = new Board();
         panda = board.getPanda();
+        bot = new PremierBot(new Game());
     }
 
     @Test
@@ -36,8 +41,10 @@ public class PandaTest {
         board.addParcel(1, -1, 0, p1);
         board.addParcel(-1, 1, 0, p2);
 
+        panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(1, -1, 0));
         assertNotNull(p1.getPanda());
+        panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(-1, 1, 0));
         assertNotNull(p2.getPanda());
     }
@@ -55,6 +62,7 @@ public class PandaTest {
         board.addParcel(1, 0, -1, p2);
         board.addParcel(-1, 1, 0, p3);
 
+        panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(1, -1, 0));
 
         assertEquals(1, p1.getBambooSize());
@@ -73,11 +81,26 @@ public class PandaTest {
         board.addParcel(1, 0, -1, p2);
         board.addParcel(-1, 1, 0, p3);
 
+        panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(1, -1, 0));
 
+        panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(-1, 1, 0));
 
         assertNotNull(p3.getPanda());
         assertNull(p1.getPanda());
+    }
+
+    @Test
+    public void testEatenBambooGoOnCurrentPlayerIndividualBoard () {
+        Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.growBamboo();p1.growBamboo();
+
+        board.addParcel(1, -1, 0, p1);
+
+        panda.setCurrentPlayer(bot);
+        assertTrue(panda.moveTo(1, -1, 0));
+
+        assertEquals(1, bot.getIndividualBoard().getGreenEatenBamboo());
     }
 }

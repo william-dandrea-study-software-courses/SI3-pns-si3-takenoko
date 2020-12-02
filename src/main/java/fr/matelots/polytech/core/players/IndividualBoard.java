@@ -3,8 +3,10 @@ package fr.matelots.polytech.core.players;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,9 +26,15 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
 
+    // Eaten bamboo
+    private final int[] bamboos;
+
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
         objectiveGardeners = new ArrayList<>();
+
+        bamboos = new int[BambooColor.values().length];
+        Arrays.fill(bamboos, 0);
     }
 
 
@@ -132,6 +140,19 @@ public class IndividualBoard {
         return (int) objectiveGardeners.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
+    public void addAnEatenUnitOfBamboo (BambooColor color) {
+        bamboos[color.ordinal()]++;
+    }
 
+    public int getGreenEatenBamboo () {
+        return bamboos[BambooColor.GREEN.ordinal()];
+    }
 
+    public int getYellowEatenBamboo () {
+        return bamboos[BambooColor.YELLOW.ordinal()];
+    }
+
+    public int getPinkEatenBamboo () {
+        return bamboos[BambooColor.PINK.ordinal()];
+    }
 }
