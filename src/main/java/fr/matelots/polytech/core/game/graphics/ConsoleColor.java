@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 public enum ConsoleColor {
 
     NONE("\u001B[0m"),
+    WHITE("\u001B[37m"),
     GREEN("\u001B[32m"),
     YELLOW("\u001B[33m"),
     PINK("\u001B[35m"),

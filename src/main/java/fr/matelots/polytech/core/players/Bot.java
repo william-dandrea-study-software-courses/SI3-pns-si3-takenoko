@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.players.bots.BotAction;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
@@ -72,4 +73,5 @@ public abstract class Bot {
 
     }
 
+    public abstract String getTurnMessage();
 }
