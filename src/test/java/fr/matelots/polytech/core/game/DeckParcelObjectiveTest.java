@@ -25,6 +25,11 @@ public class DeckParcelObjectiveTest {
         this.deck = new DeckParcelObjective(this.board);
     }
 
+    @Test @DisplayName("Le paquet contient bien le bon nombre de carte")
+    public void fillSuccessTest() {
+        assertDoesNotThrow(() -> new DeckParcelObjective(new Board()));
+    }
+
     @Test @DisplayName("Peut-on tirer une carte")
     public void canPickTestTest() {
         assertTrue(this.deck.canPick());

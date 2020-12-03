@@ -12,6 +12,10 @@ public class DeckGardenerObjective extends DeckObjective<CardObjectiveGardener> 
 
     public DeckGardenerObjective(Board board) {
         super(board);
+    }
+
+    @Override
+    protected void fill() {
         for(BambooColor bambooColor : BambooColor.values()) {
             for(int i = 0; i < 4; i++)
                 this.objectives.add(new CardObjectiveGardener(board, 5, bambooColor, 4, 1));

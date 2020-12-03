@@ -18,6 +18,11 @@ public class DeckGardenerObjectiveTest {
     private DeckGardenerObjective deck;
     private Board board;
 
+    @Test @DisplayName("Le paquet contient bien le bon nombre de carte")
+    public void fillSuccessTest() {
+        assertDoesNotThrow(() -> new DeckGardenerObjective(new Board()));
+    }
+
     @BeforeEach
     public void init() {
         this.board = new Board();
