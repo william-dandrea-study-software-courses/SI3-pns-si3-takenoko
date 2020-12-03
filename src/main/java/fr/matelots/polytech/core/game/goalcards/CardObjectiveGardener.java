@@ -64,4 +64,9 @@ public class CardObjectiveGardener extends CardObjective {
     public int hashCode() {
         return Objects.hash(super.hashCode(), color, size, count);
     }
+
+    @Override
+    public String toString() {
+        return size + " " + color + " bamboos";
+    }
 }

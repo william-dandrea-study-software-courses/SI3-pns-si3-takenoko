@@ -18,6 +18,9 @@ public class ThirdBot extends Bot {
     private boolean filling = false;
     private boolean havePlayed = false;
 
+    private BotAction action = BotAction.NONE;
+    private Object actionParameter = "";
+
     private CardObjectiveParcel parcelGoal;
     private CardObjectiveGardener gardenerGoal;
 
@@ -31,22 +34,44 @@ public class ThirdBot extends Bot {
     // Bot actions
     private void pickParcelGoal() {
         havePlayed = pickParcelObjective();
+        if(havePlayed) {
+            action = BotAction.PICK_PARCEL_GOAL;
+            var goals = getIndividualBoard().getUnfinishedParcelObjectives();
+            actionParameter = goals.get(goals.size() - 1);
+        }
     }
 
     private void pickGardenerGoal() {
         havePlayed = pickGardenerObjective();
+        if(havePlayed) {
+            action = BotAction.PICK_GARDENER_GOAL;
+            var goals = getIndividualBoard().getUnfinishedGardenerObjectives();
+            actionParameter = goals.get(goals.size() - 1);
+        }
     }
 
     private void moveGardener(Position position) {
         havePlayed = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
+        if(havePlayed) {
+            action = BotAction.MOVE_GARDENER;
+            actionParameter = position;
+        }
     }
 
     private void placeParcel(Position position, Parcel parcel) {
         havePlayed = board.addParcel(position, parcel);
+        if(havePlayed) {
+            action = BotAction.PLACE_PARCEL;
+            actionParameter = position;
+        }
     }
 
     private void placeBambooPlantation(Position position) {
         havePlayed = board.addBambooPlantation(position);
+        if(havePlayed) {
+            action = BotAction.PLACE_PARCEL;
+            actionParameter = position;
+        }
     }
 
     // Random functions
@@ -241,5 +266,11 @@ public class ThirdBot extends Bot {
     @Override
     public String toString() {
         return "Bot 3";
+    }
+
+
+    @Override
+    public String getTurnMessage() {
+        return action.getMessage(this, actionParameter);
     }
 }

@@ -4,18 +4,22 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.BotAction;
 import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Gabriel Cogne
  * @author Yann Clodong
  */
 public class Game {
-
+    private static final Logger ACTIONLOGGER = Logger.getLogger("actionLogger");
     // Attributes
     private final List<Bot> bots;
     private final Board board;
@@ -24,9 +28,17 @@ public class Game {
 
     // Constructors
     public Game () {
+        initLogger();
         bots = new ArrayList<>();
         board = new Board();
         drawer = new BoardDrawer(board);
+    }
+
+    void initLogger() {
+        String loggerName = "board";
+        /*Logger boardLogger = Logger.getLogger("loggerName");
+
+        boardLogger.info(loggerName);*/
     }
 
     private void setDemoBots() {
@@ -58,26 +70,26 @@ public class Game {
         setDemoBots();
 
         if(bots.size() == 0) {
-            System.out.println("No players !");
+            //System.out.println("No players !");
             return;
         }
 
-        System.out.print("Joueurs: ");
+        /*System.out.print("Joueurs: ");
         bots.forEach(System.out::println);
-        System.out.println();
+        System.out.println();*/
         drawer.print();
 
         launchTurnLoop();
 
         // this is the winner ! ;)
         var winner = getWinner();
-        System.out.println("Winner is : " + winner.toString());
-        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());
+        /*System.out.println("Winner is : " + winner.toString());
+        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());*/
 
         for(Bot bot : bots) {
             if(winner == bot) continue;
-            System.out.println("Loser is : " + bot.toString());
-            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());
+            /*System.out.println("Loser is : " + bot.toString());
+            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());*/
         }
 
     }
@@ -88,13 +100,14 @@ public class Game {
                 bot.playTurn();
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.OBJ_TO_COMPLETE_FOR_LAST_TURN)
                     lastTurn = true;
-                System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
-                System.out.println("Player : " + bot.toString());
+                /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
+                System.out.println("Player : " + bot.toString());*/
                 drawer.print();
+                ACTIONLOGGER.info(bot.getTurnMessage());
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
-                System.out.println("aucun bot ne peux jouer la partie, on l'annule");
+                //System.out.println("aucun bot ne peux jouer la partie, on l'annule");
                 break;
             }
         }

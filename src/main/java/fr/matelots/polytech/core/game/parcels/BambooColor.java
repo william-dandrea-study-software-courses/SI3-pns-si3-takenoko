@@ -5,17 +5,17 @@ public enum BambooColor {
     GREEN() {
         @Override
         public String toString() {
-            return "G";
+            return "Green";
         }
     }, PINK() {
         @Override
         public String toString() {
-            return "P";
+            return "Pink";
         }
     }, YELLOW() {
         @Override
         public String toString() {
-            return "Y";
+            return "Yellow";
         }
     };
 }

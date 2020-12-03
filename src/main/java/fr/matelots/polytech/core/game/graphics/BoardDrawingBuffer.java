@@ -6,11 +6,15 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Yann Clodong
  */
 public class BoardDrawingBuffer {
+
+    private static final Logger LOGGER = Logger.getLogger("boardLogger");
 
     private final List<Position> allReadyDrawn = new ArrayList<>();
     private final Board board;
@@ -47,13 +51,19 @@ public class BoardDrawingBuffer {
     }
 
     private void print() {
+        LOGGER.finest("\n");
+        StringBuilder lineContent = new StringBuilder();
+        lineContent.append(ConsoleColor.WHITE.getColorCode());
+        lineContent.append('\n');
         for(var line : buffer) {
-            StringBuilder lineContent = new StringBuilder();
             for(var c : line) {
                 lineContent.append(c);
             }
-            System.out.println(lineContent);
+            lineContent.append('\n');
+            //System.out.println(lineContent);
+            //LOGGER.info(lineContent.toString());
         }
+        LOGGER.info(lineContent.toString());
     }
 
     void setCharacter(int x, int y, char c) {

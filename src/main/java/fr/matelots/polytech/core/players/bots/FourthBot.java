@@ -51,7 +51,7 @@ import java.util.*;
  * @author williamdandrea
  */
 public class FourthBot extends Bot {
-
+    private BotAction action = BotAction.NONE;
     private final int NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START = 2;
     private final int NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START = 2;
     private boolean firstLaunch = true;
@@ -64,7 +64,7 @@ public class FourthBot extends Bot {
 
     @Override
     public void playTurn() {
-
+        action = BotAction.NONE;
         System.out.println("salut");
         System.out.println(getIndividualBoard().getCompletedObjectives());
 
@@ -100,6 +100,7 @@ public class FourthBot extends Bot {
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
                     pickParcelObjective();
+                    action = BotAction.PICK_PARCEL_GOAL;
                 }
 
             }
@@ -112,12 +113,12 @@ public class FourthBot extends Bot {
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
                     pickGardenerObjective();
+                    action = BotAction.PICK_GARDENER_GOAL;
                 }
 
             }
 
         }
-
     }
 
     public int getNumberOfParcelObjectivesAtTheStart() {
@@ -140,6 +141,7 @@ public class FourthBot extends Bot {
      */
     void pickAnParcelObjectiveAndAddToPlayerBoard() {
         pickParcelObjective();
+        action = BotAction.PICK_PARCEL_GOAL;
     }
 
     /**
@@ -147,6 +149,7 @@ public class FourthBot extends Bot {
      */
     void pickAnGardenerObjectiveAndAddToPlayerBoard() {
         pickGardenerObjective();
+        action = BotAction.PICK_GARDENER_GOAL;
     }
 
     /**
@@ -325,6 +328,7 @@ public class FourthBot extends Bot {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();
             }
+            action = BotAction.PLACE_PARCEL;
 
         }
     }
@@ -337,6 +341,7 @@ public class FourthBot extends Bot {
         List<Position> positions = new ArrayList<>(board.getValidPlaces());
         var position = getRandomIn(positions);
         board.addParcel(position, parcel);
+        action = BotAction.PLACE_PARCEL;
     }
 
     void tryToResolveGardenerObjective() {
@@ -356,7 +361,7 @@ public class FourthBot extends Bot {
         else {
             // si cette parcelle existe alors on bouge le jardinier dessus.
             board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
-
+            action = BotAction.MOVE_GARDENER;
         }
     }
 
@@ -365,4 +370,8 @@ public class FourthBot extends Bot {
         return "Bot 4";
     }
 
+    @Override
+    public String getTurnMessage() {
+        return action.getMessage(this, "Some parameter");
+    }
 }

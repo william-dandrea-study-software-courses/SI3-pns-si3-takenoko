@@ -22,6 +22,7 @@ public class PremierBot extends Bot {
     // True => Fill the board;
     // False => Attempt to resolve goal
     private boolean filling = true;
+    BotAction action = BotAction.NONE;
 
     public PremierBot (Game game) {
         super (game);
@@ -30,6 +31,7 @@ public class PremierBot extends Bot {
 
     /**
      * Emulate the turn of the bot
+     * @return
      */
     @Override
     public void playTurn() {
@@ -116,6 +118,7 @@ public class PremierBot extends Bot {
             placeRandom();
         else
             board.addParcel(listPlaces.get(0), new BambooPlantation(BambooColor.GREEN));
+        action = BotAction.PLACE_PARCEL;
     }
 
 
@@ -130,6 +133,7 @@ public class PremierBot extends Bot {
         var position = validPlaces.get(rnd.nextInt(validPlaces.size()));
 
         board.addParcel(position, new BambooPlantation(BambooColor.GREEN));
+        action = BotAction.PLACE_PARCEL;
     }
 
     /**
@@ -137,6 +141,7 @@ public class PremierBot extends Bot {
      */
     private void pickGoal() {
         pickParcelObjective();
+        action = BotAction.PICK_PARCEL_GOAL;
     }
 
 
@@ -150,5 +155,11 @@ public class PremierBot extends Bot {
     @Override
     public String toString() {
         return "Bot 1";
+    }
+
+
+    @Override
+    public String getTurnMessage() {
+        return action.getMessage(this, "Some parameter");
     }
 }

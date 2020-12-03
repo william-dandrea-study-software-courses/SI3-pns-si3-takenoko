@@ -20,6 +20,7 @@ import java.util.Set;
  */
 public class SecondBot extends Bot {
 
+    private BotAction action = BotAction.NONE;
     private CardObjectiveParcel currentObjective;
 
     public SecondBot(Game game) {
@@ -28,6 +29,7 @@ public class SecondBot extends Bot {
 
     @Override
     public void playTurn() {
+        action = BotAction.NONE;
 
         // State represent the state of the objective, if an objective is in progress, he is true, else he is false
         boolean state = checkCurrentObjective();
@@ -55,6 +57,7 @@ public class SecondBot extends Bot {
      */
     void pickAnObjectiveAndAddToPlayerBoard() {
         pickParcelObjective();
+        action = BotAction.PICK_PARCEL_GOAL;
     }
 
     /**
@@ -88,6 +91,7 @@ public class SecondBot extends Bot {
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
             placeAnParcelAnywhere();
+            action = BotAction.PLACE_PARCEL;
         } else {
 
 
@@ -118,7 +122,7 @@ public class SecondBot extends Bot {
                 // We put a parcel anywhere
                 placeAnParcelAnywhere();
             }
-
+            action = BotAction.PLACE_PARCEL;
         }
 
     }
@@ -133,5 +137,9 @@ public class SecondBot extends Bot {
 
 
 
+    @Override
+    public String getTurnMessage() {
+        return action.getMessage(this, "Some parameter");
+    }
 
 }
