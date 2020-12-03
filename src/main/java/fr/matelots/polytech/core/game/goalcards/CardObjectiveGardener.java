@@ -13,12 +13,14 @@ import java.util.Objects;
  */
 public class CardObjectiveGardener extends CardObjective {
 
+    private final Board board;
     private final BambooColor color;
     private final int size;
     private final int count;
 
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {
-        super(board, score);
+        super(score);
+        this.board = board;
         this.color = color;
         this.size = size;
         this.count = count;
@@ -63,5 +65,16 @@ public class CardObjectiveGardener extends CardObjective {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), color, size, count);
+    }
+
+    @Override
+    public String toString() {
+        return "CardObjectiveGardener{" +
+                "completed=" + completed +
+                ", board=" + board +
+                ", color=" + color +
+                ", size=" + size +
+                ", count=" + count +
+                '}';
     }
 }

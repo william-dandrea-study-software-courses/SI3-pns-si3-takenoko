@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
+import fr.matelots.polytech.core.game.deck.DeckPandaObjective;
 import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
 import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
@@ -23,6 +24,7 @@ public class Board {
     private final Map<Position, Parcel> grid;
     private final DeckParcelObjective deckParcelObjective;
     private final DeckGardenerObjective deckGardenerObjective;
+    private final DeckPandaObjective deckPandaObjective;
     private int parcelLeftToPlace;
     private final Gardener gardener;
     private final Panda panda;
@@ -32,6 +34,7 @@ public class Board {
         grid = new HashMap<>();
         this.deckParcelObjective = new DeckParcelObjective(this);
         this.deckGardenerObjective = new DeckGardenerObjective(this);
+        this.deckPandaObjective = new DeckPandaObjective(this);
         // On ajoute l'étang
         grid.put(Config.BOND_POSITION, new Pond());
         gardener = new Gardener(this, Config.BOND_POSITION);
@@ -151,6 +154,10 @@ public class Board {
 
     public DeckGardenerObjective getDeckGardenerObjective() {
         return deckGardenerObjective;
+    }
+
+    public DeckPandaObjective getDeckPandaObjective() {
+        return deckPandaObjective;
     }
 
     public int getParcelCount() {

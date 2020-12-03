@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author Alexandre Arcil
  */
-public abstract class DeckObjective<T extends CardObjective<?>> {
+public abstract class DeckObjective<T extends CardObjective> {
 
     protected final List<T> objectives;
     protected final Board board;

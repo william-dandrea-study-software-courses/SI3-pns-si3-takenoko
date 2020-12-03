@@ -1,7 +1,5 @@
 package fr.matelots.polytech.core.game.goalcards;
 
-import fr.matelots.polytech.core.game.Board;
-
 import java.util.Objects;
 
 /**
@@ -10,11 +8,9 @@ import java.util.Objects;
 public abstract class CardObjective {
 
     protected boolean completed;
-    protected final Board board;
     private final int score;
 
-    public CardObjective(Board board, int score) {
-        this.board = board;
+    public CardObjective(int score) {
         this.score = Math.max(score, 1);
     }
 
@@ -34,12 +30,12 @@ public abstract class CardObjective {
         if (o == null || getClass() != o.getClass()) return false;
         CardObjective that = (CardObjective) o;
         return completed == that.completed &&
-                score == that.score &&
-                board.equals(that.board);
+                score == that.score;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(completed, board, score);
+        return Objects.hash(completed, score);
     }
+
 }

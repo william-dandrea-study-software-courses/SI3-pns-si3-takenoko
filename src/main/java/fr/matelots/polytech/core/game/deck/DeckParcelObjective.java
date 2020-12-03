@@ -11,7 +11,6 @@ public class DeckParcelObjective extends DeckObjective<CardObjectiveParcel> {
 
     public DeckParcelObjective(Board board) {
         super(board);
-
     }
 
     @Override

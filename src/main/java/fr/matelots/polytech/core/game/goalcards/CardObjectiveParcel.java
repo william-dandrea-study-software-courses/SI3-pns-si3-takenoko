@@ -22,7 +22,7 @@ public class CardObjectiveParcel extends CardObjective {
     private Set<Position> missingPositions;
 
     public CardObjectiveParcel(Board board, int score, Patterns pattern) {
-        super(board, score);
+        super(score);
         this.board = board;
         this.pattern = pattern;
     }
