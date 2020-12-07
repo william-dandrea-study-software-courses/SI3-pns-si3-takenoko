@@ -57,6 +57,7 @@ public class FourthBot extends Bot {
     private boolean firstLaunch = true;
     private CardObjectiveParcel currentParcelObjective;
     private CardObjectiveGardener currentGardenerObjective;
+    private int numberOfResolveObjective = 0;
 
     public FourthBot(Game game) {
         super(game);
@@ -134,7 +135,13 @@ public class FourthBot extends Bot {
     }
 
     @Override
-    public boolean canPlay() { return false; }
+    public boolean canPlay() {
+        if (numberOfResolveObjective <= 9) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * This function pick an new Parcel objective and add this objective to the player deck
@@ -185,6 +192,9 @@ public class FourthBot extends Bot {
      */
     boolean checkObjective(CardObjective objective) {
 
+        if (objective != null && !objective.verify()) {
+            numberOfResolveObjective += 1;
+        }
         // If the currentObjective == null, or if the current goal
         // is finish (the function verify return true if an objective is completed)
         return objective != null && !objective.verify();
@@ -235,7 +245,7 @@ public class FourthBot extends Bot {
                 currentParcelObjective = unfinishedParcelsObjectives.get(1);
             }
         } else {
-            currentParcelObjective = unfinishedParcelsObjectives.get(0);
+            //currentParcelObjective = unfinishedParcelsObjectives.get(0);
         }
 
     }
@@ -263,7 +273,7 @@ public class FourthBot extends Bot {
             if (unfinishedGardenersObjectives.get(0).getSize() <= unfinishedGardenersObjectives.get(0).getSize()) {
                 currentGardenerObjective = unfinishedGardenersObjectives.get(0);
             } else {
-                currentGardenerObjective = unfinishedGardenersObjectives.get(1);
+                //currentGardenerObjective = unfinishedGardenersObjectives.get(1);
             }
 
         }
