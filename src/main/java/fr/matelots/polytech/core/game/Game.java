@@ -4,15 +4,11 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.BotAction;
 import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -96,12 +92,9 @@ public class Game {
         }
 
         // on classe les groupe par score (il devrait deja y etre, mais pour etre sur)
-        ranked.sort(new Comparator<List<Bot>>() {
-            @Override
-            public int compare(List<Bot> o1, List<Bot> o2) {
-                // les listes contiennent au moins un element
-                return o2.get(0).getIndividualBoard().getPlayerScore() - o1.get(0).getIndividualBoard().getPlayerScore();
-            }
+        ranked.sort((o1, o2) -> {
+            // les listes contiennent au moins un element
+            return o2.get(0).getIndividualBoard().getPlayerScore() - o1.get(0).getIndividualBoard().getPlayerScore();
         });
 
         return ranked;
@@ -117,12 +110,12 @@ public class Game {
         // drawing winner
         int winnerScore = ranked.get(0).get(0).getIndividualBoard().getPlayerScore();
         if(ranked.get(0).size() == 1)
-            result.append("The winner (score : " + winnerScore + ") is : ");
+            result.append("The winner (score : ").append(winnerScore).append(") is : ");
         else
-            result.append("The following bots are winning with equal score (score: " + winnerScore + ") : ");
+            result.append("The following bots are winning with equal score (score: ").append(winnerScore).append(") : ");
 
         for(var bot : ranked.get(0)) {
-            result.append(bot + ", ");
+            result.append(bot).append(", ");
         }
         result.delete(result.length() - 2, result.length());
         ranked.remove(0); // make sure the winner will not be displayed two times
@@ -132,12 +125,12 @@ public class Game {
             int scoreStep = sameScored.get(0).getIndividualBoard().getPlayerScore();
 
             StringBuilder res = new StringBuilder();
-            res.append("Score " + scoreStep + " : ");
+            res.append("Score ").append(scoreStep).append(" : ");
             if(sameScored.size() != 1)
                 res.append("equality between ");
 
             for(var bot : sameScored) {
-                res.append(bot + ", ");
+                res.append(bot).append(", ");
             }
             res.delete(res.length() - 2, res.length());
             ACTIONLOGGER.info(res.toString());
@@ -162,7 +155,7 @@ public class Game {
         launchTurnLoop();
 
         // this is the winner ! ;)
-        var winner = getWinner();
+        //var winner = getWinner();
         /*System.out.println("Winner is : " + winner.toString());
         System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());*/
 
