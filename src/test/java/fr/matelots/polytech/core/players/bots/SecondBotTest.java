@@ -73,12 +73,6 @@ public class SecondBotTest {
         assertTrue(testCurrentObjective != bot.getCurrentObjective());
     }
 
-    @Test
-    public void testPlaceAnParcelAnywhere() {
-        int initialNumber = bot.getBoard().getParcelCount();
-        bot.placeAnParcelAnywhere();
-        assertNotEquals(initialNumber, bot.getBoard().getParcelCount());
-    }
 
     @Test
     public void testCheckCurrentObjective() {

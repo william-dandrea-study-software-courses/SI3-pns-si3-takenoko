@@ -86,4 +86,21 @@ public class FifthBotTest {
         assertTrue(bot.updateUnfinishedPandasObjectives());
         assertEquals(bot.getUnfinishedBotPandasObjectives().stream().count(), 5);
     }
+
+    @Test
+    public void testPickThe5TheObjectives() {
+        // We check that e have 0 objectives
+        assertEquals(individualBoard.countUnfinishedPandaObjectives(), 0);
+        assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 0);
+        bot.pickThe5TheObjectives();
+        // We check that we have 5 objectives
+        assertEquals(individualBoard.countUnfinishedPandaObjectives(), 5);
+        assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 5);
+
+        // We add one more objective, so we have 6 objectives but we can't have 6 objectives
+        bot.pickAnPandaObjectiveAndAddToThePlayerBoard();
+        assertEquals(individualBoard.countUnfinishedPandaObjectives(), 5);
+        assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 5);
+
+    }
 }

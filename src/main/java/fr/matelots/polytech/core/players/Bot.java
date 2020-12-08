@@ -67,18 +67,23 @@ public abstract class Bot {
 
     /**
      * This method will place a parcel anywhere in the board
+     * @return true if we have place a parcel, false else
      */
-    public void placeAnParcelAnywhere() {
-        // We check where we can put an parcel
-        ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
-        // Now, we have an ArrayList of the potentials places where we can add a parcel
+    public boolean placeAnParcelAnywhere() {
+        if (board.getParcelCount() <= 27) {
+            // We check where we can put an parcel
+            ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
+            // Now, we have an ArrayList of the potentials places where we can add a parcel
 
-        // We choose a random parcel in the potential list
-        Random randomNumber = new Random();
-        int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+            // We choose a random parcel in the potential list
+            Random randomNumber = new Random();
+            int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
-        // We finally add to the board the new parcel
-        board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
+            // We finally add to the board the new parcel
+            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
+            return true;
+        }
+        return false;
 
     }
 
