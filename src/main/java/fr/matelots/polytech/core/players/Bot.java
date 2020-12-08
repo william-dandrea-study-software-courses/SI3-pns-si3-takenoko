@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
+import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
@@ -51,6 +52,14 @@ public abstract class Bot {
             return false;
         return individualBoard.addNewGardenerObjective(obj);
     }
+
+    public boolean pickPandaObjective() {
+        CardObjectivePanda obj = game.getNextPandaObjective();
+        if (obj == null)
+            return false;
+        return individualBoard.addNewPandaObjective(obj);
+    }
+
 
     public abstract void playTurn ();
 

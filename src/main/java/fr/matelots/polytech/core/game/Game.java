@@ -1,9 +1,11 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
+import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.FourthBot;
 import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
 
@@ -41,8 +43,8 @@ public class Game {
     private void setDemoBots() {
         //bots.add(new SecondBot(this));
         bots.add(new ThirdBot(this));
-        bots.add(new ThirdBot(this));
-        //bots.add(new SecondBot(this));
+        //bots.add(new ThirdBot(this));
+        bots.add(new FourthBot(this));
     }
 
     public void addBot(Bot bot) {
@@ -205,6 +207,16 @@ public class Game {
     public CardObjectiveGardener getNextGardenerObjective() {
         if (board.getDeckGardenerObjective().canPick())
             return board.getDeckGardenerObjective().pick();
+        return null;
+    }
+
+    /**
+     * This return the hidden top card of the panda objective deck
+     * @return the hidden top card of the panda objective deck
+     */
+    public CardObjectivePanda getNextPandaObjective() {
+        if (board.getDeckGardenerObjective().canPick())
+            return board.getDeckPandaObjective().pick();
         return null;
     }
 

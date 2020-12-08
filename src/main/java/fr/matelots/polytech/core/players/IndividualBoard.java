@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
+import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 
@@ -17,6 +18,7 @@ import java.util.List;
  *      - List of each type of objectives
  * @author Gabriel Cogne
  * @author Clodong Yann
+ * @author williamdandrea
  */
 public class IndividualBoard {
 
@@ -25,6 +27,7 @@ public class IndividualBoard {
     // List of the objectives
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
+    private final List<CardObjectivePanda> objectivePandas;
 
     // Eaten bamboo
     private final int[] bamboos;
@@ -32,6 +35,7 @@ public class IndividualBoard {
     public IndividualBoard() {
         objectiveParcels = new ArrayList<>();
         objectiveGardeners = new ArrayList<>();
+        objectivePandas = new ArrayList<>();
 
         bamboos = new int[BambooColor.values().length];
         Arrays.fill(bamboos, 0);
@@ -112,6 +116,13 @@ public class IndividualBoard {
         return objectiveGardeners.add(gardenerObjective);
     }
 
+    public boolean addNewPandaObjective(CardObjectivePanda pandaObjective) {
+        if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
+            return false;
+
+        return objectivePandas.add(pandaObjective);
+    }
+
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
 
     // @return the number of completed objectives (all types of objectives)
@@ -132,12 +143,24 @@ public class IndividualBoard {
         return result;
     }
 
+    public List<CardObjectivePanda> getUnfinishedPandaObjectives() {
+        List<CardObjectivePanda> result = new ArrayList<>();
+        objectivePandas.stream()
+                .filter(o -> !o.isCompleted())
+                .forEach(result::add);
+        return result;
+    }
+
     public int countUnfinishedParcelObjectives () {
         return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
     public int countUnfinishedGardenerObjectives () {
         return (int) objectiveGardeners.stream().filter(obj -> !obj.isCompleted()).count();
+    }
+
+    public int countUnfinishedPandaObjectives () {
+        return (int) objectivePandas.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
     public void addAnEatenUnitOfBamboo (BambooColor color) {
