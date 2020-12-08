@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.FifthBot;
 import fr.matelots.polytech.core.players.bots.FourthBot;
 import fr.matelots.polytech.core.players.bots.SecondBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
@@ -41,10 +42,13 @@ public class Game {
     }
 
     private void setDemoBots() {
-        //bots.add(new SecondBot(this));
-        bots.add(new ThirdBot(this));
+        bots.add(new SecondBot(this));
         //bots.add(new ThirdBot(this));
-        bots.add(new FourthBot(this));
+        //bots.add(new ThirdBot(this));
+        //bots.add(new FourthBot(this));
+        //bots.add(new FifthBot(this));
+        //bots.add(new FifthBot(this));
+        bots.add(new FifthBot(this));
     }
 
     public void addBot(Bot bot) {

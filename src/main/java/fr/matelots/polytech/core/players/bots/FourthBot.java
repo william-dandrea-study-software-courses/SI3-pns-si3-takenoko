@@ -66,8 +66,7 @@ public class FourthBot extends Bot {
     @Override
     public void playTurn() {
         action = BotAction.NONE;
-        System.out.println("salut");
-        System.out.println(getIndividualBoard().getCompletedObjectives());
+
 
         // If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
         // (number in parameters). After this brackets, we will be not in the first launch, so we will try to analyse
@@ -106,7 +105,7 @@ public class FourthBot extends Bot {
 
             }
             if (easiestObjective instanceof CardObjectiveGardener) {
-                System.out.println("easiestObjectiveToResolve() => gardener");
+
                 // We try to resolve the objective
                 tryToResolveGardenerObjective();
 
@@ -225,9 +224,7 @@ public class FourthBot extends Bot {
 
         List<CardObjectiveParcel> unfinishedParcelsObjectives = getIndividualBoard().getUnfinishedParcelObjectives();
 
-        System.out.println("================= unfinishedParcelsObjectives");
-        System.out.println(unfinishedParcelsObjectives.size());
-        System.out.println(" ");
+
         // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
         // Less this number is, more easy the objective will be resolve
 
@@ -257,9 +254,7 @@ public class FourthBot extends Bot {
     void analyzeGardenerObjectives() {
         List<CardObjectiveGardener> unfinishedGardenersObjectives = getIndividualBoard().getUnfinishedGardenerObjectives();
 
-        System.out.println("================= GARDEN");
-        System.out.println(unfinishedGardenersObjectives.size());
-        System.out.println(" ");
+
 
 
         for (CardObjectiveGardener unfinishedGardenersObjective : unfinishedGardenersObjectives) {
@@ -288,8 +283,6 @@ public class FourthBot extends Bot {
      */
     CardObjective easiestObjectiveToResolve() {
 
-        // TODO: 02/12/2020 creer une vrai methode qui permet de voir lequel est le plus facile
-
         //if (currentParcelObjective.getScore() <= currentGardenerObjective.getScore()) {
         if (value == 0) {
             value = 1;
@@ -303,7 +296,7 @@ public class FourthBot extends Bot {
 
     void tryToResolveParcelObjective() {
 
-        System.out.println("try to resolve parcel");
+
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
@@ -356,7 +349,7 @@ public class FourthBot extends Bot {
 
     void tryToResolveGardenerObjective() {
 
-        System.out.println("try to resolve garden");
+
         var position = board.getPositions().stream()
                 .filter(p ->
                         !board.getParcel(p).isPond() &&

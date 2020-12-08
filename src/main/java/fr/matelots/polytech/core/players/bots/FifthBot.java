@@ -11,6 +11,10 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 
+import static fr.matelots.polytech.core.game.parcels.BambooColor.GREEN;
+import static fr.matelots.polytech.core.game.parcels.BambooColor.YELLOW;
+import static fr.matelots.polytech.core.game.parcels.BambooColor.PINK;
+
 /**
  * This bot goal is to rush the panda objective.
  * - [OK] Tant que le tableau d'objectif n'est pas plein, tirer carte objectif panda
@@ -19,12 +23,12 @@ import java.util.*;
  *      - [OK] Regarder la différence entre le nombre de bambou en stock (de chaque couleurs) et l'objectif de bambou en stock (on va prendre 3)
  *          - [OK] En extraire une couleur favorite, couleur a laquelle nous allons essayer de combler le trou
  *          - [OK] Regarder sur le board de jeu l'endroit ou il y a un bambou de cette couleur
- *          - [ ] Si il y a une parcelle avec des bambou de cette couleur
- *              - [ ] Deplacer le panda sur cette parcelle
+ *          - [OK] Si il y a une parcelle avec des bambou de cette couleur
+ *              - [OK] Deplacer le panda sur cette parcelle
  *          - [ ] Sinon, s'il n'y a pas de parcelle avec des bambou de cette couleur
- *              - [ ] Regarder si il y a une parcelles avec des bambou d'une autre couleur
- *              - [ ] S'il y a une parcelle avec des bambou d'une autre couleur
- *                  - [ ] Deplacer le panda sur celle-ci
+ *              - [OK] Regarder si il y a une parcelles avec des bambou d'une autre couleur
+ *              - [OK] S'il y a une parcelle avec des bambou d'une autre couleur
+ *                  - [OK] Deplacer le panda sur celle-ci
  *              - [ ] Sinon
  *                  - [ ] Si le nombre de parcelle est inferieur à 6
  *                      - [ ] Placer une parcelle n'importe ou
@@ -39,8 +43,13 @@ public class FifthBot extends Bot {
     private BotAction action = BotAction.NONE;
     private Panda panda;
 
-    private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 3;
-    private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 3;
+    private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 2;
+    private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 1;
+    private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME = 6;
+
+    private int counterOfObjectives = 0;
+
+    private boolean firstLaunch = true;
 
 
 
@@ -55,31 +64,129 @@ public class FifthBot extends Bot {
     public void playTurn() {
         action = BotAction.NONE;
 
-        // 1 // We pick objectives to have in total 5 objectives.
-        pickThe5TheObjectives();
+        if (firstLaunch) {
+            // 1 // We pick objectives to have in total 5 objectives.
+            pickThe5TheObjectives();
+            System.out.println(unfinishedBotPandasObjectives);
+            firstLaunch = false;
+        }
+
 
         // 2 // Try to resolve panda objective
-
         tryToResolvePandaObjective();
+        updateUnfinishedPandasObjectives();
+        System.out.println(unfinishedBotPandasObjectives);
 
 
     }
 
     void tryToResolvePandaObjective() {
+
+        System.out.println("tryToResolvePandaObjective");
+
         // 1 // Si il n'y a aucune parcelle, placer une parcelle
-        if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES) { placeAnParcelAnywhere(); }
+        if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES) {
+            placeAnParcelAnywhere();
+            System.out.println("// 1 //");
+        }
         else {
             // 2.1 // Regarder la différence entre le nombre de bambou en stock (de chaque couleurs) et l'objectif de bambou en stock (on va prendre 3)
             BambooColor colorWeWillTryToStock = watchTheDifferenceBetweenTheWantedNumberOfBambooInStockAndTheNumberOfBambooInIndividualBoard();
-
+            System.out.println("// 2.1 //");
             // 2.1.1 // Si on a plusieurs bamboo en stock, alors colorWeWillTryToStock == null, et donc nous bougeons le panda n'importe ou
             moveThePandaAnywhere();
+            System.out.println("// 2.1.1 //");
 
+            System.out.println("COLOR : " + colorWeWillTryToStock);
             // 2.2 // Regarder sur le board de jeu l'endroit ou il y a un bambou de cette couleur
-            Position goodPlace = searchTheParcelWhereWeHaveABambooWithTheGoodColor(colorWeWillTryToStock);
+            Optional<Position> goodPlace = searchTheParcelWhereWeHaveABambooWithTheGoodColor(colorWeWillTryToStock);
+            System.out.println("// 2.2 //");
+
+            System.out.println(goodPlace);
+            // 2.3 // Si il y a une parcelle avec des bambou de cette couleur
+            if (!goodPlace.isEmpty()) {
+                // Deplacer le panda sur cette parcelle
+                moveThePandaAtACertainPosition(goodPlace);
+                System.out.println("// 2.3 //");
+            }
+            else {// 2.4 // Sinon, s'il n'y a pas de parcelle avec des bambou de cette couleur
+                //2.4.1 // Regarder si il y a une parcelles avec des bambou d'une autre couleur
+                System.out.println("// 2.4.1 //");
+                if (colorWeWillTryToStock.equals(GREEN)) {
+                    System.out.println("// 2.4.1.1 //");
+                    Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
+                    if (!goodPlace2.isEmpty()) {
+                        moveThePandaAtACertainPosition(goodPlace2);
+                    } else {
+                        Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK);
+                        if (!goodPlace3.isEmpty()) {
+                            moveThePandaAtACertainPosition(goodPlace3);
+                        } else {
+                            moveTheGardenerOrPlaceAnParcel();
+                        }
+                    }
+                }
+                if (colorWeWillTryToStock.equals(YELLOW)) {
+                    System.out.println("// 2.4.1.2 //");
+                    Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
+                    if (!goodPlace2.isEmpty()) {
+                        System.out.println("// 2.4.1.2.1 //");
+                        moveThePandaAtACertainPosition(goodPlace2);
+                    } else {
+                        System.out.println("// 2.4.1.2.2 //");
+                        Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK);
+                        if (!goodPlace3.isEmpty()) {
+                            System.out.println("// 2.4.1.2.3 //");
+                            moveThePandaAtACertainPosition(goodPlace3);
+                        } else {
+                            System.out.println("// 2.4.1.2.4 //");
+                            moveTheGardenerOrPlaceAnParcel();
+                        }
+                    }
+                }
+                if (colorWeWillTryToStock.equals(PINK)) {
+                    System.out.println("// 2.4.1.3 //");
+                    Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
+                    if (!goodPlace2.isEmpty()) {
+                        System.out.println("// 2.4.1.3.1 //");
+                        moveThePandaAtACertainPosition(goodPlace2);
+                    } else {
+                        System.out.println("// 2.4.1.3.2 //");
+                        Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
+                        if (!goodPlace3.isEmpty()) {
+                            System.out.println("// 2.4.1.3.2.1 //");
+                            moveThePandaAtACertainPosition(goodPlace3);
+                        } else {
+                            System.out.println("// 2.4.1.3.2.2 //");
+                            moveTheGardenerOrPlaceAnParcel();
+                        }
+                    }
+                }
+            }
 
         }
 
+    }
+
+    void moveTheGardenerOrPlaceAnParcel() {
+        if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME ) {
+            //System.out.println("place a parcel");
+            placeAnParcelAnywhere();
+            action = BotAction.PLACE_PARCEL;
+        } else {
+            //System.out.println("Move the gardener");
+            moveTheGardenerAnywhere();
+            action = BotAction.MOVE_GARDENER;
+        }
+    }
+
+    /**
+     * This method move the gardener to a certain position in the game board
+     */
+    void moveThePandaAtACertainPosition(Optional<Position> position) {
+        panda.setCurrentPlayer(this);
+        action = BotAction.MOVE_PANDA;
+        panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
     }
 
     /**
@@ -90,7 +197,7 @@ public class FifthBot extends Bot {
                 .filter(p ->
                         !board.getParcel(p).isPond())
                 .findAny();
-
+        action = BotAction.MOVE_PANDA;
         panda.setCurrentPlayer(this);
         panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
     }
@@ -107,6 +214,7 @@ public class FifthBot extends Bot {
 
         if(!position.isEmpty()){
             // si cette parcelle existe alors on bouge le jardinier dessus.
+            action = BotAction.MOVE_GARDENER;
             board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
         }
 
@@ -117,14 +225,14 @@ public class FifthBot extends Bot {
      * @param colorWeTryToFind is the color we want to find in the map
      * @return the position where the panda we'll can eat a bamboo, null if we find nothing
      */
-    Position searchTheParcelWhereWeHaveABambooWithTheGoodColor(BambooColor colorWeTryToFind) {
+    Optional<Position> searchTheParcelWhereWeHaveABambooWithTheGoodColor(BambooColor colorWeTryToFind) {
         // We recover all the positions
         Set<Position> allThePositions = board.getPositions();
 
-        Position goodPosition = allThePositions.stream().filter(position ->
+        Optional<Position> goodPosition = allThePositions.stream().filter(position ->
                 board.getParcel(position).getBambooSize() > 0
                 && board.getParcel(position).getBambooColor().equals(colorWeTryToFind)
-        ).findAny().orElse(null);
+        ).findFirst();
 
         return goodPosition;
 
@@ -142,7 +250,7 @@ public class FifthBot extends Bot {
         int differenceOfPinkBamboo = OBJECTIVE_NUMBER_OF_BAMBOO_STOCK - individualBoard.getPinkEatenBamboo();
 
         Map<BambooColor, Integer> pairsOfBamboo = new HashMap<>();
-        pairsOfBamboo.put(BambooColor.GREEN, differenceOfGreenBamboo);
+        pairsOfBamboo.put(GREEN, differenceOfGreenBamboo);
         pairsOfBamboo.put(BambooColor.YELLOW, differenceOfYellowBamboo);
         pairsOfBamboo.put(BambooColor.PINK, differenceOfPinkBamboo);
 
@@ -173,6 +281,7 @@ public class FifthBot extends Bot {
     boolean pickAnPandaObjectiveAndAddToThePlayerBoard() {
         if (individualBoard.countUnfinishedPandaObjectives() < 5) {
             pickPandaObjective();
+            action = BotAction.PICK_PANDA_GOAL;
             updateUnfinishedPandasObjectives();
             return true;
         }
@@ -185,7 +294,10 @@ public class FifthBot extends Bot {
      * This method will complete the list of objective to have in total 5 objectives in the individual board
      */
     void pickThe5TheObjectives() {
-        while (pickAnPandaObjectiveAndAddToThePlayerBoard());
+        if (counterOfObjectives <= 5) {
+            pickAnPandaObjectiveAndAddToThePlayerBoard();
+            counterOfObjectives++;
+        }
     }
 
     /**
@@ -223,11 +335,16 @@ public class FifthBot extends Bot {
 
     @Override
     public boolean canPlay() {
-        return false;
+        return true;
     }
 
     @Override
     public String getTurnMessage() {
-        return null;
+        return action.getMessage(this, "Some parameter");
+    }
+
+    @Override
+    public String toString() {
+        return "Rush Panda";
     }
 }

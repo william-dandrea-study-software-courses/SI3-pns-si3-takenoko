@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 
 import static fr.matelots.polytech.core.game.parcels.BambooColor.*;
@@ -126,7 +127,8 @@ public class FifthBotTest {
 
     @Test
     public void testSearchTheParcelWhereWeHaveABambooWithTheGoodColorGREEN() {
-        assertNull(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN));
+
+        assertTrue(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN).isEmpty());
         // We will place a lot of parcels and try to find a bamboo
         for (int i = 0; i < 30 ; i++) {
             bot.placeAnParcelAnywhere();
@@ -134,9 +136,9 @@ public class FifthBotTest {
 
         // We move a lot of time the garder in order to grow the bamboo
         bot.moveTheGardenerAnywhere();
-        assertTrue(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN) != null ||
-                bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW) != null ||
-                bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK) != null);
+        assertTrue(!bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN).isEmpty() ||
+                !bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW).isEmpty() ||
+                !bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK).isEmpty());
 
     }
     @Test
@@ -149,6 +151,25 @@ public class FifthBotTest {
         bot.moveThePandaAnywhere();
         assertNotEquals(position, panda.getPosition());
 
+    }
+
+    @Test
+    public void testMoveThePandaAtACertainPosition() {
+        for (int i = 0; i < 30 ; i++) {
+            bot.placeAnParcelAnywhere();
+        }
+
+
+
+        Position positionInit = panda.getPosition();
+        Optional<Position> secondPosition = board.getPositions().stream()
+                .filter(p ->
+                        !board.getParcel(p).isPond())
+                .findAny();
+
+        bot.moveThePandaAtACertainPosition(secondPosition);
+
+        assertFalse(positionInit.equals(panda.getPosition()));
     }
 
 

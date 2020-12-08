@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.game.movables;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -29,5 +30,11 @@ public class Gardener extends Pawn {
         neighbours.stream()
                 .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
                 .forEach(Parcel::growBamboo);
+    }
+
+    @Override
+    public boolean moveTo(int x, int y, int z) {
+        getBoard().addBambooPlantation(new Position(x,y,z));
+        return super.moveTo(x, y, z);
     }
 }
