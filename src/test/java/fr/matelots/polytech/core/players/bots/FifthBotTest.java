@@ -1,12 +1,21 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.movables.Panda;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
+import java.util.Set;
+
+import static fr.matelots.polytech.core.game.parcels.BambooColor.*;
 import static org.junit.Assert.*;
 
 /**
@@ -19,13 +28,17 @@ public class FifthBotTest {
     FifthBot bot;
     IndividualBoard individualBoard;
     CardObjectiveParcel testCurrentObjective;
+    Board board;
+    Panda panda;
 
     @BeforeEach
     public void init() {
         game = new Game();
         bot = new FifthBot(game);
         individualBoard = bot.getIndividualBoard();
+        board = game.getBoard();
         game.addBot(bot);
+        panda = board.getPanda();
     }
 
     /**
@@ -103,4 +116,40 @@ public class FifthBotTest {
         assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 5);
 
     }
+
+    @Test
+    public void testWatchTheDifferenceBetweenTheWantedNumberOfBambooInStockAndTheNumberOfBambooInIndividualBoard() {
+        // With any parcels, normally, we can receive all the color
+        assertNotEquals(bot.watchTheDifferenceBetweenTheWantedNumberOfBambooInStockAndTheNumberOfBambooInIndividualBoard(), null);
+
+    }
+
+    @Test
+    public void testSearchTheParcelWhereWeHaveABambooWithTheGoodColorGREEN() {
+        assertNull(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN));
+        // We will place a lot of parcels and try to find a bamboo
+        for (int i = 0; i < 30 ; i++) {
+            bot.placeAnParcelAnywhere();
+        }
+
+        // We move a lot of time the garder in order to grow the bamboo
+        bot.moveTheGardenerAnywhere();
+        assertTrue(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN) != null ||
+                bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW) != null ||
+                bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK) != null);
+
+    }
+    @Test
+    public void testMoveThePandaAnywhere() {
+        for (int i = 0; i < 30 ; i++) {
+            bot.placeAnParcelAnywhere();
+        }
+
+        Position position = panda.getPosition();
+        bot.moveThePandaAnywhere();
+        assertNotEquals(position, panda.getPosition());
+
+    }
+
+
 }

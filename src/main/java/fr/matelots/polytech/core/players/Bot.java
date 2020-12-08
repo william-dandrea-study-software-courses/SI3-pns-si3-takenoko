@@ -10,8 +10,9 @@ import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.bots.BotAction;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+
+import static java.time.chrono.JapaneseEra.values;
 
 /**
  * @author Gabriel Cogne
@@ -21,8 +22,10 @@ public abstract class Bot {
 
     private final Game game;
     protected Board board;
-
     protected final IndividualBoard individualBoard;
+    private static final Random random = new Random();
+
+
 
     public Bot(Game game) {
         this.game = game;
@@ -65,6 +68,12 @@ public abstract class Bot {
 
     public abstract boolean canPlay();
 
+    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
+        int x = random.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
+
+
     /**
      * This method will place a parcel anywhere in the board
      * @return true if we have place a parcel, false else
@@ -80,7 +89,9 @@ public abstract class Bot {
             int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
             // We finally add to the board the new parcel
-            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
+
+            //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
+            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(randomEnum(BambooColor.class)));
             return true;
         }
         return false;
