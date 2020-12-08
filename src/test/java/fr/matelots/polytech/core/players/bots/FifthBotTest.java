@@ -73,5 +73,17 @@ public class FifthBotTest {
     public void testUpdateUnfinishedPandasObjectives() {
         // We add new objectives
 
+        for (int i = 0; i < 3 ; i++) {
+            bot.pickAnPandaObjectiveAndAddToThePlayerBoard();
+        }
+
+        assertTrue(bot.updateUnfinishedPandasObjectives());
+        assertEquals(bot.getUnfinishedBotPandasObjectives().stream().count(), 3);
+        for (int i = 0; i < 10 ; i++) {
+            bot.pickAnPandaObjectiveAndAddToThePlayerBoard();
+        }
+
+        assertTrue(bot.updateUnfinishedPandasObjectives());
+        assertEquals(bot.getUnfinishedBotPandasObjectives().stream().count(), 5);
     }
 }
