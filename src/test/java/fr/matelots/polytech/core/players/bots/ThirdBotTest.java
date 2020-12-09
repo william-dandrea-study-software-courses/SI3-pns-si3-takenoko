@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,13 +19,18 @@ public class ThirdBotTest {
 
     private ThirdBot bot;
     private ThirdBot bot2;
+    private TurnLog log;
+    private TurnLog log2;
     private Game game;
 
     @BeforeEach
     void Init() {
         game = new Game();
         bot = new ThirdBot(game);
+        log = new TurnLog(bot);
+
         bot2 = new ThirdBot(game);
+        log2 = new TurnLog(bot2);
     }
 
     @Test
@@ -47,7 +53,7 @@ public class ThirdBotTest {
     @Timeout(2)
     void testObjectiveParcelDeckEmpty() {
         game.addBot(bot);
-        bot.playTurn();
+        bot.playTurn(log);
         while(game.getNextParcelObjective() != null) ;
         game.launchTurnLoop();
     }

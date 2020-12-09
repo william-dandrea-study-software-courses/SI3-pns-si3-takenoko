@@ -6,6 +6,8 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class PremierBot extends Bot {
     // True => Fill the board;
     // False => Attempt to resolve goal
     private boolean filling = true;
-    BotAction action = BotAction.NONE;
+    //BotActionType action = BotActionType.NONE;
 
     public PremierBot (Game game) {
         super (game);
@@ -34,26 +36,26 @@ public class PremierBot extends Bot {
      * @return
      */
     @Override
-    public void playTurn() {
+    public void playTurn(TurnLog log) {
         //if(board.getParcelCount() > 1) getIndividualBoard().checkAllParcelGoal();
         if(!canPlay())
             return; // le bot ne peut pas jouer alors il passe son tour
 
         if(filling)
-            pickGoal();
+            pickGoal(log);
         else {
             if(board.getParcelCount() == 1) {
                 // si le plateau est vierge, le bot ajoute une tuile au hasard
-                placeRandom();
+                placeRandom(log);
             }
             else {
                 selectGoalIfEmpty();
 
                 if(currentGoal == null) {
                     // Le bot a déjà tenté de séléctionner un objectif mais tous ceux qu'il a sont déjà complété
-                    pickGoal();
+                    pickGoal(log);
                 }
-                else attemptToPlaceParcelWithGoal();
+                else attemptToPlaceParcelWithGoal(log);
             }
         }
         strategy();
@@ -102,9 +104,9 @@ public class PremierBot extends Bot {
     /**
      * Represent the attempt of the bot to resolve the goal
      */
-    private void attemptToPlaceParcelWithGoal() {
+    private void attemptToPlaceParcelWithGoal(TurnLog log) {
         if(board.getParcelCount() == 1) {
-            placeRandom();
+            placeRandom(log);
             return;
         }
 
@@ -115,17 +117,17 @@ public class PremierBot extends Bot {
         goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION)).forEach(listPlaces::add);
 
         if(listPlaces.size() == 0)
-            placeRandom();
+            placeRandom(log);
         else
             board.addParcel(listPlaces.get(0), new BambooPlantation(BambooColor.GREEN));
-        action = BotAction.PLACE_PARCEL;
+        //action = BotActionType.PLACE_PARCEL;
     }
 
 
     /**
      * Place une parcel sur le board au hasard
      */
-    private void placeRandom() {
+    private void placeRandom(TurnLog log) {
         var validPlacesSet = board.getValidPlaces();
         var validPlaces = new ArrayList<>(validPlacesSet);
 
@@ -133,15 +135,18 @@ public class PremierBot extends Bot {
         var position = validPlaces.get(rnd.nextInt(validPlaces.size()));
 
         board.addParcel(position, new BambooPlantation(BambooColor.GREEN));
-        action = BotAction.PLACE_PARCEL;
+        //action = BotActionType.PLACE_PARCEL;
+        log.addAction(BotActionType.PLACE_PARCEL, position.toString());
     }
 
     /**
      * The bot take a Parcel goal card
      */
-    private void pickGoal() {
-        pickParcelObjective();
-        action = BotAction.PICK_PARCEL_GOAL;
+    private void pickGoal(TurnLog log) {
+        var obj = pickParcelObjective();
+        var lastGoal = getIndividualBoard().getUnfinishedParcelObjectives().get(getIndividualBoard().getUnfinishedParcelObjectives().size() - 1);
+
+        obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString()));
     }
 
 
@@ -160,6 +165,6 @@ public class PremierBot extends Bot {
 
     @Override
     public String getTurnMessage() {
-        return action.getMessage(this, "Some parameter");
+        return ""; //action.getMessage(this, "Some parameter");
     }
 }

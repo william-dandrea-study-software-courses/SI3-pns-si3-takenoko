@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import static org.junit.Assert.*;
 public class PremierBotTest {
 
     Game game;
+    TurnLog log;
     PremierBot bot;
     IndividualBoard indBoard;
 
@@ -23,6 +25,7 @@ public class PremierBotTest {
     public void init() {
         game = new Game();
         bot = new PremierBot(game);
+        log = new TurnLog(bot);
         indBoard = bot.getIndividualBoard();
         game.addBot(bot);
     }
@@ -34,14 +37,14 @@ public class PremierBotTest {
 
 
         for(int i = 1; i <= 5; i++) {
-            bot.playTurn();
+            bot.playTurn(log);
             assertEquals(indBoard.getUnfinishedParcelObjectives().size(), i);
         }
 
         // test complete phase
         int oldSize = indBoard.getUnfinishedParcelObjectives().size();
         while(oldSize > 0) {
-            bot.playTurn();
+            bot.playTurn(log);
             int currentSize = indBoard.getUnfinishedParcelObjectives().size();
             assertTrue(currentSize <= oldSize);
             oldSize = currentSize;

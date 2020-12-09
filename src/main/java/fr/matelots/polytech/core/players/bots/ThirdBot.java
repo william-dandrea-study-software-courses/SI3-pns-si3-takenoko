@@ -6,6 +6,8 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -18,8 +20,8 @@ public class ThirdBot extends Bot {
     private boolean filling = false;
     private boolean havePlayed = false;
 
-    private BotAction action = BotAction.NONE;
-    private Object actionParameter = "";
+    private BotActionType action = BotActionType.NONE;
+    private String actionParameter = "";
 
     private CardObjectiveParcel parcelGoal;
     private CardObjectiveGardener gardenerGoal;
@@ -33,44 +35,44 @@ public class ThirdBot extends Bot {
 
     // Bot actions
     private void pickParcelGoal() {
-        havePlayed = pickParcelObjective();
+        havePlayed = pickParcelObjective().isPresent();
         if(havePlayed) {
-            action = BotAction.PICK_PARCEL_GOAL;
+            action = BotActionType.PICK_PARCEL_GOAL;
             var goals = getIndividualBoard().getUnfinishedParcelObjectives();
-            actionParameter = goals.get(goals.size() - 1);
+            actionParameter = goals.get(goals.size() - 1).toString();
         }
     }
 
     private void pickGardenerGoal() {
-        havePlayed = pickGardenerObjective();
+        havePlayed = pickGardenerObjective().isPresent();
         if(havePlayed) {
-            action = BotAction.PICK_GARDENER_GOAL;
+            action = BotActionType.PICK_GARDENER_GOAL;
             var goals = getIndividualBoard().getUnfinishedGardenerObjectives();
-            actionParameter = goals.get(goals.size() - 1);
+            actionParameter = goals.get(goals.size() - 1).toString();
         }
     }
 
     private void moveGardener(Position position) {
         havePlayed = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
         if(havePlayed) {
-            action = BotAction.MOVE_GARDENER;
-            actionParameter = position;
+            action = BotActionType.MOVE_GARDENER;
+            actionParameter = position.toString();
         }
     }
 
     private void placeParcel(Position position, Parcel parcel) {
         havePlayed = board.addParcel(position, parcel);
         if(havePlayed) {
-            action = BotAction.PLACE_PARCEL;
-            actionParameter = position;
+            action = BotActionType.PLACE_PARCEL;
+            actionParameter = position.toString();
         }
     }
 
     private void placeBambooPlantation(Position position) {
         havePlayed = board.addBambooPlantation(position);
         if(havePlayed) {
-            action = BotAction.PLACE_PARCEL;
-            actionParameter = position;
+            action = BotActionType.PLACE_PARCEL;
+            actionParameter = position.toString();
         }
     }
 
@@ -242,7 +244,7 @@ public class ThirdBot extends Bot {
     }
 
     @Override
-    public void playTurn() {
+    public void playTurn(TurnLog log) {
         havePlayed = false;
         if(!canPlay()) return;
         if(board.getParcelCount() == 1)
@@ -256,6 +258,8 @@ public class ThirdBot extends Bot {
             else
                 attemptResolveGoal();
         }
+
+        log.addAction(action, actionParameter);
     }
 
     @Override

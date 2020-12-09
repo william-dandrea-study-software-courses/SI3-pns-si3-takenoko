@@ -7,11 +7,10 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.players.bots.BotAction;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
-
 
 /**
  * @author Gabriel Cogne
@@ -41,39 +40,52 @@ public abstract class Bot {
         return board;
     }
 
-    public boolean pickParcelObjective () {
+    public Optional<CardObjectiveParcel> pickParcelObjective () {
         CardObjectiveParcel obj = game.getNextParcelObjective();
         if (obj == null)
-            return false;
-        return individualBoard.addNewParcelObjective(obj);
+            return Optional.empty();
+        if(!individualBoard.addNewParcelObjective(obj)) return Optional.empty();
+        return Optional.of(obj);
     }
 
-    public boolean pickGardenerObjective() {
+    public Optional<CardObjectiveGardener> pickGardenerObjective() {
         CardObjectiveGardener obj = game.getNextGardenerObjective();
         if (obj == null)
-            return false;
-        return individualBoard.addNewGardenerObjective(obj);
+            return Optional.empty();
+        if(!individualBoard.addNewGardenerObjective(obj)) return Optional.empty();
+        return Optional.of(obj);
     }
 
-    public boolean pickPandaObjective() {
+    public Optional<CardObjectivePanda> pickPandaObjective() {
         CardObjectivePanda obj = game.getNextPandaObjective();
         if (obj == null)
-            return false;
-        return individualBoard.addNewPandaObjective(obj);
+            return Optional.empty();
+        if(!individualBoard.addNewPandaObjective(obj))
+            return Optional.empty();
+        return Optional.of(obj);
     }
 
 
-    public abstract void playTurn ();
+    public abstract void playTurn (TurnLog log);
+
+    public void playTurn() {
+        TurnLog log = new TurnLog(this);
+        playTurn(log);
+    }
 
     public abstract boolean canPlay();
 
+    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
+        int x = random.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
 
 
     /**
      * This method will place a parcel anywhere in the board
      * @return true if we have place a parcel, false else
      */
-    public boolean placeAnParcelAnywhere() {
+    public Optional<Position> placeAnParcelAnywhere() {
         if (board.getParcelCount() <= 27) {
             // We check where we can put an parcel
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
@@ -86,11 +98,11 @@ public abstract class Bot {
             // We finally add to the board the new parcel
 
             //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
-            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.values()[random.nextInt(BambooColor.values().length)]));
-            return true;
+            Position pos = placeWhereWeCanPlaceAnParcel.get(position);
+            board.addParcel(pos, new BambooPlantation(randomEnum(BambooColor.class)));
+            return Optional.of(pos);
         }
-        return false;
-
+        return Optional.empty();
     }
 
     public abstract String getTurnMessage();

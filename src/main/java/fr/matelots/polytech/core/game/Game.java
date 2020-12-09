@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,13 +175,14 @@ public class Game {
     public void launchTurnLoop() {
         while (!lastTurn) {
             bots.forEach(bot -> {
-                bot.playTurn();
+                TurnLog log = new TurnLog(bot);
+                bot.playTurn(log);
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size()))
                     lastTurn = true;
                 /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());*/
 
-                ACTIONLOGGER.info(bot.getTurnMessage());
+                ACTIONLOGGER.info(log.toString());
                 drawer.print();
             });
 

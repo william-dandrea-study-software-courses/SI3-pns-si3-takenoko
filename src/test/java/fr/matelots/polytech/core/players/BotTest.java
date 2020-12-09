@@ -20,14 +20,14 @@ public class BotTest {
 
     @Test
     public void testPiocheDUnObjectifParcelle () {
-        assertTrue(bot.pickParcelObjective());
+        assertTrue(bot.pickParcelObjective().isPresent());
     }
 
     @Test
     public void testGetUnfinishedParcelObjectives () {
         assertTrue(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
 
-        assertTrue(bot.pickParcelObjective());
+        assertTrue(bot.pickParcelObjective().isPresent());
 
         assertFalse(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }

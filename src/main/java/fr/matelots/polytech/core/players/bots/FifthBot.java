@@ -1,13 +1,12 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -41,7 +40,8 @@ public class FifthBot extends Bot {
 
     private CardObjectivePanda currentObjective;
     private List<CardObjectivePanda> unfinishedBotPandasObjectives;
-    private BotAction action = BotAction.NONE;
+    private BotActionType action = BotActionType.NONE;
+    private String actionParameter;
     private Panda panda;
 
     private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 3;
@@ -61,8 +61,9 @@ public class FifthBot extends Bot {
     }
 
     @Override
-    public void playTurn() {
-        action = BotAction.NONE;
+    public void playTurn(TurnLog log) {
+        actionParameter = "null";
+        action = BotActionType.NONE;
 
         if (firstLaunch) {
             // 1 // We pick objectives to have in total 5 objectives.
@@ -77,7 +78,7 @@ public class FifthBot extends Bot {
         updateUnfinishedPandasObjectives();
 
 
-
+        log.addAction(action, actionParameter);
     }
 
     void tryToResolvePandaObjective() {
@@ -169,12 +170,14 @@ public class FifthBot extends Bot {
     void moveTheGardenerOrPlaceAnParcel() {
         if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME ) {
 
-            placeAnParcelAnywhere();
-            action = BotAction.PLACE_PARCEL;
+            var obj = placeAnParcelAnywhere();
+            action = BotActionType.PLACE_PARCEL;
+            obj.ifPresent(position -> actionParameter = position.toString());
         } else {
 
             moveTheGardenerAnywhere();
-            action = BotAction.MOVE_GARDENER;
+            action = BotActionType.MOVE_GARDENER;
+            
         }
     }
 
@@ -183,7 +186,8 @@ public class FifthBot extends Bot {
      */
     void moveThePandaAtACertainPosition(Optional<Position> position) {
         panda.setCurrentPlayer(this);
-        action = BotAction.MOVE_PANDA;
+        action = BotActionType.MOVE_PANDA;
+        actionParameter = position.get().toString();
         panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
     }
 
@@ -195,7 +199,9 @@ public class FifthBot extends Bot {
                 .filter(p ->
                         !board.getParcel(p).isPond())
                 .findAny();
-        action = BotAction.MOVE_PANDA;
+        action = BotActionType.MOVE_PANDA;
+        position.ifPresent(obj -> actionParameter = obj.toString());
+
         panda.setCurrentPlayer(this);
         panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
     }
@@ -210,9 +216,10 @@ public class FifthBot extends Bot {
                         !board.getParcel(p).isPond())
                 .findAny();
 
-        if(!position.isEmpty()){
+        if(position.isPresent()){
             // si cette parcelle existe alors on bouge le jardinier dessus.
-            action = BotAction.MOVE_GARDENER;
+            action = BotActionType.MOVE_GARDENER;
+            actionParameter = position.get().toString();
             board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
         }
 
@@ -280,8 +287,10 @@ public class FifthBot extends Bot {
      */
     boolean pickAnPandaObjectiveAndAddToThePlayerBoard() {
         if (individualBoard.countUnfinishedPandaObjectives() < 5) {
-            pickPandaObjective();
-            action = BotAction.PICK_PANDA_GOAL;
+            var obj = pickPandaObjective();
+            action = BotActionType.PICK_PANDA_GOAL;
+            obj.ifPresent(position -> actionParameter = position.toString());
+
             updateUnfinishedPandasObjectives();
             return true;
         }
@@ -339,7 +348,7 @@ public class FifthBot extends Bot {
 
     @Override
     public String getTurnMessage() {
-        return action.getMessage(this, action.name());
+        return ""; //action.getMessage(this, action.name());
     }
 
     @Override

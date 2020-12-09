@@ -1,8 +1,8 @@
-package fr.matelots.polytech.core.players.bots;
+package fr.matelots.polytech.core.players.bots.botLogger;
 
 import fr.matelots.polytech.core.players.Bot;
 
-public enum BotAction {
+public enum BotActionType {
     NONE,
 
     PICK_PARCEL_GOAL,

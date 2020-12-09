@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ public class FourthBotTest {
 
     Game game;
     FourthBot bot;
+    TurnLog log;
     IndividualBoard individualBoard;
     CardObjectiveParcel testCurrentObjective;
 
@@ -29,6 +31,7 @@ public class FourthBotTest {
     public void init() {
         game = new Game();
         bot = new FourthBot(game);
+        log = new TurnLog(bot);
         individualBoard = bot.getIndividualBoard();
         game.addBot(bot);
     }
@@ -43,7 +46,7 @@ public class FourthBotTest {
         assertTrue(bot.isFirstLaunch());
 
         // Now we launch the bot
-        bot.playTurn();
+        bot.playTurn(log);
 
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
@@ -61,15 +64,15 @@ public class FourthBotTest {
     public void gameTest(){
 
         // We launch the bot one time
-        bot.playTurn();
+        bot.playTurn(log);
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
         assertEquals(individualBoard.countUnfinishedGardenerObjectives(), bot.getNumberOfGardenerObjectivesAtTheStart());
 
         // Now we relauch a turn
-        bot.playTurn();
+        bot.playTurn(log);
         for (int i = 0; i< 20 ; i++) {
-            bot.playTurn();
+            bot.playTurn(log);
         }
 
     }

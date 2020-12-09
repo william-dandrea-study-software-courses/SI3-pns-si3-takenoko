@@ -6,6 +6,8 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
+import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ import java.util.Set;
  */
 public class SecondBot extends Bot {
 
-    private BotAction action = BotAction.NONE;
+    private BotActionType action = BotActionType.NONE;
+    private String actionParameter;
     private CardObjectiveParcel currentObjective;
 
     public SecondBot(Game game) {
@@ -28,8 +31,8 @@ public class SecondBot extends Bot {
     }
 
     @Override
-    public void playTurn() {
-        action = BotAction.NONE;
+    public void playTurn(TurnLog log) {
+        action = BotActionType.NONE;
 
         // State represent the state of the objective, if an objective is in progress, he is true, else he is false
         boolean state = checkCurrentObjective();
@@ -41,6 +44,8 @@ public class SecondBot extends Bot {
             // We launch the strategy
         }
         strategy();
+
+        log.addAction(action, actionParameter);
     }
 
     public CardObjectiveParcel getCurrentObjective() {
@@ -56,8 +61,10 @@ public class SecondBot extends Bot {
      * This function pick an new objective and add this objective to the player deck
      */
     void pickAnObjectiveAndAddToPlayerBoard() {
-        pickParcelObjective();
-        action = BotAction.PICK_PARCEL_GOAL;
+        var obj = pickParcelObjective();
+
+        action = BotActionType.PICK_PARCEL_GOAL;
+        obj.ifPresent(goal -> actionParameter = goal.toString());
     }
 
     /**
@@ -90,8 +97,10 @@ public class SecondBot extends Bot {
         // We check if the game board is just composed of the pond (étang) or if we have more parcels
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
-            placeAnParcelAnywhere();
-            action = BotAction.PLACE_PARCEL;
+            var obj = placeAnParcelAnywhere();
+            action = BotActionType.PLACE_PARCEL;
+            obj.ifPresent(position -> actionParameter = position.toString());
+
         } else {
 
 
@@ -118,11 +127,15 @@ public class SecondBot extends Bot {
 
                 // We add the new parcel
                 board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
+                actionParameter = positionsWeChoose.get(position).toString();
             } else {
                 // We put a parcel anywhere
-                placeAnParcelAnywhere();
+                var obj = placeAnParcelAnywhere();
+                obj.ifPresent(position -> actionParameter = position.toString());
+
             }
-            action = BotAction.PLACE_PARCEL;
+
+            action = BotActionType.PLACE_PARCEL;
         }
 
     }
@@ -139,7 +152,7 @@ public class SecondBot extends Bot {
 
     @Override
     public String getTurnMessage() {
-        return action.getMessage(this, "Some parameter");
+        return ""; //action.getMessage(this, "Some parameter");
     }
 
 }
