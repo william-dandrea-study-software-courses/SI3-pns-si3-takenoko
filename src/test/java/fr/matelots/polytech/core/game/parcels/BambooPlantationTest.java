@@ -23,15 +23,23 @@ public class BambooPlantationTest {
 
     @Test
     public void testGrowBambooByOneUnit () {
+        parcel.setIrrigate(Side.RIGHT);
         parcel.growBamboo();
         assertEquals(1, parcel.getBambooSize());
     }
 
     @Test
     public void testGrowBambooOutOfBound () {
+        parcel.setIrrigate(Side.RIGHT);
         for (int i = 0; i < 5; i++)
             parcel.growBamboo();
 
         assertEquals(4, parcel.getBambooSize());
+    }
+
+    @Test
+    public void testNotIrrigateParcelWhereBambooCanGrow() {
+        parcel.growBamboo();
+        assertEquals(0, parcel.getBambooSize());
     }
 }

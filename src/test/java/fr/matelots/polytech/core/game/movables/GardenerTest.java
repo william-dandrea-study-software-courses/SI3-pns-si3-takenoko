@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.game.parcels.Side;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,9 @@ public class GardenerTest {
     @Test
     public void testMoveTo () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.BOTTOM_LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.GREEN);
+        p2.setIrrigate(Side.BOTTOM_LEFT);
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(-1, 1, 0, p2);
@@ -45,8 +48,11 @@ public class GardenerTest {
     @Test
     public void testActionWithoutConstraints() {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.GREEN);
+        p2.setIrrigate(Side.LEFT);
         Parcel p3 = new BambooPlantation(BambooColor.GREEN);
+        p3.setIrrigate(Side.LEFT);
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(1, 0, -1, p2);
@@ -63,6 +69,7 @@ public class GardenerTest {
     @Test
     public void testActionWithConstraints () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.PINK);
         Parcel p3 = new BambooPlantation(BambooColor.GREEN);
 
@@ -81,8 +88,11 @@ public class GardenerTest {
     @Test
     public void testIsGoneAfterMovingSomewhereElse () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.PINK);
+        p2.setIrrigate(Side.LEFT);
         Parcel p3 = new BambooPlantation(BambooColor.GREEN);
+        p3.setIrrigate(Side.LEFT);
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(1, 0, -1, p2);

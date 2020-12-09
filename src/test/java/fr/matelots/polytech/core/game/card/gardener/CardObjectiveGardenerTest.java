@@ -4,6 +4,7 @@ import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Side;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo vert avec 4 de hauteur' avec un bamboo vert de 1 de hauteur sur le plateau")
     public void greenBambooSizeFourCardOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.GREEN, 4, 1);
@@ -47,6 +49,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo vert avec 4 de hauteur' avec un bamboo vert de 2 de hauteur sur le plateau")
     public void greenBambooSizeFourCardTwo() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 2; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -57,6 +60,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo vert avec 4 de hauteur' avec un bamboo vert de 3 de hauteur sur le plateau")
     public void greenBambooSizeFourCardThree() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -67,6 +71,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo vert avec 4 de hauteur' complété")
     public void greenBambooSizeFourCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -77,7 +82,9 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo vert avec 4 de hauteur' complété avec 2 bamboos verts de 4 de hauteur")
     public void greenBambooSizeFourCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -91,6 +98,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo jaune avec 4 de hauteur' avec un bamboo jaune de 1 de hauteur sur le plateau")
     public void yellowBambooSizeFourCardOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.YELLOW, 4, 1);
@@ -100,6 +108,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo jaune avec 4 de hauteur' avec un bamboo jaune de 2 de hauteur sur le plateau")
     public void yellowBambooSizeFourCardTwo() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 2; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -110,6 +119,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo jaune avec 4 de hauteur' avec un bamboo jaune de 3 de hauteur sur le plateau")
     public void yellowBambooSizeFourCardThree() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -120,6 +130,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo jaune avec 4 de hauteur' complété")
     public void yellowBambooSizeFourCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -130,7 +141,9 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo jaune avec 4 de hauteur' complété avec 2 bamboos jaune de 4 de hauteur")
     public void yellowBambooSizeFourCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -144,6 +157,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo rose avec 4 de hauteur' avec un bamboo rose de 1 de hauteur sur le plateau")
     public void pinkBambooSizeFourCardOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.PINK, 4, 1);
@@ -153,6 +167,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo rose avec 4 de hauteur' avec un bamboo rose de 2 de hauteur sur le plateau")
     public void pinkBambooSizeFourCardTwo() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 2; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -163,6 +178,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo rose avec 4 de hauteur' avec un bamboo rose de 3 de hauteur sur le plateau")
     public void pinkBambooSizeFourCardThree() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -173,6 +189,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo rose avec 4 de hauteur' complété")
     public void pinkBambooSizeFourCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -183,7 +200,9 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '1 bamboo rose avec 4 de hauteur' complété avec 2 bamboos rose de 4 de hauteur")
     public void pinkBambooSizeFourCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.PINK);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -197,6 +216,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '2 bamboos rose avec 3 de hauteur' avec un bamboo rose de 3 de hauteur sur le plateau")
     public void twoPinkBambooSizeThreeCardOnlyOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -207,6 +227,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '2 bamboos rose avec 3 de hauteur' avec un bamboo rose de 3 de hauteur et un de 2 sur le plateau")
     public void twoPinkBambooSizeThreeCardOnlyTwoTooTiny() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.PINK);
@@ -221,9 +242,11 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '2 bamboos rose avec 3 de hauteur' avec un bamboo rose de 3 de hauteur et un de 4 sur le plateau")
     public void twoPinkBambooSizeThreeCardOnlyTwoTooBig() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.PINK);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel2.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -235,9 +258,11 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '2 bamboos rose avec 3 de hauteur' complété")
     public void twoPinkBambooSizeThreeCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.PINK);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel2.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -249,8 +274,11 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '2 bamboos rose avec 3 de hauteur' complété avec 3 bamboos rose de 3 de hauteurs")
     public void twoPinkBambooSizeThreeCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.PINK);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.PINK);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.PINK);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -266,6 +294,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' avec un bamboo jaune de 3 de hauteur sur le plateau")
     public void threeYellowBambooSizeThreeCardOnlyOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -276,7 +305,9 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' avec 2 bamboos jaune de 3 de hauteur sur le plateau")
     public void threeYellowBambooSizeThreeCardOnlyTwo() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -290,12 +321,15 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' avec 2 bamboo jaune de 3 de hauteur et un de 2 sur le plateau")
     public void threeYellowBambooSizeThreeCardOnlyTwoTooTiny() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
         }
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.YELLOW);
+        parcel3.setIrrigate(Side.LEFT);
         parcel3.growBamboo();
         parcel3.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -308,12 +342,15 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' avec un bamboo jaune de 3 de hauteur et un de 4 sur le plateau")
     public void threeYellowBambooSizeThreeCardOnlyTwoTooBig() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
         }
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.YELLOW);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel2.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -326,8 +363,11 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' complété")
     public void threeYellowBambooSizeThreeCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.YELLOW);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -343,9 +383,13 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '3 bamboos jaune avec 3 de hauteur' complété avec 4 bamboos jaune de 3 de hauteur")
     public void threeYellowBambooSizeThreeCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.YELLOW);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.YELLOW);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.YELLOW);
+        parcel3.setIrrigate(Side.LEFT);
         BambooPlantation parcel4 = new BambooPlantation(BambooColor.YELLOW);
+        parcel4.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -362,6 +406,7 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' avec un bamboo vert de 3 de hauteur sur le plateau")
     public void fourGreenBambooSizeThreeCardOnlyOne() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++)
             parcel.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -372,7 +417,9 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' avec 2 bamboos verts de 3 de hauteur sur le plateau")
     public void fourGreenBambooSizeThreeCardOnlyTwo() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -386,8 +433,11 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' avec 3 bamboos verts de 3 de hauteur sur le plateau")
     public void fourGreenBambooSizeThreeCardOnlyThree() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -403,14 +453,18 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' avec 3 bamboo verts de 3 de hauteur et un de 2 sur le plateau")
     public void fourGreenBambooSizeThreeCardOnlyTwoTooTiny() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
             parcel3.growBamboo();
         }
         BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        parcel4.setIrrigate(Side.LEFT);
         parcel3.growBamboo();
         parcel3.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -424,14 +478,18 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' avec un bamboo verts de 3 de hauteur et un de 4 sur le plateau")
     public void fourGreenBambooSizeThreeCardOnlyTwoTooBig() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        parcel3.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
             parcel3.growBamboo();
         }
         BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        parcel4.setIrrigate(Side.LEFT);
         for(int i = 0; i < 4; i++)
             parcel2.growBamboo();
         this.board.addParcel(-1, 1, 0, parcel);
@@ -445,9 +503,13 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' complété")
     public void fourGreenBambooSizeThreeCard() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        parcel3.setIrrigate(Side.LEFT);
         BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        parcel4.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();
@@ -465,10 +527,15 @@ public class CardObjectiveGardenerTest {
     @Test @DisplayName("carte '4 bamboos verts avec 3 de hauteur' complété avec 5 bamboos vers de 3 de hauteurs")
     public void fourGreenBambooSizeThreeCardWithMore() {
         BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        parcel.setIrrigate(Side.LEFT);
         BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        parcel2.setIrrigate(Side.LEFT);
         BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        parcel3.setIrrigate(Side.LEFT);
         BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        parcel4.setIrrigate(Side.LEFT);
         BambooPlantation parcel5 = new BambooPlantation(BambooColor.GREEN);
+        parcel5.setIrrigate(Side.LEFT);
         for(int i = 0; i < 3; i++) {
             parcel.growBamboo();
             parcel2.growBamboo();

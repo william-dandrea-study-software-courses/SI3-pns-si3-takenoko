@@ -35,6 +35,9 @@ public class BambooPlantation extends Parcel {
      */
     @Override
     public void growBamboo () {
+        if (!isIrrigate())
+            return; // The bamboo can't grow without irrigation
+
         if (bambooSize < Config.MAX_SIZE_BAMBOO)
             bambooSize++;
     }

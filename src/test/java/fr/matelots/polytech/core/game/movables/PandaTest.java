@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,9 @@ public class PandaTest {
     @Test
     public void testMoveTo () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.GREEN);
+        p2.setIrrigate(Side.LEFT);
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(-1, 1, 0, p2);
@@ -52,10 +55,13 @@ public class PandaTest {
     @Test
     public void testActionWithConstraints () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         p1.growBamboo();p1.growBamboo();
         Parcel p2 = new BambooPlantation(BambooColor.PINK);
+        p2.setIrrigate(Side.LEFT);
         p2.growBamboo();p2.growBamboo();
         Parcel p3 = new BambooPlantation(BambooColor.PINK);
+        p3.setIrrigate(Side.LEFT);
         p3.growBamboo();p3.growBamboo();
 
         board.addParcel(1, -1, 0, p1);
@@ -74,8 +80,11 @@ public class PandaTest {
     @Test
     public void testIsGoneAfterMovingSomewhereElse () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         Parcel p2 = new BambooPlantation(BambooColor.PINK);
+        p2.setIrrigate(Side.LEFT);
         Parcel p3 = new BambooPlantation(BambooColor.GREEN);
+        p3.setIrrigate(Side.LEFT);
 
         board.addParcel(1, -1, 0, p1);
         board.addParcel(1, 0, -1, p2);
@@ -94,6 +103,7 @@ public class PandaTest {
     @Test
     public void testEatenBambooGoOnCurrentPlayerIndividualBoard () {
         Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        p1.setIrrigate(Side.LEFT);
         p1.growBamboo();p1.growBamboo();
 
         board.addParcel(1, -1, 0, p1);
