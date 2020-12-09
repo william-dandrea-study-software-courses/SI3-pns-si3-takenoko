@@ -108,6 +108,7 @@ public class Game {
 
         if(ranked.size() == 0) return;
         StringBuilder result = new StringBuilder();
+        result.append("========== RESULTS ==========\n");
 
         // drawing winner
         int winnerScore = ranked.get(0).get(0).getIndividualBoard().getPlayerScore();
@@ -120,23 +121,24 @@ public class Game {
             result.append(bot.getName()).append(", ");
         }
         result.delete(result.length() - 2, result.length());
+        result.append('\n');
         ranked.remove(0); // make sure the winner will not be displayed two times
-        ACTIONLOGGER.info(result.toString());
-
         for(var sameScored : ranked) {
             int scoreStep = sameScored.get(0).getIndividualBoard().getPlayerScore();
 
-            StringBuilder res = new StringBuilder();
-            res.append("Score ").append(scoreStep).append(" : ");
+            result.append("Score ").append(scoreStep).append(" : ");
             if(sameScored.size() != 1)
-                res.append("equality between ");
+                result.append("equality between ");
 
             for(var bot : sameScored) {
-                res.append(bot.getName()).append(", ");
+                result.append(bot.getName()).append(", ");
             }
-            res.delete(res.length() - 2, res.length());
-            ACTIONLOGGER.info(res.toString());
+            result.delete(result.length() - 2, result.length());
+            result.append('\n');
         }
+        result.deleteCharAt(result.length() - 1);
+        ACTIONLOGGER.info(result.toString());
+
     }
 
 
