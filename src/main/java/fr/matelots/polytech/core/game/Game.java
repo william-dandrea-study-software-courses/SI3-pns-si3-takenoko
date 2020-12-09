@@ -175,7 +175,7 @@ public class Game {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 bot.playTurn();
-                if (bot.getIndividualBoard().countCompletedObjectives() >= Config.OBJ_TO_COMPLETE_FOR_LAST_TURN)
+                if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size()))
                     lastTurn = true;
                 /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());*/
