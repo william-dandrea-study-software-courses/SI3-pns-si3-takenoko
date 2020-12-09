@@ -27,8 +27,16 @@ public abstract class DeckObjective<T extends CardObjective> {
         Collections.shuffle(this.objectives);
     }
 
+    /**
+     * C'est dans cette méthode qu'il faut remplir {@link #objectives}
+     */
     protected abstract void fill();
 
+    /**
+     * Tire la carte au sommet du paquet.
+     * @return une carte
+     * @throws PickDeckEmptyException Si le packet est vide
+     */
     public T pick() {
         if(this.canPick())
             return this.objectives.remove(0);
@@ -36,6 +44,10 @@ public abstract class DeckObjective<T extends CardObjective> {
             throw new PickDeckEmptyException();
     }
 
+    /**
+     * Permet de savoir si le paquet contient des cartes. Il faut l'appeler avant d'appeler {@link #pick()}
+     * @return true si le paquet n'est pas vide, false sinon
+     */
     public boolean canPick() {
         return !this.objectives.isEmpty();
     }
