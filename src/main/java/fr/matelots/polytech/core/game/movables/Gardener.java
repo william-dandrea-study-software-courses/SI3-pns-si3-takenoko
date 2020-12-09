@@ -34,7 +34,6 @@ public class Gardener extends Pawn {
 
     @Override
     public boolean moveTo(int x, int y, int z) {
-        getBoard().addBambooPlantation(new Position(x,y,z));
         return super.moveTo(x, y, z);
     }
 }
