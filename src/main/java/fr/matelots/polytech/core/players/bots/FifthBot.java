@@ -60,6 +60,12 @@ public class FifthBot extends Bot {
         panda = board.getPanda();
     }
 
+    public FifthBot(Game game, String name) {
+        super(game, name);
+        unfinishedBotPandasObjectives = new ArrayList<>();
+        panda = board.getPanda();
+    }
+
     @Override
     public void playTurn(TurnLog log) {
         actionParameter = "null";

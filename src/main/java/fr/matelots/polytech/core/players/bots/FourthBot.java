@@ -65,6 +65,7 @@ public class FourthBot extends Bot {
     public FourthBot(Game game) {
         super(game);
     }
+    public FourthBot(Game game, String name) { super(game, name); }
 
     @Override
     public void playTurn(TurnLog log) {

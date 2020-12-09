@@ -22,14 +22,19 @@ public abstract class Bot {
     protected Board board;
     protected final IndividualBoard individualBoard;
     private static final Random random = new Random();
+    private String name;
 
-
+    public Bot(Game game, String name) {
+        this(game);
+        this.name = name;
+    }
 
     public Bot(Game game) {
         this.game = game;
         this.board = game.getBoard();
 
         individualBoard = new IndividualBoard();
+        name = toString();
     }
 
     public IndividualBoard getIndividualBoard() {
@@ -106,4 +111,8 @@ public abstract class Bot {
     }
 
     public abstract String getTurnMessage();
+
+    public String getName() {
+        return name;
+    }
 }

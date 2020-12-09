@@ -29,6 +29,9 @@ public class SecondBot extends Bot {
     public SecondBot(Game game) {
         super(game);
     }
+    public SecondBot(Game game, String name) {
+        super(game, name);
+    }
 
     @Override
     public void playTurn(TurnLog log) {

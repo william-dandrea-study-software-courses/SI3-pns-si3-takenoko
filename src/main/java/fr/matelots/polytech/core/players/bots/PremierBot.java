@@ -29,6 +29,9 @@ public class PremierBot extends Bot {
     public PremierBot (Game game) {
         super (game);
     }
+    public PremierBot(Game game, String name) {
+        super(game, name);
+    }
 
 
     /**

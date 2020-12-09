@@ -32,6 +32,10 @@ public class ThirdBot extends Bot {
         super(game);
         rnd = new Random();
     }
+    public ThirdBot(Game game, String name) {
+        super(game, name);
+        rnd = new Random();
+    }
 
     // Bot actions
     private void pickParcelGoal() {
