@@ -12,7 +12,6 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 
-import static java.time.chrono.JapaneseEra.values;
 
 /**
  * @author Gabriel Cogne
@@ -68,10 +67,6 @@ public abstract class Bot {
 
     public abstract boolean canPlay();
 
-    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
-        int x = random.nextInt(clazz.getEnumConstants().length);
-        return clazz.getEnumConstants()[x];
-    }
 
 
     /**
@@ -91,7 +86,7 @@ public abstract class Bot {
             // We finally add to the board the new parcel
 
             //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
-            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(randomEnum(BambooColor.class)));
+            board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.values()[random.nextInt(BambooColor.values().length)]));
             return true;
         }
         return false;

@@ -5,10 +5,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.FifthBot;
-import fr.matelots.polytech.core.players.bots.FourthBot;
-import fr.matelots.polytech.core.players.bots.SecondBot;
-import fr.matelots.polytech.core.players.bots.ThirdBot;
+import fr.matelots.polytech.core.players.bots.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +39,10 @@ public class Game {
     }
 
     private void setDemoBots() {
-        //bots.add(new SecondBot(this));
+        //bots.add(new PremierBot(this));
+        bots.add(new SecondBot(this));
         //bots.add(new ThirdBot(this));
-        //bots.add(new ThirdBot(this));
-        bots.add(new FourthBot(this));
-        //bots.add(new FifthBot(this));
-        //bots.add(new FifthBot(this));
+        //bots.add(new FourthBot(this));
         bots.add(new FifthBot(this));
     }
 
@@ -57,7 +52,7 @@ public class Game {
     }
 
     // Methods
-    public Bot getWinner () {
+    public Bot getWinner() {
         Bot winner = null;
         int bestScore = 0;
         for (Bot bot : bots) {
@@ -148,8 +143,9 @@ public class Game {
     public void run () {
         setDemoBots();
 
-        if(bots.size() == 0) {
+        if(bots.size() < 2 || bots.size() > 4) {
             //System.out.println("No players !");
+            ACTIONLOGGER.info("Pas le bon nombre de joueurs");
             return;
         }
 
@@ -183,8 +179,9 @@ public class Game {
                     lastTurn = true;
                 /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());*/
-                drawer.print();
+
                 ACTIONLOGGER.info(bot.getTurnMessage());
+                drawer.print();
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.

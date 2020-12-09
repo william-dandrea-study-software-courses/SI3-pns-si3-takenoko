@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -45,7 +46,7 @@ public class FifthBot extends Bot {
 
     private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 3;
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 1;
-    private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME = 6;
+    private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME = 3;
 
 
     private boolean firstLaunch = true;
@@ -231,9 +232,11 @@ public class FifthBot extends Bot {
                 && board.getParcel(position).getBambooColor().equals(colorWeTryToFind)
         ).findAny();
 
+
         return goodPosition;
 
     }
+
 
 
     /**
@@ -336,7 +339,7 @@ public class FifthBot extends Bot {
 
     @Override
     public String getTurnMessage() {
-        return action.getMessage(this, "Some parameter");
+        return action.getMessage(this, action.name());
     }
 
     @Override
