@@ -34,6 +34,9 @@ public class Hexagone {
         if(boardPosition.equals(board.getGardener().getPosition()))
             buffer.setCharacter(x, y - radius / 2, 'G');
 
+        if(boardPosition.equals(board.getPanda().getPosition()))
+            buffer.setCharacter(x, y + radius / 2, 'P');
+
         Parcel parcel = board.getParcel(boardPosition);
         buffer.setCharacter(x - radius, y, '|');
         buffer.setCharacter(x + radius, y, '|');
