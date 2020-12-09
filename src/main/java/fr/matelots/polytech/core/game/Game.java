@@ -41,10 +41,10 @@ public class Game {
 
     private void setDemoBots() {
         //bots.add(new PremierBot(this));
-        bots.add(new SecondBot(this));
+        bots.add(new SecondBot(this, "BadBot"));
         //bots.add(new ThirdBot(this));
         //bots.add(new FourthBot(this));
-        bots.add(new FifthBot(this));
+        bots.add(new FifthBot(this, "GentleBot"));
     }
 
     public void addBot(Bot bot) {
@@ -117,7 +117,7 @@ public class Game {
             result.append("The following bots are winning with equal score (score: ").append(winnerScore).append(") : ");
 
         for(var bot : ranked.get(0)) {
-            result.append(bot).append(", ");
+            result.append(bot.getName()).append(", ");
         }
         result.delete(result.length() - 2, result.length());
         ranked.remove(0); // make sure the winner will not be displayed two times
@@ -132,7 +132,7 @@ public class Game {
                 res.append("equality between ");
 
             for(var bot : sameScored) {
-                res.append(bot).append(", ");
+                res.append(bot.getName()).append(", ");
             }
             res.delete(res.length() - 2, res.length());
             ACTIONLOGGER.info(res.toString());
