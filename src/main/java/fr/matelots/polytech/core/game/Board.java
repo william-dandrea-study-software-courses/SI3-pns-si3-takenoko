@@ -7,17 +7,14 @@ import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
 import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Parcel;
-import fr.matelots.polytech.core.game.parcels.Pond;
+import fr.matelots.polytech.core.game.parcels.*;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 
 /**
  * This class describe the main game board 
- * @author Gabriel Cogne
+ * @author Gabriel Cogne, Alexandre Arcil
  */
 public class Board {
     // Attributes
@@ -63,8 +60,17 @@ public class Board {
             throw new NoParcelLeftToPlaceException();
 
         if (isPlaceValid(x, y, z)) {
-            grid.put(new Position(x, y, z), p);
+            Position position = new Position(x, y, z);
+            grid.put(position, p);
             parcelLeftToPlace--;
+            for(Side ridge : Side.values()) { //Les parcels à côté de l'étang sont irrigués
+                Position side = position.add(ridge.getDirection());
+                Parcel parcel = this.getParcel(side);
+                if(parcel != null && parcel.isPond()) {
+                    parcel.setIrrigate(ridge);
+                    break;
+                }
+            }
             return true;
         }
         return false;
@@ -125,6 +131,30 @@ public class Board {
         });
 
         return res;
+    }
+
+    /**
+     * Place une irrigation sur le côté <code>side</code> de la parcelle se trouvant à la position <code>position</code>.
+     * Pour cela, il faut qu'elle se trouve entre 2 parcelles, et qu'au moins un côté adjacent soit irrigué. Si le
+     * côté est déjà irrigué, rien ne se passe.
+     * @param position La position d'une parcelle où poser l'irrigation
+     * @param side Le côté de la parcelle où poser l'irrigation
+     * @return true si l'irrigation a été posée, false sinon
+     */
+    public boolean placeIrrigation(Position position, Side side) {
+        Parcel parcel = this.getParcel(position);
+        Side ridgeAdjacent = side.oppositeSide();
+        Parcel parcelAdjacent = this.getParcel(position.add(ridgeAdjacent.getDirection()));
+        if(parcel != null && parcelAdjacent != null) { //ne devrait jamais donner false
+            if(!parcel.isIrrigate(side)) {
+                if (parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide()) ||
+                        parcelAdjacent.isIrrigate(side.rightSide()) || parcelAdjacent.isIrrigate(side.leftSide()))
+                    parcel.setIrrigate(side);
+                parcelAdjacent.setIrrigate(ridgeAdjacent);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

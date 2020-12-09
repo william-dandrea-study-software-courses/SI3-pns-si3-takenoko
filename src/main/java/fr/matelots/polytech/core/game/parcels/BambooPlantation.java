@@ -6,7 +6,7 @@ import fr.matelots.polytech.core.game.graphics.HexagonePosition;
 import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
 
 /**
- * @author Gabriel Cogne
+ * @author Gabriel Cogne, Alexandre Arcil
  */
 public class BambooPlantation extends Parcel {
 
@@ -43,6 +43,14 @@ public class BambooPlantation extends Parcel {
     public void destroyUnitOfBamboo() {
         if (bambooSize > Config.MIN_SIZE_BAMBOO)
             bambooSize--;
+    }
+
+    @Override
+    public void setIrrigate(Side side) {
+        //un bamboo est automatiquement placé quand la parcelle s'irrigue
+        if(!this.isIrrigate())
+            this.growBamboo();
+        super.setIrrigate(side);
     }
 
     @Override

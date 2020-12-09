@@ -5,13 +5,22 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 
+import java.util.EnumMap;
+
 /**
- * @author Gabriel Cogne
+ * @author Gabriel Cogne, Alexandre Arcil
  */
 public abstract class Parcel {
 
     private Gardener gardener;
     private Panda panda;
+    private final EnumMap<Side, Boolean> irrigate;
+
+    public Parcel() {
+        this.irrigate = new EnumMap<>(Side.class);
+        for(Side ridge : Side.values())
+            this.irrigate.put(ridge, false);
+    }
 
     // Constructors
     public abstract boolean isPond();
@@ -23,6 +32,29 @@ public abstract class Parcel {
     public abstract void destroyUnitOfBamboo ();
 
     public abstract BambooColor getBambooColor();
+
+    /**
+     * Met le côté <core>ridge</core> comme irrigué.
+     */
+    public void setIrrigate(Side side) {
+        this.irrigate.put(side, true);
+    }
+
+    /**
+     * Vérifie si la parcelle est irrigué par au moins un côté.
+     * @return true si la parcelle est irrigué, false sinon
+     */
+    public boolean isIrrigate() {
+        return this.irrigate.values().stream().anyMatch(bool -> bool);
+    }
+
+    /**
+     * @param side Le côté
+     * @return true si le côté est irrigué, false sinon
+     */
+    public boolean isIrrigate(Side side) {
+        return this.irrigate.get(side);
+    }
 
     public boolean placeOn (Pawn pawn) {
         if (pawn instanceof Gardener) {
