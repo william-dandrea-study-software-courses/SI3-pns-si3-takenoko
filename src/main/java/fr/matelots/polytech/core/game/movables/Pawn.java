@@ -17,7 +17,7 @@ public abstract class Pawn {
     }
 
     /**
-     * Move the pawn to the given location
+     * Move the pawn to the given location and apply is action
      * @param x location on x axis
      * @param y location on y axis
      * @param z location on z axis
@@ -33,7 +33,7 @@ public abstract class Pawn {
             return false;
     }
 
-    public abstract void makeAction ();
+    abstract void makeAction ();
 
     Board getBoard () {
         return board;

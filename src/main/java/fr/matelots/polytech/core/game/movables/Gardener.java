@@ -21,7 +21,7 @@ public class Gardener extends Pawn {
      * same bamboo color
      */
     @Override
-    public void makeAction () {
+    void makeAction () {
         List<Parcel> neighbours = getBoard().getNeighbours(getPosition().getX(),
                 getPosition().getY(), getPosition().getZ());
         Parcel current = getBoard().getParcel(getPosition());
@@ -30,10 +30,5 @@ public class Gardener extends Pawn {
         neighbours.stream()
                 .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
                 .forEach(Parcel::growBamboo);
-    }
-
-    @Override
-    public boolean moveTo(int x, int y, int z) {
-        return super.moveTo(x, y, z);
     }
 }

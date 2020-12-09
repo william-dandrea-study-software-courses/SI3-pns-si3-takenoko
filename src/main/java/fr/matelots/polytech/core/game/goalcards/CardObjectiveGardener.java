@@ -10,6 +10,8 @@ import java.util.Objects;
 
 /**
  * @author Alexandre Arcil
+ * Représente une carte jardinier. Il faut que le jardinier récupère un certaine nombre de bamboos d'une couleur et d'une
+ * certaine taille pour compléter l'objectif.
  */
 public class CardObjectiveGardener extends CardObjective {
 
