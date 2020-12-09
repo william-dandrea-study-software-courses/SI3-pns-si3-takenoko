@@ -20,8 +20,7 @@ public class ThirdBot extends Bot {
     private boolean filling = false;
     private boolean havePlayed = false;
 
-    private BotActionType action = BotActionType.NONE;
-    private String actionParameter = "";
+    private TurnLog turnLogger;
 
     private CardObjectiveParcel parcelGoal;
     private CardObjectiveGardener gardenerGoal;
@@ -39,44 +38,40 @@ public class ThirdBot extends Bot {
 
     // Bot actions
     private void pickParcelGoal() {
-        havePlayed = pickParcelObjective().isPresent();
-        if(havePlayed) {
-            action = BotActionType.PICK_PARCEL_GOAL;
-            var goals = getIndividualBoard().getUnfinishedParcelObjectives();
-            actionParameter = goals.get(goals.size() - 1).toString();
+        var obj = pickParcelObjective();
+        if(obj.isPresent()) {
+            havePlayed = true;
+            turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
         }
     }
 
     private void pickGardenerGoal() {
-        havePlayed = pickGardenerObjective().isPresent();
-        if(havePlayed) {
-            action = BotActionType.PICK_GARDENER_GOAL;
-            var goals = getIndividualBoard().getUnfinishedGardenerObjectives();
-            actionParameter = goals.get(goals.size() - 1).toString();
+        var obj = pickGardenerObjective();
+
+        if(obj.isPresent()) {
+            havePlayed = true;
+            turnLogger.addAction(BotActionType.PICK_GARDENER_GOAL, obj.get().toString());
         }
     }
 
     private void moveGardener(Position position) {
         havePlayed = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
         if(havePlayed) {
-            action = BotActionType.MOVE_GARDENER;
-            actionParameter = position.toString();
+            turnLogger.addAction(BotActionType.MOVE_GARDENER, position.toString());
         }
     }
 
     private void placeParcel(Position position, Parcel parcel) {
         havePlayed = board.addParcel(position, parcel);
         if(havePlayed) {
-            action = BotActionType.PLACE_PARCEL;
-            actionParameter = position.toString();
+            turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString());
         }
     }
 
     private void placeBambooPlantation(Position position) {
         havePlayed = board.addBambooPlantation(position);
         if(havePlayed) {
-            action = BotActionType.PLACE_PARCEL;
-            actionParameter = position.toString();
+            turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString());
         }
     }
 
@@ -251,6 +246,8 @@ public class ThirdBot extends Bot {
     public void playTurn(TurnLog log) {
         havePlayed = false;
         if(!canPlay()) return;
+
+        turnLogger = log;
         if(board.getParcelCount() == 1)
             placeBambooSomewhere();
 
@@ -263,7 +260,7 @@ public class ThirdBot extends Bot {
                 attemptResolveGoal();
         }
 
-        log.addAction(action, actionParameter);
+        turnLogger = null;
     }
 
     @Override
@@ -279,6 +276,6 @@ public class ThirdBot extends Bot {
 
     @Override
     public String getTurnMessage() {
-        return action.getMessage(this, actionParameter);
+        return ""; //action.getMessage(this, actionParameter);
     }
 }

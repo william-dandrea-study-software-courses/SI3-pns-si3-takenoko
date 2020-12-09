@@ -22,8 +22,7 @@ import java.util.Set;
  */
 public class SecondBot extends Bot {
 
-    private BotActionType action = BotActionType.NONE;
-    private String actionParameter;
+    private TurnLog turnLogger;
     private CardObjectiveParcel currentObjective;
 
     public SecondBot(Game game) {
@@ -35,8 +34,7 @@ public class SecondBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
-        action = BotActionType.NONE;
-
+        turnLogger = log;
         // State represent the state of the objective, if an objective is in progress, he is true, else he is false
         boolean state = checkCurrentObjective();
 
@@ -48,7 +46,7 @@ public class SecondBot extends Bot {
         }
         strategy();
 
-        log.addAction(action, actionParameter);
+        turnLogger = null;
     }
 
     public CardObjectiveParcel getCurrentObjective() {
@@ -66,8 +64,8 @@ public class SecondBot extends Bot {
     void pickAnObjectiveAndAddToPlayerBoard() {
         var obj = pickParcelObjective();
 
-        action = BotActionType.PICK_PARCEL_GOAL;
-        obj.ifPresent(goal -> actionParameter = goal.toString());
+        if(obj.isPresent())
+            turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
     }
 
     /**
@@ -101,8 +99,9 @@ public class SecondBot extends Bot {
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
             var obj = placeAnParcelAnywhere();
-            action = BotActionType.PLACE_PARCEL;
-            obj.ifPresent(position -> actionParameter = position.toString());
+
+            if(obj.isPresent())
+                turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
 
         } else {
 
@@ -130,15 +129,17 @@ public class SecondBot extends Bot {
 
                 // We add the new parcel
                 board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
-                actionParameter = positionsWeChoose.get(position).toString();
+                String param = positionsWeChoose.get(position).toString();
+
+                turnLogger.addAction(BotActionType.PLACE_PARCEL, param);
             } else {
                 // We put a parcel anywhere
                 var obj = placeAnParcelAnywhere();
-                obj.ifPresent(position -> actionParameter = position.toString());
+                if(obj.isPresent())
+                    turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
 
             }
 
-            action = BotActionType.PLACE_PARCEL;
         }
 
     }

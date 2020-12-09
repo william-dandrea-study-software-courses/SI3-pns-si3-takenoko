@@ -182,7 +182,7 @@ public class Game {
                 /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());*/
 
-                ACTIONLOGGER.info(log.toString());
+                ACTIONLOGGER.info("========== ACTIONS ==========\n" +  log.toString() + "\n");
                 drawer.print();
             });
 

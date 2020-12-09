@@ -53,8 +53,6 @@ import java.util.*;
  * @author williamdandrea
  */
 public class FourthBot extends Bot {
-    private BotActionType action = BotActionType.NONE;
-    private String actionParameter = "";
     private final int NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START = 2;
     private final int NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START = 2;
     private boolean firstLaunch = true;
@@ -69,19 +67,19 @@ public class FourthBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
-        action = BotActionType.NONE;
+        //action = BotActionType.NONE;
 
 
         // If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
         // (number in parameters). After this brackets, we will be not in the first launch, so we will try to analyse
         // directly the objectives.
         if (firstLaunch) {
-            firstLaunchPickObjectives();
+            firstLaunchPickObjectives(log);
             placeAnParcelAnywhere();
             firstLaunch = false;
         } else {
 
-            checkTheObjectives();
+            checkTheObjectives(log);
 
             // If we have any parcels on the game board, we need to place parcels
 
@@ -98,37 +96,36 @@ public class FourthBot extends Bot {
             // Now we will resolve the easiest objectives
             if (easiestObjective instanceof CardObjectiveParcel) {
                 // We try to resolve the objective
-                tryToResolveParcelObjective();
+                tryToResolveParcelObjective(log);
 
                 // Now we check if the objective is completed
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
                     var obj = pickParcelObjective();
 
-                    action = BotActionType.PICK_PARCEL_GOAL;
-
-                    obj.ifPresent(cardObjectiveParcel -> actionParameter = cardObjectiveParcel.toString());
+                    if(obj.isPresent())
+                        log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
                 }
 
             }
             if (easiestObjective instanceof CardObjectiveGardener) {
 
                 // We try to resolve the objective
-                tryToResolveGardenerObjective();
+                tryToResolveGardenerObjective(log);
 
                 // Now we check if the objective is completed
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
                     var obj = pickGardenerObjective();
 
-                    action = BotActionType.PICK_GARDENER_GOAL;
-                    obj.ifPresent(cardObjectiveParcel -> actionParameter = cardObjectiveParcel.toString());
+                    if(obj.isPresent())
+                        log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.get().toString());
                 }
 
             }
 
         }
-        log.addAction(action, actionParameter);
+        //log.addAction(action, actionParameter);
     }
 
     public int getNumberOfParcelObjectivesAtTheStart() {
@@ -151,42 +148,42 @@ public class FourthBot extends Bot {
     /**
      * This function pick an new Parcel objective and add this objective to the player deck
      */
-    void pickAnParcelObjectiveAndAddToPlayerBoard() {
+    void pickAnParcelObjectiveAndAddToPlayerBoard(TurnLog log) {
         var obj = pickParcelObjective();
-        action = BotActionType.PICK_PARCEL_GOAL;
-        obj.ifPresent(cardObjectiveParcel -> actionParameter = cardObjectiveParcel.toString());
+        if(obj.isPresent())
+            log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
     }
 
     /**
      * This function pick an new Gardener objective and add this objective to the player deck
      */
-    void pickAnGardenerObjectiveAndAddToPlayerBoard() {
+    void pickAnGardenerObjectiveAndAddToPlayerBoard(TurnLog log) {
         var obj = pickGardenerObjective();
-        action = BotActionType.PICK_GARDENER_GOAL;
-        obj.ifPresent(cardObjectiveParcel -> actionParameter = cardObjectiveParcel.toString());
+        if(obj.isPresent())
+            log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.get().toString());
     }
 
     /**
      * This function will check if we have currents objectives to resolve
      */
-    void checkTheObjectives() {
+    void checkTheObjectives(TurnLog log) {
         int unfinishedParcelObjectives = getIndividualBoard().countUnfinishedParcelObjectives();
         int unfinishedGardenerObjectives = getIndividualBoard().countUnfinishedGardenerObjectives();
 
         if (unfinishedParcelObjectives <= 0) {
-            pickAnParcelObjectiveAndAddToPlayerBoard();
-            pickAnParcelObjectiveAndAddToPlayerBoard();
+            pickAnParcelObjectiveAndAddToPlayerBoard(log);
+            pickAnParcelObjectiveAndAddToPlayerBoard(log);
         }
         if (unfinishedGardenerObjectives <= 0) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard();
-            pickAnGardenerObjectiveAndAddToPlayerBoard();
+            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
+            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
         }
         if (unfinishedParcelObjectives == 1) {
-            pickAnParcelObjectiveAndAddToPlayerBoard();
+            pickAnParcelObjectiveAndAddToPlayerBoard(log);
 
         }
         if (unfinishedGardenerObjectives == 1) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard();
+            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
 
         }
 
@@ -213,12 +210,12 @@ public class FourthBot extends Bot {
      * If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
      * (number in parameters)
      */
-    void firstLaunchPickObjectives() {
+    void firstLaunchPickObjectives(TurnLog log) {
         for (int i = 0; i < NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START ; i++) {
-            pickAnParcelObjectiveAndAddToPlayerBoard();
+            pickAnParcelObjectiveAndAddToPlayerBoard(log);
         }
         for (int i = 0; i < NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START ; i++) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard();
+            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
         }
     }
 
@@ -302,7 +299,7 @@ public class FourthBot extends Bot {
     }
 
 
-    void tryToResolveParcelObjective() {
+    void tryToResolveParcelObjective(TurnLog log) {
 
 
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
@@ -335,13 +332,15 @@ public class FourthBot extends Bot {
 
                 // We add the new parcel
                 board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
-                actionParameter = positionsWeChoose.get(position).toString();
+
+                log.addAction(BotActionType.PLACE_PARCEL, positionsWeChoose.get(position).toString());
             } else {
                 // We put a parcel anywhere
                 var position = placeAnParcelAnywhere();
-                position.ifPresent(cardObjectiveParcel -> actionParameter = cardObjectiveParcel.toString());
+
+                if(position.isPresent())
+                    log.addAction(BotActionType.PLACE_PARCEL, position.get().toString());
             }
-            action = BotActionType.PLACE_PARCEL;
 
         }
     }
@@ -350,16 +349,15 @@ public class FourthBot extends Bot {
         Random rnd = new Random();
         return (T)objs.get(rnd.nextInt(objs.size()));
     }
-    private void placeParcelSomewhere(Parcel parcel) {
+    private void placeParcelSomewhere(Parcel parcel, TurnLog log) {
         List<Position> positions = new ArrayList<>(board.getValidPlaces());
         var position = getRandomIn(positions);
         board.addParcel(position, parcel);
 
-        action = BotActionType.PLACE_PARCEL;
-        actionParameter = position.toString();
+        log.addAction(BotActionType.PLACE_PARCEL, position.toString());
     }
 
-    void tryToResolveGardenerObjective() {
+    void tryToResolveGardenerObjective(TurnLog log) {
 
 
         var position = board.getPositions().stream()
@@ -371,13 +369,12 @@ public class FourthBot extends Bot {
 
         if(position.isEmpty()) {
             // Aucune parcel ne peut resoudre l'objectif : soit la hauteur de bamboo est trop grande soit elle n'est pas de la bonne couleur.
-            placeParcelSomewhere(new BambooPlantation(currentGardenerObjective.getColor()));
+            placeParcelSomewhere(new BambooPlantation(currentGardenerObjective.getColor()), log);
         }
         else {
             // si cette parcelle existe alors on bouge le jardinier dessus.
             board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
-            action = BotActionType.MOVE_GARDENER;
-            actionParameter = position.get().toString();
+            log.addAction(BotActionType.MOVE_GARDENER, position.get().toString());
         }
     }
 
