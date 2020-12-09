@@ -68,23 +68,9 @@ public class FourthBotTest {
 
         // Now we relauch a turn
         bot.playTurn();
-        System.out.println(game.getBoard().toString());
+        for (int i = 0; i< 20 ; i++) {
+            bot.playTurn();
+        }
 
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
-        bot.playTurn();
-        System.out.println(game.getBoard().toString());
     }
 }

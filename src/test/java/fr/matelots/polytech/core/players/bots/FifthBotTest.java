@@ -108,13 +108,11 @@ public class FifthBotTest {
         assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 0);
         bot.pickThe5TheObjectives();
         // We check that we have 5 objectives
-        assertEquals(individualBoard.countUnfinishedPandaObjectives(), 5);
-        assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 5);
+        assertEquals(5, individualBoard.countUnfinishedPandaObjectives());
 
         // We add one more objective, so we have 6 objectives but we can't have 6 objectives
         bot.pickAnPandaObjectiveAndAddToThePlayerBoard();
         assertEquals(individualBoard.countUnfinishedPandaObjectives(), 5);
-        assertEquals(bot.getUnfinishedBotPandasObjectives().size(), 5);
 
     }
 
@@ -130,7 +128,7 @@ public class FifthBotTest {
 
         assertTrue(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN).isEmpty());
         // We will place a lot of parcels and try to find a bamboo
-        for (int i = 0; i < 30 ; i++) {
+        for (int i = 0; i < 20 ; i++) {
             bot.placeAnParcelAnywhere();
         }
 

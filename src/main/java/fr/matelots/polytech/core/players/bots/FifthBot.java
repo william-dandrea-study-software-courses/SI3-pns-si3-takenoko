@@ -47,7 +47,6 @@ public class FifthBot extends Bot {
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 1;
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME = 6;
 
-    private int counterOfObjectives = 0;
 
     private boolean firstLaunch = true;
 
@@ -67,7 +66,7 @@ public class FifthBot extends Bot {
         if (firstLaunch) {
             // 1 // We pick objectives to have in total 5 objectives.
             pickThe5TheObjectives();
-            System.out.println(unfinishedBotPandasObjectives);
+
             firstLaunch = false;
         }
 
@@ -75,45 +74,44 @@ public class FifthBot extends Bot {
         // 2 // Try to resolve panda objective
         tryToResolvePandaObjective();
         updateUnfinishedPandasObjectives();
-        System.out.println(unfinishedBotPandasObjectives);
+
 
 
     }
 
     void tryToResolvePandaObjective() {
 
-        System.out.println("tryToResolvePandaObjective");
+
 
         // 1 // Si il n'y a aucune parcelle, placer une parcelle
         if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES) {
             placeAnParcelAnywhere();
-            System.out.println("// 1 //");
         }
         else {
             // 2.1 // Regarder la différence entre le nombre de bambou en stock (de chaque couleurs) et l'objectif de bambou en stock (on va prendre 3)
             BambooColor colorWeWillTryToStock = watchTheDifferenceBetweenTheWantedNumberOfBambooInStockAndTheNumberOfBambooInIndividualBoard();
-            System.out.println("// 2.1 //");
+
             // 2.1.1 // Si on a plusieurs bamboo en stock, alors colorWeWillTryToStock == null, et donc nous bougeons le panda n'importe ou
             moveThePandaAnywhere();
-            System.out.println("// 2.1.1 //");
 
-            System.out.println("COLOR : " + colorWeWillTryToStock);
+
+
             // 2.2 // Regarder sur le board de jeu l'endroit ou il y a un bambou de cette couleur
             Optional<Position> goodPlace = searchTheParcelWhereWeHaveABambooWithTheGoodColor(colorWeWillTryToStock);
-            System.out.println("// 2.2 //");
 
-            System.out.println(goodPlace);
+
+
             // 2.3 // Si il y a une parcelle avec des bambou de cette couleur
             if (!goodPlace.isEmpty()) {
                 // Deplacer le panda sur cette parcelle
                 moveThePandaAtACertainPosition(goodPlace);
-                System.out.println("// 2.3 //");
+
             }
             else {// 2.4 // Sinon, s'il n'y a pas de parcelle avec des bambou de cette couleur
                 //2.4.1 // Regarder si il y a une parcelles avec des bambou d'une autre couleur
-                System.out.println("// 2.4.1 //");
+
                 if (colorWeWillTryToStock.equals(GREEN)) {
-                    System.out.println("// 2.4.1.1 //");
+
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
                     if (!goodPlace2.isEmpty()) {
                         moveThePandaAtACertainPosition(goodPlace2);
@@ -127,37 +125,37 @@ public class FifthBot extends Bot {
                     }
                 }
                 if (colorWeWillTryToStock.equals(YELLOW)) {
-                    System.out.println("// 2.4.1.2 //");
+
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
                     if (!goodPlace2.isEmpty()) {
-                        System.out.println("// 2.4.1.2.1 //");
+
                         moveThePandaAtACertainPosition(goodPlace2);
                     } else {
-                        System.out.println("// 2.4.1.2.2 //");
+
                         Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK);
                         if (!goodPlace3.isEmpty()) {
-                            System.out.println("// 2.4.1.2.3 //");
+
                             moveThePandaAtACertainPosition(goodPlace3);
                         } else {
-                            System.out.println("// 2.4.1.2.4 //");
+
                             moveTheGardenerOrPlaceAnParcel();
                         }
                     }
                 }
                 if (colorWeWillTryToStock.equals(PINK)) {
-                    System.out.println("// 2.4.1.3 //");
+
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
                     if (!goodPlace2.isEmpty()) {
-                        System.out.println("// 2.4.1.3.1 //");
+
                         moveThePandaAtACertainPosition(goodPlace2);
                     } else {
-                        System.out.println("// 2.4.1.3.2 //");
+
                         Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
                         if (!goodPlace3.isEmpty()) {
-                            System.out.println("// 2.4.1.3.2.1 //");
+
                             moveThePandaAtACertainPosition(goodPlace3);
                         } else {
-                            System.out.println("// 2.4.1.3.2.2 //");
+
                             moveTheGardenerOrPlaceAnParcel();
                         }
                     }
@@ -165,16 +163,15 @@ public class FifthBot extends Bot {
             }
 
         }
-
     }
 
     void moveTheGardenerOrPlaceAnParcel() {
         if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME ) {
-            //System.out.println("place a parcel");
+
             placeAnParcelAnywhere();
             action = BotAction.PLACE_PARCEL;
         } else {
-            //System.out.println("Move the gardener");
+
             moveTheGardenerAnywhere();
             action = BotAction.MOVE_GARDENER;
         }
@@ -294,10 +291,9 @@ public class FifthBot extends Bot {
      * This method will complete the list of objective to have in total 5 objectives in the individual board
      */
     void pickThe5TheObjectives() {
-        if (counterOfObjectives <= 5) {
-            pickAnPandaObjectiveAndAddToThePlayerBoard();
-            counterOfObjectives++;
-        }
+
+            while(pickAnPandaObjectiveAndAddToThePlayerBoard());
+
     }
 
     /**
