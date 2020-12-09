@@ -27,11 +27,11 @@ public class Panda extends Pawn {
     }
 
     /**
-     * Make the bamboo grow on is current position and all neighbour parcel that is the
-     * same bamboo color
+     * Destroy a unit of bamboo on is current location and add it to the current player
+     * individual board
      */
     @Override
-    public void makeAction () {
+    void makeAction () {
         if (currentPlayer == null) {
             throw new RuntimeException("The current player must be known in order to" +
                     "made this panda action");
