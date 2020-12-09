@@ -43,7 +43,7 @@ public class FifthBot extends Bot {
     private BotAction action = BotAction.NONE;
     private Panda panda;
 
-    private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 2;
+    private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 3;
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 1;
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME = 6;
 
@@ -207,7 +207,7 @@ public class FifthBot extends Bot {
         Optional<Position> position = board.getPositions().stream()
                 .filter(p ->
                         !board.getParcel(p).isPond())
-                .max(Comparator.comparingInt( (Position p) -> board.getParcel(p).getBambooSize() ));
+                .findAny();
 
         if(!position.isEmpty()){
             // si cette parcelle existe alors on bouge le jardinier dessus.
@@ -229,7 +229,7 @@ public class FifthBot extends Bot {
         Optional<Position> goodPosition = allThePositions.stream().filter(position ->
                 board.getParcel(position).getBambooSize() > 0
                 && board.getParcel(position).getBambooColor().equals(colorWeTryToFind)
-        ).findFirst();
+        ).findAny();
 
         return goodPosition;
 

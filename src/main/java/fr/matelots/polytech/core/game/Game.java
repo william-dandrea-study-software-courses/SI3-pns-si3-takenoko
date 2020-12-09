@@ -42,10 +42,10 @@ public class Game {
     }
 
     private void setDemoBots() {
-        bots.add(new SecondBot(this));
+        //bots.add(new SecondBot(this));
         //bots.add(new ThirdBot(this));
         //bots.add(new ThirdBot(this));
-        //bots.add(new FourthBot(this));
+        bots.add(new FourthBot(this));
         //bots.add(new FifthBot(this));
         //bots.add(new FifthBot(this));
         bots.add(new FifthBot(this));
