@@ -147,7 +147,6 @@ public class PremierBot extends Bot {
      */
     private void pickGoal(TurnLog log) {
         var obj = pickParcelObjective();
-        var lastGoal = getIndividualBoard().getUnfinishedParcelObjectives().get(getIndividualBoard().getUnfinishedParcelObjectives().size() - 1);
 
         obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString()));
     }

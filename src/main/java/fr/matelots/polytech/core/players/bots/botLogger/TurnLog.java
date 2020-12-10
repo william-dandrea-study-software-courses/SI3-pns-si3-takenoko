@@ -20,6 +20,7 @@ public class TurnLog {
 
     @Override
     public String toString() {
+        if(actions.size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for(var action : actions) {
             sb.append(action).append("\n");

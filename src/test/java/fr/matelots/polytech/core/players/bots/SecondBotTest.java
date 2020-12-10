@@ -19,6 +19,7 @@ public class SecondBotTest {
 
     Game game;
     SecondBot bot;
+
     IndividualBoard individualBoard;
     CardObjectiveParcel testCurrentObjective;
 

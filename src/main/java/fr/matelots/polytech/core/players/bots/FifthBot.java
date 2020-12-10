@@ -194,7 +194,7 @@ public class FifthBot extends Bot {
      */
     void moveThePandaAtACertainPosition(Optional<Position> position) {
         panda.setCurrentPlayer(this);
-        if(position.isPresent())
+        if(position.isPresent() && turnLogger != null)
             turnLogger.addAction(BotActionType.MOVE_PANDA, position.get().toString());
         panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
     }
@@ -207,7 +207,7 @@ public class FifthBot extends Bot {
                 .filter(p ->
                         !board.getParcel(p).isPond())
                 .findAny();
-        if(position.isPresent())
+        if(position.isPresent() && turnLogger != null)
             turnLogger.addAction(BotActionType.MOVE_PANDA, position.get().toString());
 
         panda.setCurrentPlayer(this);
@@ -226,7 +226,8 @@ public class FifthBot extends Bot {
 
         if(position.isPresent()){
             // si cette parcelle existe alors on bouge le jardinier dessus.
-            turnLogger.addAction(BotActionType.MOVE_GARDENER, position.get().toString());
+            if(turnLogger != null)
+                turnLogger.addAction(BotActionType.MOVE_GARDENER, position.get().toString());
             board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
         }
 
@@ -296,7 +297,7 @@ public class FifthBot extends Bot {
         if (individualBoard.countUnfinishedPandaObjectives() < 5) {
             var obj = pickPandaObjective();
 
-            if(obj.isPresent())
+            if(obj.isPresent() && turnLogger != null)
                 turnLogger.addAction(BotActionType.PICK_PANDA_GOAL, obj.get().toString());
 
             updateUnfinishedPandasObjectives();

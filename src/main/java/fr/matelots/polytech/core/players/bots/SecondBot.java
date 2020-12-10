@@ -64,7 +64,7 @@ public class SecondBot extends Bot {
     void pickAnObjectiveAndAddToPlayerBoard() {
         var obj = pickParcelObjective();
 
-        if(obj.isPresent())
+        if(obj.isPresent() && turnLogger != null)
             turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
     }
 
@@ -100,7 +100,7 @@ public class SecondBot extends Bot {
             // We need to place a parcel anywhere in the game board
             var obj = placeAnParcelAnywhere();
 
-            if(obj.isPresent())
+            if(obj.isPresent() && turnLogger != null)
                 turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
 
         } else {
