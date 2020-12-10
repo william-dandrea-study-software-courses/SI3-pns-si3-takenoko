@@ -67,7 +67,7 @@ public class Board {
                 Position side = position.add(ridge.getDirection());
                 Parcel parcel = this.getParcel(side);
                 if(parcel != null && parcel.isPond()) {
-                    parcel.setIrrigate(ridge);
+                    p.setIrrigate(ridge);
                     break;
                 }
             }
@@ -143,15 +143,17 @@ public class Board {
      */
     public boolean placeIrrigation(Position position, Side side) {
         Parcel parcel = this.getParcel(position);
-        Side ridgeAdjacent = side.oppositeSide();
-        Parcel parcelAdjacent = this.getParcel(position.add(ridgeAdjacent.getDirection()));
-        if(parcel != null && parcelAdjacent != null) { //ne devrait jamais donner false
+        Side sideAdjacent = side.oppositeSide();
+        Parcel parcelAdjacent = this.getParcel(position.add(side.getDirection()));
+        if(parcel != null && parcelAdjacent != null) {
             if(!parcel.isIrrigate(side)) {
                 if (parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide()) ||
-                        parcelAdjacent.isIrrigate(side.rightSide()) || parcelAdjacent.isIrrigate(side.leftSide()))
+                        parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) ||
+                        parcelAdjacent.isIrrigate(sideAdjacent.leftSide())) {
                     parcel.setIrrigate(side);
-                parcelAdjacent.setIrrigate(ridgeAdjacent);
-                return true;
+                    parcelAdjacent.setIrrigate(sideAdjacent);
+                    return true;
+                }
             }
         }
         return false;
