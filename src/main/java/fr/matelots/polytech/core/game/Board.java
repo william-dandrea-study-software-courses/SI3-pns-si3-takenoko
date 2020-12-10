@@ -63,11 +63,11 @@ public class Board {
             Position position = new Position(x, y, z);
             grid.put(position, p);
             parcelLeftToPlace--;
-            for(Side ridge : Side.values()) { //Les parcels à côté de l'étang sont irrigués
-                Position side = position.add(ridge.getDirection());
-                Parcel parcel = this.getParcel(side);
+            for(Side side : Side.values()) { //Les parcels à côté de l'étang sont irrigués
+                Position posAdjacent = position.add(side.getDirection());
+                Parcel parcel = this.getParcel(posAdjacent);
                 if(parcel != null && parcel.isPond()) {
-                    p.setIrrigate(ridge);
+                    p.setIrrigate(side);
                     break;
                 }
             }

@@ -18,8 +18,8 @@ public abstract class Parcel {
 
     public Parcel() {
         this.irrigate = new EnumMap<>(Side.class);
-        for(Side ridge : Side.values())
-            this.irrigate.put(ridge, false);
+        for(Side side : Side.values())
+            this.irrigate.put(side, false);
     }
 
     // Constructors

@@ -38,6 +38,19 @@ public class Pond extends Parcel {
     }
 
     @Override
+    public void setIrrigate(Side side) {} //L'étang est irrigué de chaque côté, impossible de changer ça
+
+    @Override
+    public boolean isIrrigate() {
+        return true; //permet juste d'éviter de faire le calcul
+    }
+
+    @Override
+    public boolean isIrrigate(Side side) {
+        return true;//L'étang est irrigué de tout les côtés
+    }
+
+    @Override
     public void draw(ParcelDrawer drawer) {
         drawer.set(HexagonePosition.CENTER, ConsoleColor.BLUE, 'B');
     }
