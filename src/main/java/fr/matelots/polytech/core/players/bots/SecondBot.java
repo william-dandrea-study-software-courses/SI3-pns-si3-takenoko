@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
@@ -13,6 +14,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -109,7 +111,8 @@ public class SecondBot extends Bot {
             // We check the place where we can place a new parcel
             Set<Position> placeWhereWeCanPlaceAnParcel = null;
             if (currentObjective != null) {
-                placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete();
+                placeWhereWeCanPlaceAnParcel = currentObjective.getMissingPositionsToComplete().stream()
+                        .map(PositionColored::getPosition).collect(Collectors.toSet());
             }
             ArrayList<Position> positionsWeChoose = new ArrayList<>();
 
@@ -117,7 +120,7 @@ public class SecondBot extends Bot {
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
             if (placeWhereWeCanPlaceAnParcel != null)
                 placeWhereWeCanPlaceAnParcel.stream()
-                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
+                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.POND_POSITION))
                         .forEach(positionsWeChoose::add);
 
             if(positionsWeChoose.size() != 0) {

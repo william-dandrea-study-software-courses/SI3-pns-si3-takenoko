@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.goalcards.pattern;
 
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.Set;
@@ -21,8 +22,8 @@ public enum Patterns {
         this.patternChecker = new PatternChecker(offsets);
     }
 
-    public Set<Position> check(Set<Position> positions) {
-        return this.patternChecker.check(positions);
+    public Set<PositionColored> check(Set<PositionColored> positions, BambooColor... colors) {
+        return this.patternChecker.check(positions, colors);
     }
 
 }

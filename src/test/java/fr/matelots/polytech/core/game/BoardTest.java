@@ -118,7 +118,7 @@ public class BoardTest {
     @Test
     public void testParcelProcheEtangIrrigueCoteHautDroit() {
         BambooPlantation bambooPlantation = new BambooPlantation(BambooColor.GREEN);
-        board.addParcel(-1, 0, 1, bambooPlantation); //tout opposée
+        board.addParcel(-1, 0, 1, bambooPlantation);
         assertTrue(bambooPlantation.isIrrigate(Side.UPPER_RIGHT));
     }
 

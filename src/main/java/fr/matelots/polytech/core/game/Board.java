@@ -33,11 +33,11 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         this.deckPandaObjective = new DeckPandaObjective(this);
         // On ajoute l'étang
-        grid.put(Config.BOND_POSITION, new Pond());
-        gardener = new Gardener(this, Config.BOND_POSITION);
-        placePawn(gardener, Config.BOND_POSITION);
-        panda = new Panda(this, Config.BOND_POSITION);
-        placePawn(panda, Config.BOND_POSITION);
+        grid.put(Config.POND_POSITION, new Pond());
+        gardener = new Gardener(this, Config.POND_POSITION);
+        placePawn(gardener, Config.POND_POSITION);
+        panda = new Panda(this, Config.POND_POSITION);
+        placePawn(panda, Config.POND_POSITION);
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
     }

@@ -23,7 +23,7 @@ public class Config {
     public static final int DECK_SIZE = 15;
 
     /**Position de l'étang*/
-    public static final Position BOND_POSITION = new Position(0, 0, 0);
+    public static final Position POND_POSITION = new Position(0, 0, 0);
 
     /** Nombre d'objectif à compléter pour atteindre le dernier tour*/
     public static final int OBJ_TO_COMPLETE_FOR_LAST_TURN = 9;

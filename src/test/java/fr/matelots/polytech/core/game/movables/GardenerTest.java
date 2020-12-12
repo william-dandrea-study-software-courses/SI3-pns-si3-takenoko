@@ -26,7 +26,7 @@ public class GardenerTest {
 
     @Test
     public void testInitialisation () {
-        assertNotNull(board.getParcel(Config.BOND_POSITION).getGardener());
+        assertNotNull(board.getParcel(Config.POND_POSITION).getGardener());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class GardenerTest {
         assertEquals(1, p1.getBambooSize());
         assertEquals(1, p2.getBambooSize());
         assertEquals(0, p3.getBambooSize());
-        assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
+        assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class GardenerTest {
         assertEquals(1, p1.getBambooSize());
         assertEquals(0, p2.getBambooSize());
         assertEquals(0, p3.getBambooSize());
-        assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
+        assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 
     @Test

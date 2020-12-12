@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
@@ -14,6 +15,7 @@ import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Piocher 2/3 obj parcelles et 2/3 jardinier, je choisi a l’instant t l’objectif le plus intéressant
@@ -312,7 +314,8 @@ public class FourthBot extends Bot {
             // We check the place where we can place a new parcel
             Set<Position> placeWhereWeCanPlaceAnParcel = null;
             if (currentParcelObjective != null) {
-                placeWhereWeCanPlaceAnParcel = currentParcelObjective.getMissingPositionsToComplete();
+                placeWhereWeCanPlaceAnParcel = currentParcelObjective.getMissingPositionsToComplete()
+                        .stream().map(PositionColored::getPosition).collect(Collectors.toSet());
             }
             ArrayList<Position> positionsWeChoose = new ArrayList<>();
 
@@ -320,7 +323,7 @@ public class FourthBot extends Bot {
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
             if (placeWhereWeCanPlaceAnParcel != null)
                 placeWhereWeCanPlaceAnParcel.stream()
-                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION))
+                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.POND_POSITION))
                         .forEach(positionsWeChoose::add);
 
             if(positionsWeChoose.size() != 0) {

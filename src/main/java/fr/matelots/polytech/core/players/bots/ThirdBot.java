@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
@@ -10,7 +11,11 @@ import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
 import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 public class ThirdBot extends Bot {
 
@@ -99,7 +104,8 @@ public class ThirdBot extends Bot {
 
         List<Position> accessibleMissing = new ArrayList<>();
 
-        var missing = parcelGoal.getMissingPositionsToComplete();
+        var missing = parcelGoal.getMissingPositionsToComplete()
+                .stream().map(PositionColored::getPosition).collect(Collectors.toSet());
         missing.stream().filter(p -> board.isPlaceValid(p)).forEach(accessibleMissing::add);
 
         if(accessibleMissing.isEmpty()) {
@@ -139,7 +145,8 @@ public class ThirdBot extends Bot {
     private boolean parcelGoalIsSolvableNow(CardObjectiveParcel parcelG) {
         List<Position> accessibleMissing = new ArrayList<>();
 
-        var missing = parcelGoal.getMissingPositionsToComplete();
+        var missing = parcelGoal.getMissingPositionsToComplete().stream()
+                .map(PositionColored::getPosition).collect(Collectors.toList());
         missing.stream().filter(p -> board.isPlaceValid(p)).forEach(accessibleMissing::add);
 
         return !accessibleMissing.isEmpty();
