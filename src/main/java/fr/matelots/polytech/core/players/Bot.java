@@ -24,6 +24,9 @@ public abstract class Bot {
     protected final IndividualBoard individualBoard;
     private static final Random random = new Random();
     private String name;
+    private int numberOfParcelsGreenInTheGame = 0;
+    private int numberOfParcelsYellowInTheGame = 0;
+    private int numberOfParcelsPinkInTheGame = 0;
 
     protected int currentNumberOfAction;
 
@@ -35,7 +38,6 @@ public abstract class Bot {
     public Bot(Game game) {
         this.game = game;
         this.board = game.getBoard();
-
         individualBoard = new IndividualBoard();
         name = toString();
     }
@@ -43,7 +45,6 @@ public abstract class Bot {
     public IndividualBoard getIndividualBoard() {
         return individualBoard;
     }
-
     public Board getBoard() {
         return board;
     }
@@ -124,14 +125,14 @@ public abstract class Bot {
 
     public abstract boolean canPlay();
 
-    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
-        int x = random.nextInt(clazz.getEnumConstants().length);
-        return clazz.getEnumConstants()[x];
+    public static <T extends Enum<?>> T randomEnum(Class<T> classe){
+        int x = random.nextInt(classe.getEnumConstants().length);
+        return classe.getEnumConstants()[x];
     }
 
 
     /**
-     * This method will place a parcel anywhere in the board
+     * This method will place a parcel anywhere in the board, the color of the new parcel is random
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere() {
@@ -153,6 +154,33 @@ public abstract class Bot {
         }
         return Optional.empty();
     }
+
+    /**
+     * This method will place a parcel anywhere in the board, the color of the new parcel is the color in parameter
+     * @param color the color of the parcel we want
+     * @return true if we have place a parcel, false else
+     */
+    public Optional<Position> placeAnParcelAnywhere(BambooColor color) {
+        if (board.getParcelCount() <= 27) {
+            // We check where we can put an parcel
+            ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
+            // Now, we have an ArrayList of the potentials places where we can add a parcel
+
+            // We choose a random parcel in the potential list
+            Random randomNumber = new Random();
+            int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+
+            // We finally add to the board the new parcel
+
+            //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
+            Position pos = placeWhereWeCanPlaceAnParcel.get(position);
+            board.addParcel(pos, new BambooPlantation(color));
+            return Optional.of(pos);
+        }
+        return Optional.empty();
+    }
+
+
 
     public abstract String getTurnMessage();
 

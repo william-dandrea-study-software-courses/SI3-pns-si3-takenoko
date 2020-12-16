@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +30,7 @@ public class BotTest {
         bot = new PremierBot(game);
     }
 
-    @Test
-    public void testPiocheDUnObjectifParcelle () {
-        assertTrue(bot.pickParcelObjective().isPresent());
-    }
+
 
     @Test
     public void testGetUnfinishedParcelObjectives () {
@@ -43,12 +41,10 @@ public class BotTest {
         assertFalse(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }
 
-    @Test
-    public void TestStrategie() {
-    }
+
 
     @Test
-    public void testPlaceAnParcelAnywhere() {
+    public void testPlaceAnParcelAnywhereRandomColor() {
         int initialNumber = bot.getBoard().getParcelCount();
         bot.placeAnParcelAnywhere();
         assertEquals(bot.getBoard().getParcelCount(), initialNumber + 1);
@@ -59,6 +55,22 @@ public class BotTest {
         }
 
         assertEquals(bot.getBoard().getParcelCount(), 28);
+    }
+
+    /**
+     * In total, we have at the maximum 11 GREEN PARCELS ; 7 PINK PARCELS ; 9 YELLOW PARCELS
+     */
+
+    @Test
+    public void testPlaceAnParcelAnywhereChoosenColor() {
+
+
+        // We verify if we can't place more than 27 parcels
+        for (int i = 0; i < 35 ; i++) {
+            bot.placeAnParcelAnywhere(BambooColor.GREEN);
+        }
+
+        assertEquals(bot.getBoard().getParcelCount(), 11);
     }
 
     /**

@@ -35,6 +35,10 @@ public class Config {
     private static final int NB_OBJ_LAST_TURN_3_PLAYERS = 8;
     private static final int NB_OBJ_LAST_TURN_4_PLAYERS = 7;
 
+    private static final int NB_MAX_GREEN_PARCELS = 11;
+    private static final int NB_MAX_PINK_PARCELS = 7;
+    private static final int NB_MAX_YELLOW_PARCELS = 9;
+
     private Config () throws InstantiationException {
         throw new InstantiationException("This is a static class");
     }
