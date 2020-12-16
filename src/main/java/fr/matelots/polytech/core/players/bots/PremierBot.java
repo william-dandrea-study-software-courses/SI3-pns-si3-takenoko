@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
@@ -12,6 +13,7 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author Yann Clodong
@@ -114,10 +116,11 @@ public class PremierBot extends Bot {
         }
 
         currentGoal.verify();
-        var goodPlaces = currentGoal.getMissingPositionsToComplete();
+        var goodPlaces = currentGoal.getMissingPositionsToComplete()
+                .stream().map(PositionColored::getPosition).collect(Collectors.toList());
         var listPlaces = new ArrayList<Position>();
 
-        goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(Config.BOND_POSITION)).forEach(listPlaces::add);
+        goodPlaces.stream().filter(p -> board.isPlaceValid(p) && !p.equals(Config.POND_POSITION)).forEach(listPlaces::add);
 
         if(listPlaces.size() == 0)
             placeRandom(log);

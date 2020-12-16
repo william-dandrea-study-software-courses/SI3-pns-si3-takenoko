@@ -31,7 +31,7 @@ public class PandaTest {
 
     @Test
     public void testInitPlacement () {
-        assertNotNull(board.getParcel(Config.BOND_POSITION).getPanda());
+        assertNotNull(board.getParcel(Config.POND_POSITION).getPanda());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class PandaTest {
         assertEquals(1, p1.getBambooSize());
         assertEquals(2, p2.getBambooSize());
         assertEquals(2, p3.getBambooSize());
-        assertEquals(0, board.getParcel(Config.BOND_POSITION).getBambooSize());
+        assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 
     @Test

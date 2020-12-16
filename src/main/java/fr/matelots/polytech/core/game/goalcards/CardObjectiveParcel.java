@@ -2,6 +2,9 @@ package fr.matelots.polytech.core.game.goalcards;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.HashSet;
@@ -19,20 +22,27 @@ public class CardObjectiveParcel extends CardObjective {
 
     private final Board board;
     private final Patterns pattern;
-    private Set<Position> missingPositions;
+    private final BambooColor[] colors;
+    private Set<PositionColored> missingPositions;
 
-    public CardObjectiveParcel(Board board, int score, Patterns pattern) {
+    public CardObjectiveParcel(Board board, int score, Patterns pattern, BambooColor... colors) {
         super(score);
         this.board = board;
         this.pattern = pattern;
+        this.colors = colors;
     }
 
     @Override
     public boolean verify() {
         if(this.completed)
             return true;
-        Set<Position> positions = this.board.getPositions();
-        this.missingPositions = new HashSet<>(this.pattern.check(positions));
+        Set<PositionColored> positionColoreds = new HashSet<>();
+        for(Position position : this.board.getPositions()) {
+            Parcel parcel = this.board.getParcel(position);
+            if(parcel != null) //ne devrait jamais arriver, mais si jamais...
+                positionColoreds.add(new PositionColored(position, parcel.getBambooColor()));
+        }
+        this.missingPositions = new HashSet<>(this.pattern.check(positionColoreds, this.colors));
         this.completed = this.missingPositions.isEmpty();
         return this.completed;
     }
@@ -41,7 +51,7 @@ public class CardObjectiveParcel extends CardObjective {
      * @return Les positions où ajouter des tuiles pour compléter l'objectif. Donne toujours le cas dans lequel il faut
      * placer le moins de parcelles possible. Ou null si {@link #verify()} n'a jamais été appelée avant.
      */
-    public Set<Position> getMissingPositionsToComplete() {
+    public Set<PositionColored> getMissingPositionsToComplete() {
         return this.missingPositions;
     }
 

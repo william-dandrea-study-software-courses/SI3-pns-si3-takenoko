@@ -6,7 +6,6 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -33,7 +32,7 @@ public class BoardDrawingBuffer {
 
 
     void drawHexas() {
-        beginDraw(Config.BOND_POSITION, new Position(0, 0, 0));
+        beginDraw(Config.POND_POSITION, new Position(0, 0, 0));
         print();
     }
 
