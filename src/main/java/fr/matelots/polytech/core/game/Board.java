@@ -196,6 +196,19 @@ public class Board {
         return grid.size();
     }
 
+    public int getParcelCount(BambooColor color) {
+        int i = 0;
+
+        for (Map.Entry<Position, Parcel> entry : grid.entrySet()) {
+            if (entry.getValue().getBambooColor() == color) {
+                i++;
+            }
+        }
+
+        return i;
+    }
+
+
     public int getParcelLeftToPlace() {
         return parcelLeftToPlace;
     }

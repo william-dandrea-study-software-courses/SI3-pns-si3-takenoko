@@ -31,13 +31,15 @@ public class Config {
     public static final int MIN_SIZE_BAMBOO = 0;
     public static final int MAX_SIZE_BAMBOO = 4;
 
+    public static final int NB_MAX_GREEN_PARCELS = 11;
+    public static final int NB_MAX_PINK_PARCELS = 7;
+    public static final int NB_MAX_YELLOW_PARCELS = 9;
+
     private static final int NB_OBJ_LAST_TURN_2_PLAYERS = 9;
     private static final int NB_OBJ_LAST_TURN_3_PLAYERS = 8;
     private static final int NB_OBJ_LAST_TURN_4_PLAYERS = 7;
 
-    private static final int NB_MAX_GREEN_PARCELS = 11;
-    private static final int NB_MAX_PINK_PARCELS = 7;
-    private static final int NB_MAX_YELLOW_PARCELS = 9;
+
 
     private Config () throws InstantiationException {
         throw new InstantiationException("This is a static class");

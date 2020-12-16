@@ -62,16 +62,27 @@ public class BotTest {
      */
 
     @Test
-    public void testPlaceAnParcelAnywhereChoosenColor() {
+    public void testPlaceAnParcelAnywhereChosenColorGREEN() {
 
 
         // We verify if we can't place more than 27 parcels
         for (int i = 0; i < 35 ; i++) {
             bot.placeAnParcelAnywhere(BambooColor.GREEN);
         }
+        for (int i = 0; i < 35 ; i++) {
+            bot.placeAnParcelAnywhere(BambooColor.YELLOW);
+        }
+        for (int i = 0; i < 35 ; i++) {
+            bot.placeAnParcelAnywhere(BambooColor.PINK);
+        }
 
-        assertEquals(bot.getBoard().getParcelCount(), 11);
+
+        assertEquals(11, bot.getBoard().getParcelCount(BambooColor.GREEN));
+        assertEquals(9, bot.getBoard().getParcelCount(BambooColor.YELLOW) );
+        assertEquals(7, bot.getBoard().getParcelCount(BambooColor.PINK));
     }
+
+
 
     /**
      * We try to verify if an objective is resolve or not
