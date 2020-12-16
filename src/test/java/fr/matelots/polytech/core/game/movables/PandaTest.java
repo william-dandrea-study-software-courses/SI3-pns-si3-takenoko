@@ -113,4 +113,5 @@ public class PandaTest {
 
         assertEquals(1, bot.getIndividualBoard().getGreenEatenBamboo());
     }
+
 }

@@ -12,10 +12,16 @@ public class BambooPlantation extends Parcel {
 
     private int bambooSize;
     private final BambooColor bambooColor;
+    private final Layout layout;
 
     public BambooPlantation (BambooColor color) {
-        bambooSize = 0;
+        this(color, null);
+    }
+
+    public BambooPlantation (BambooColor color, Layout layout) {
+        this.bambooSize = layout == Layout.BASIN ? 1 : 0;
         this.bambooColor = color;
+        this.layout = layout;
     }
 
     /**
@@ -38,14 +44,19 @@ public class BambooPlantation extends Parcel {
         if (!isIrrigate())
             return; // The bamboo can't grow without irrigation
 
-        if (bambooSize < Config.MAX_SIZE_BAMBOO)
+        if (bambooSize < Config.MAX_SIZE_BAMBOO) {
             bambooSize++;
+            if(layout == Layout.FERTILIZER && bambooSize < Config.MAX_SIZE_BAMBOO)
+                bambooSize++;
+        }
     }
 
     @Override
     public void destroyUnitOfBamboo() {
-        if (bambooSize > Config.MIN_SIZE_BAMBOO)
-            bambooSize--;
+        if(this.layout != Layout.ENCLOSURE) {
+            if (bambooSize > Config.MIN_SIZE_BAMBOO)
+                bambooSize--;
+        }
     }
 
     @Override
@@ -54,6 +65,11 @@ public class BambooPlantation extends Parcel {
         if(!this.isIrrigate())
             this.growBamboo();
         super.setIrrigate(side);
+    }
+
+    @Override
+    public boolean isIrrigate() {
+        return this.layout == Layout.BASIN || super.isIrrigate();
     }
 
     @Override
@@ -68,4 +84,13 @@ public class BambooPlantation extends Parcel {
                 ConsoleColor.getFromBambooColor(getBambooColor()),
                 String.valueOf(getBambooSize()).charAt(0));
     }
+
+    /**
+     *
+     * @return true si la parcelle a un aménagement
+     */
+    public boolean hasLayout() {
+        return this.layout != null;
+    }
+
 }
