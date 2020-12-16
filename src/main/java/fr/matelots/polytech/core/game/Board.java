@@ -221,4 +221,33 @@ public class Board {
     public Panda getPanda () {
         return panda;
     }
+
+    /**
+     * Get all reachable positions following to rules :<br>
+     *  - The position must be aligned with the starting point<br>
+     *  - There can be any blanks between the start and the position
+     * @param start the position where you start
+     * @return all reachable positions from the <i>start</i> position
+     */
+    public List<Position> getReachablePositionFrom (Position start) {
+        List<Position> res = new ArrayList<>();
+        res.add(start);
+
+        for (Position direction : Config.CUBE_DIRECTIONS) {
+            // We don't start from 0 because we won't have six time the start position
+            for (int i = 1; i < Config.NB_PLACEABLE_PARCEL; i++) {
+                Position tmp = new Position(start.getX() + (i * direction.getX()),
+                                            start.getY() + (i * direction.getY()),
+                                            start.getZ() + (i * direction.getZ()));
+                if (containTile(tmp)) {
+                    res.add(tmp);
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
 }

@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.movables;
 
+import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -25,6 +26,11 @@ public abstract class Pawn {
      */
     public boolean moveTo (int x, int y, int z) {
         Position tmp = new Position(x, y, z);
+
+        if (!isReachablePlace(tmp)) {
+            throw new UnreachableParcelException();
+        }
+
         if (getBoard().placePawn(this, tmp)) {
             setPosition(tmp);
             makeAction();
@@ -45,5 +51,14 @@ public abstract class Pawn {
 
     public Position getPosition () {
         return position;
+    }
+
+    /**
+     * Tell if you are allowed to move to a specific position
+     * @param goal the position you want to reach
+     * @return if the goal is in the list of all reachable position from your current position
+     */
+    boolean isReachablePlace (Position goal) {
+        return board.getReachablePositionFrom(position).contains(goal);
     }
 }
