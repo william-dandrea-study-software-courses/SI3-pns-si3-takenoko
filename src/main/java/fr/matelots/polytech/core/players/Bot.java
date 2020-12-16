@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
@@ -142,8 +143,7 @@ public abstract class Bot {
             // Now, we have an ArrayList of the potentials places where we can add a parcel
 
             // We choose a random parcel in the potential list
-            Random randomNumber = new Random();
-            int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+            int position = random.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
             // We finally add to the board the new parcel
 
@@ -162,21 +162,45 @@ public abstract class Bot {
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color) {
         if (board.getParcelCount() <= 27) {
-            // We check where we can put an parcel
+
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
-            // Now, we have an ArrayList of the potentials places where we can add a parcel
 
-            // We choose a random parcel in the potential list
-            Random randomNumber = new Random();
-            int position = randomNumber.nextInt(placeWhereWeCanPlaceAnParcel.size());
+            int position = random.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
-            // We finally add to the board the new parcel
-
-            //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
             Position pos = placeWhereWeCanPlaceAnParcel.get(position);
-            board.addParcel(pos, new BambooPlantation(color));
-            return Optional.of(pos);
+
+            switch (color) {
+                case PINK: {
+                    if (numberOfParcelsPinkInTheGame < Config.NB_MAX_PINK_PARCELS) {
+                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                            numberOfParcelsPinkInTheGame++;
+                        }
+                        return Optional.of(pos);
+                    }
+                }
+
+                case YELLOW: {
+                    if (numberOfParcelsYellowInTheGame < Config.NB_MAX_YELLOW_PARCELS) {
+                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                            numberOfParcelsYellowInTheGame++;
+                        }
+                        return Optional.of(pos);
+                    }
+                }
+
+
+                case GREEN: {
+                    if (numberOfParcelsGreenInTheGame < Config.NB_MAX_GREEN_PARCELS) {
+                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                            numberOfParcelsGreenInTheGame++;
+                        }
+                        return Optional.of(pos);
+                    }
+                }
+            }
         }
+
+
         return Optional.empty();
     }
 
