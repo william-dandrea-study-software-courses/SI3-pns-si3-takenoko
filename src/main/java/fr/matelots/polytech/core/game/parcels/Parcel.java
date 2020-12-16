@@ -89,7 +89,7 @@ public abstract class Parcel {
     public void draw(ParcelDrawer drawer) {
         //System.out.println("irrigate : ");
         if(isIrrigate()) {
-            Arrays.stream(Side.values()).forEach(s -> drawer.setIrrigate(s));
+            Arrays.stream(Side.values()).forEach(drawer::setIrrigate);
             return;
         }
 
