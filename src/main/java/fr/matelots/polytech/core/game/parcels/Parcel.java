@@ -85,7 +85,16 @@ public abstract class Parcel {
         return panda;
     }
 
-    public abstract void draw(ParcelDrawer drawer);
+    public void draw(ParcelDrawer drawer) {
+        //System.out.println("irrigate : ");
+        irrigate.forEach((side, isIrrigated) -> {
+            boolean irr = isIrrigate(side);
+            //System.out.println(side + " : " + irr);
+            if(irr) {
+                drawer.setIrrigate(side);
+            }
+        });
+    }
 
     // Methods
     @Override

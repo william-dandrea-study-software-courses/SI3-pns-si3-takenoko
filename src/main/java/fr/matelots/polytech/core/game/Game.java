@@ -149,7 +149,7 @@ public class Game {
         System.out.println();*/
         drawer.print();
 
-        launchTurnLoop();
+        launchTurnLoop(true);
 
         // this is the winner ! ;)
         //var winner = getWinner();
@@ -167,6 +167,9 @@ public class Game {
     }
 
     public void launchTurnLoop() {
+        launchTurnLoop(false);
+    }
+    public void launchTurnLoop(boolean draw) {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 TurnLog log = new TurnLog(bot);
@@ -176,8 +179,10 @@ public class Game {
                 /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
                 System.out.println("Player : " + bot.toString());*/
 
-                ACTIONLOGGER.info("========== ACTIONS ==========\n" +  log.toString() + "\n");
-                drawer.print();
+                if(draw) {
+                    ACTIONLOGGER.info("========== ACTIONS ==========\n" + log.toString() + "\n");
+                    drawer.print();
+                }
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.

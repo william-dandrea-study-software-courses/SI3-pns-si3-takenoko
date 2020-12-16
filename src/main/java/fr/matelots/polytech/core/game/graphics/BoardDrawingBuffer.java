@@ -22,7 +22,7 @@ public class BoardDrawingBuffer {
 
     private int offsetX = 0;
     private int offsetY = 0;
-    private final ArrayList<ArrayList<ColoredCharacters>> buffer = new ArrayList<>();
+    private final ArrayList<ArrayList<ColoredString>> buffer = new ArrayList<>();
 
     public BoardDrawingBuffer(Board board) {
         this.board = board;
@@ -69,34 +69,47 @@ public class BoardDrawingBuffer {
         setCharacter(x, y, c, ConsoleColor.NONE);
     }
 
+    void changeColor(int x, int y, ConsoleColor newColor) {
+        int tX = x + offsetX;
+        int tY = y + offsetY;
+        buffer.get(tY).get(tX).setColor(newColor);
+    }
+
     void setCharacter(int x, int y, char c, ConsoleColor color) {
+        setValue(x, y, new ColoredCharacters(color, c));
+    }
+
+    void setString(int x, int y, String val, ConsoleColor color) {
+        setValue(x, y, new ColoredString(color, val));
+    }
+
+    private void setValue(int x, int y, ColoredString value) {
         int tX = x + offsetX;
         int tY = y + offsetY;
 
-        ColoredCharacters character = new ColoredCharacters(color, c);
-
         if(tX < 0) {
             addColumnStart();
-            setCharacter(x, y, c, color);
+            setValue(x, y, value);
             return;
         }
         if(tY < 0) {
             addLineStart();
-            setCharacter(x, y, c, color);
+            setValue(x, y, value);
             return;
         }
         if(tX >= width) {
             addColumnEnd();
-            setCharacter(x, y, c, color);
+            setValue(x, y, value);
             return;
         }
         if(tY >= height) {
             addLineEnd();
-            setCharacter(x, y, c, color);
+            setValue(x, y, value);
             return;
         }
 
-        buffer.get(tY).set(tX, character);
+        if(buffer.get(tY).get(tX).getContent().equals(" "))
+            buffer.get(tY).set(tX, value);
     }
 
     private void addColumnStart() {
@@ -118,7 +131,7 @@ public class BoardDrawingBuffer {
 
     private void addLineStart() {
         offsetY++;
-        ArrayList<ColoredCharacters> line = new ArrayList<>();
+        ArrayList<ColoredString> line = new ArrayList<>();
         for(int i = 0; i < width; i++) {
             var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
             line.add(c);
@@ -128,7 +141,7 @@ public class BoardDrawingBuffer {
     }
 
     private void addLineEnd() {
-        ArrayList<ColoredCharacters> line = new ArrayList<>();
+        ArrayList<ColoredString> line = new ArrayList<>();
         for(int i = 0; i < width; i++) {
             var c = new ColoredCharacters(ConsoleColor.NONE, ' ');
             line.add(c);

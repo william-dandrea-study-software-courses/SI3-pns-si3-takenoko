@@ -58,6 +58,18 @@ public enum Side {
         throw new RuntimeException("Le ridge '"+this.toString()+"' n'a pas de ridge à sa gauche");
     }
 
+    public Position getConsoleDelta() {
+        switch (this) {
+            case LEFT: return new Position(-2, 0, 0);
+            case RIGHT: return new Position(2, 0, 0);
+            case BOTTOM_LEFT: return new Position(-1, 1, 0);
+            case BOTTOM_RIGHT: return new Position(1, 1, 0);
+            case UPPER_LEFT: return new Position(-1, -1, 0);
+            case UPPER_RIGHT: return new Position(1, -1, 0);
+        }
+        return null;
+    }
+
     public Position getDirection() {
         return direction;
     }

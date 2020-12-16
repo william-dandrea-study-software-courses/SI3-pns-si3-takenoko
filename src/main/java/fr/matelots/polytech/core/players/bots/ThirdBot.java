@@ -251,6 +251,7 @@ public class ThirdBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
+
         havePlayed = false;
         if(!canPlay()) return;
 
@@ -272,6 +273,10 @@ public class ThirdBot extends Bot {
 
     @Override
     public boolean canPlay() {
+        for(var goal : getIndividualBoard().getUnfinishedGardenerObjectives())
+            goal.verify();
+        for(var goal : getIndividualBoard().getUnfinishedParcelObjectives())
+            goal.verify();
         return haveGardenerGoal() || (haveParcelGoal() && canPlaceParcel());
     }
 

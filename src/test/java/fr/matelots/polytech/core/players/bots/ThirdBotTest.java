@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +48,16 @@ public class ThirdBotTest {
         game.addBot(bot);
         game.addBot(bot2);
 
+        Timer timer = new Timer(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                assertTrue(false);
+                throw new RuntimeException("too long !");
+            }
+        }, 2000);
         game.launchTurnLoop();
+        timer.cancel();
     }
 
     @Test

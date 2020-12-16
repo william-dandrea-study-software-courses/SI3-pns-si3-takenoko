@@ -63,6 +63,7 @@ public class BambooPlantation extends Parcel {
 
     @Override
     public void draw(ParcelDrawer drawer) {
+        super.draw(drawer);
         drawer.set(HexagonePosition.CENTER,
                 ConsoleColor.getFromBambooColor(getBambooColor()),
                 String.valueOf(getBambooSize()).charAt(0));
