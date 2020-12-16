@@ -83,8 +83,8 @@ public class IndividualBoard {
     // @return the number of completed objectives (all types of objectives)
     public int getCompletedObjectives() {
         int n = 0;
-        n += objectiveParcels.stream().filter(o -> o.isCompleted()).count();
-        n += objectiveGardeners.stream().filter(o -> o.isCompleted()).count();
+        n += objectiveParcels.stream().filter(CardObjective::isCompleted).count();
+        n += objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
         return n;
     }
 

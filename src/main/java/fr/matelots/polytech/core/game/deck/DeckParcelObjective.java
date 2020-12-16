@@ -29,7 +29,8 @@ public class DeckParcelObjective extends DeckObjective<CardObjectiveParcel> {
         this.objectives.add(new CardObjectiveParcel(board, 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN));
         this.objectives.add(new CardObjectiveParcel(board, 4, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW));
         this.objectives.add(new CardObjectiveParcel(board, 4, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.GREEN, BambooColor.GREEN));
-        this.objectives.add(new CardObjectiveParcel(board, 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.YELLOW, BambooColor.PINK, BambooColor.PINK));
+        this.objectives.add(new CardObjectiveParcel(board, 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK));
+        this.objectives.add(new CardObjectiveParcel(board, 5, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.PINK, BambooColor.PINK));
     }
 
 }

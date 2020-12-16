@@ -1,18 +1,11 @@
 package fr.matelots.polytech.core.players.bots;
 
-import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
-import fr.matelots.polytech.engine.util.Position;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 

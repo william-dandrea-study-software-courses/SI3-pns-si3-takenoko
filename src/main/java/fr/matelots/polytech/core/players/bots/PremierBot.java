@@ -7,8 +7,8 @@ import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ public class PremierBot extends Bot {
 
     /**
      * Emulate the turn of the bot
-     * @return
      */
     @Override
     public void playTurn(TurnLog log) {

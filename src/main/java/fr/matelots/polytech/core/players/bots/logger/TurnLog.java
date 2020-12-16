@@ -1,4 +1,4 @@
-package fr.matelots.polytech.core.players.bots.botLogger;
+package fr.matelots.polytech.core.players.bots.logger;
 
 import fr.matelots.polytech.core.players.Bot;
 

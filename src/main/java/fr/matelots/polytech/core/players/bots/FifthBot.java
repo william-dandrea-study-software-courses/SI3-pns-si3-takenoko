@@ -247,7 +247,6 @@ public class FifthBot extends Bot {
                 && board.getParcel(position).getBambooColor().equals(colorWeTryToFind)
         ).findAny();
 
-
         return goodPosition;
 
     }

@@ -6,7 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +26,9 @@ public class Game {
 
     // Constructors
     public Game () {
-        initLogger();
         bots = new ArrayList<>();
         board = new Board();
         drawer = new BoardDrawer(board);
-    }
-
-    void initLogger() {
-        String loggerName = "board";
-        /*Logger boardLogger = Logger.getLogger("loggerName");
-
-        boardLogger.info(loggerName);*/
     }
 
     private void setDemoBots() {
