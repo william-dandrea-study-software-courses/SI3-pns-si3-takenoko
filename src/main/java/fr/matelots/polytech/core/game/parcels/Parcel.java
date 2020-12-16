@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 
 /**
@@ -87,7 +88,14 @@ public abstract class Parcel {
 
     public void draw(ParcelDrawer drawer) {
         //System.out.println("irrigate : ");
+        if(isIrrigate()) {
+            Arrays.stream(Side.values()).forEach(s -> drawer.setIrrigate(s));
+            return;
+        }
+
+        // Si elle n'est pas irrigué, elle peut partager des bordures qui le sont
         irrigate.forEach((side, isIrrigated) -> {
+
             boolean irr = isIrrigate(side);
             //System.out.println(side + " : " + irr);
             if(irr) {
