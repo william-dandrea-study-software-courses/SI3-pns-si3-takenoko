@@ -1,11 +1,11 @@
-package fr.matelots.polytech.core.players.bots.botLogger;
+package fr.matelots.polytech.core.players.bots.logger;
 
 import fr.matelots.polytech.core.players.Bot;
 
 class BotAction {
-    private Bot bot;
-    private BotActionType action;
-    private String parameter;
+    private final Bot bot;
+    private final BotActionType action;
+    private final String parameter;
 
     BotAction (Bot bot, BotActionType action, String parameter) {
         this.bot = bot;

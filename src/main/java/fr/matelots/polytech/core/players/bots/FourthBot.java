@@ -10,8 +10,8 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -105,8 +105,7 @@ public class FourthBot extends Bot {
                     // We select a new parcel objective
                     var obj = pickParcelObjective();
 
-                    if(obj.isPresent())
-                        log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
+                    obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
                 }
 
             }
@@ -120,8 +119,7 @@ public class FourthBot extends Bot {
                     // We select a new parcel objective
                     var obj = pickGardenerObjective();
 
-                    if(obj.isPresent())
-                        log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.get().toString());
+                    obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
                 }
 
             }
@@ -152,8 +150,7 @@ public class FourthBot extends Bot {
      */
     void pickAnParcelObjectiveAndAddToPlayerBoard(TurnLog log) {
         var obj = pickParcelObjective();
-        if(obj.isPresent())
-            log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
+        obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
     }
 
     /**
@@ -161,8 +158,7 @@ public class FourthBot extends Bot {
      */
     void pickAnGardenerObjectiveAndAddToPlayerBoard(TurnLog log) {
         var obj = pickGardenerObjective();
-        if(obj.isPresent())
-            log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.get().toString());
+        obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
     }
 
     /**
@@ -235,8 +231,8 @@ public class FourthBot extends Bot {
         // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
         // Less this number is, more easy the objective will be resolve
 
-        for (int i = 0; i<unfinishedParcelsObjectives.size(); i++) {
-            unfinishedParcelsObjectives.get(i).verify();
+        for (CardObjectiveParcel unfinishedParcelsObjective : unfinishedParcelsObjectives) {
+            unfinishedParcelsObjective.verify();
         }
 
 
@@ -248,8 +244,6 @@ public class FourthBot extends Bot {
             } else {
                 currentParcelObjective = unfinishedParcelsObjectives.get(1);
             }
-        } else {
-            //currentParcelObjective = unfinishedParcelsObjectives.get(0);
         }
 
     }
@@ -274,8 +268,6 @@ public class FourthBot extends Bot {
 
             if (unfinishedGardenersObjectives.get(0).getSize() <= unfinishedGardenersObjectives.get(0).getSize()) {
                 currentGardenerObjective = unfinishedGardenersObjectives.get(0);
-            } else {
-                //currentGardenerObjective = unfinishedGardenersObjectives.get(1);
             }
 
         }
@@ -341,8 +333,7 @@ public class FourthBot extends Bot {
                 // We put a parcel anywhere
                 var position = placeAnParcelAnywhere();
 
-                if(position.isPresent())
-                    log.addAction(BotActionType.PLACE_PARCEL, position.get().toString());
+                position.ifPresent(position1 -> log.addAction(BotActionType.PLACE_PARCEL, position1.toString()));
             }
 
         }
@@ -350,7 +341,7 @@ public class FourthBot extends Bot {
 
     private <T> T getRandomIn(List<T> objs) {
         Random rnd = new Random();
-        return (T)objs.get(rnd.nextInt(objs.size()));
+        return objs.get(rnd.nextInt(objs.size()));
     }
     private void placeParcelSomewhere(Parcel parcel, TurnLog log) {
         List<Position> positions = new ArrayList<>(board.getValidPlaces());

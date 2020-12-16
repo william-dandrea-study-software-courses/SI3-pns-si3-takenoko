@@ -5,8 +5,8 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -44,7 +44,7 @@ public class FifthBot extends Bot {
     //private String actionParameter;
     private TurnLog turnLogger;
 
-    private Panda panda;
+    private final Panda panda;
 
     private int OBJECTIVE_NUMBER_OF_BAMBOO_STOCK = 3;
     private int MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES = 1;
@@ -124,11 +124,11 @@ public class FifthBot extends Bot {
                 if (colorWeWillTryToStock.equals(GREEN)) {
 
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
-                    if (!goodPlace2.isEmpty()) {
+                    if (goodPlace2.isPresent()) {
                         moveThePandaAtACertainPosition(goodPlace2);
                     } else {
                         Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK);
-                        if (!goodPlace3.isEmpty()) {
+                        if (goodPlace3.isPresent()) {
                             moveThePandaAtACertainPosition(goodPlace3);
                         } else {
                             moveTheGardenerOrPlaceAnParcel();
@@ -138,13 +138,13 @@ public class FifthBot extends Bot {
                 if (colorWeWillTryToStock.equals(YELLOW)) {
 
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
-                    if (!goodPlace2.isEmpty()) {
+                    if (goodPlace2.isPresent()) {
 
                         moveThePandaAtACertainPosition(goodPlace2);
                     } else {
 
                         Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(PINK);
-                        if (!goodPlace3.isEmpty()) {
+                        if (goodPlace3.isPresent()) {
 
                             moveThePandaAtACertainPosition(goodPlace3);
                         } else {
@@ -156,13 +156,13 @@ public class FifthBot extends Bot {
                 if (colorWeWillTryToStock.equals(PINK)) {
 
                     Optional<Position> goodPlace2 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(YELLOW);
-                    if (!goodPlace2.isEmpty()) {
+                    if (goodPlace2.isPresent()) {
 
                         moveThePandaAtACertainPosition(goodPlace2);
                     } else {
 
                         Optional<Position> goodPlace3 = searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN);
-                        if (!goodPlace3.isEmpty()) {
+                        if (goodPlace3.isPresent()) {
 
                             moveThePandaAtACertainPosition(goodPlace3);
                         } else {
@@ -181,8 +181,7 @@ public class FifthBot extends Bot {
 
             var obj = placeAnParcelAnywhere();
 
-            if(obj.isPresent())
-                turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
+            obj.ifPresent(position -> turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString()));
         } else {
 
             moveTheGardenerAnywhere();
@@ -194,9 +193,10 @@ public class FifthBot extends Bot {
      */
     void moveThePandaAtACertainPosition(Optional<Position> position) {
         panda.setCurrentPlayer(this);
-        if(position.isPresent())
+        if(position.isPresent()) {
             turnLogger.addAction(BotActionType.MOVE_PANDA, position.get().toString());
-        panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
+            panda.moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
+        }
     }
 
     /**
@@ -207,11 +207,12 @@ public class FifthBot extends Bot {
                 .filter(p ->
                         !board.getParcel(p).isPond())
                 .findAny();
-        if(position.isPresent())
+        if(position.isPresent()) {
             turnLogger.addAction(BotActionType.MOVE_PANDA, position.get().toString());
 
-        panda.setCurrentPlayer(this);
-        panda.moveTo(position.get().getX(), position.get().getY(),position.get().getZ());
+            panda.setCurrentPlayer(this);
+            panda.moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
+        }
     }
 
 
@@ -245,7 +246,6 @@ public class FifthBot extends Bot {
                 board.getParcel(position).getBambooSize() > 0
                 && board.getParcel(position).getBambooColor().equals(colorWeTryToFind)
         ).findAny();
-
 
         return goodPosition;
 
@@ -296,8 +296,7 @@ public class FifthBot extends Bot {
         if (individualBoard.countUnfinishedPandaObjectives() < 5) {
             var obj = pickPandaObjective();
 
-            if(obj.isPresent())
-                turnLogger.addAction(BotActionType.PICK_PANDA_GOAL, obj.get().toString());
+            obj.ifPresent(cardObjectivePanda -> turnLogger.addAction(BotActionType.PICK_PANDA_GOAL, cardObjectivePanda.toString()));
 
             updateUnfinishedPandasObjectives();
             return true;
@@ -324,8 +323,8 @@ public class FifthBot extends Bot {
         unfinishedBotPandasObjectives = getIndividualBoard().getUnfinishedPandaObjectives();
 
         //We verify if all the objectives are in progress
-        for (int i = 0; i < unfinishedBotPandasObjectives.size() ; i++) {
-            if (checkObjective(unfinishedBotPandasObjectives.get(i)) == false) {
+        for (CardObjectivePanda unfinishedBotPandasObjective : unfinishedBotPandasObjectives) {
+            if (!checkObjective(unfinishedBotPandasObjective)) {
                 return false;
             }
         }

@@ -7,8 +7,8 @@ import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.botLogger.BotActionType;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
@@ -66,8 +66,7 @@ public class SecondBot extends Bot {
     void pickAnObjectiveAndAddToPlayerBoard() {
         var obj = pickParcelObjective();
 
-        if(obj.isPresent())
-            turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
+        obj.ifPresent(cardObjectiveParcel -> turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
     }
 
     /**
@@ -102,8 +101,7 @@ public class SecondBot extends Bot {
             // We need to place a parcel anywhere in the game board
             var obj = placeAnParcelAnywhere();
 
-            if(obj.isPresent())
-                turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
+            obj.ifPresent(position -> turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString()));
 
         } else {
 
@@ -138,8 +136,7 @@ public class SecondBot extends Bot {
             } else {
                 // We put a parcel anywhere
                 var obj = placeAnParcelAnywhere();
-                if(obj.isPresent())
-                    turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
+                obj.ifPresent(position -> turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString()));
 
             }
 

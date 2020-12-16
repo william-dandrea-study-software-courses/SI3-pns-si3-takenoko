@@ -3,7 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.players.bots.botLogger.TurnLog;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
