@@ -1,6 +1,7 @@
-package fr.matelots.polytech.core.game;
+package fr.matelots.polytech.core.game.deck;
 
-import fr.matelots.polytech.core.game.deck.DeckPandaObjective;
+import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +29,7 @@ public class DeckPandaObjectiveTest {
 
     @Test @DisplayName("taille respecté")
     public void sizeCheck() {
-        for(int i = 0; i < Config.DECK_SIZE; i++)
+        for(int i = 0; i < Config.DECK_OBJECTIVE_SIZE; i++)
             assertDoesNotThrow(() -> this.deck.pick());
         assertFalse(this.deck.canPick());
     }
@@ -57,7 +58,7 @@ public class DeckPandaObjectiveTest {
 
     private void containCards(CardObjectivePanda card, int count) {
         int found = 0;
-        for(int i = 0; i < Config.DECK_SIZE; i++) {
+        for(int i = 0; i < Config.DECK_OBJECTIVE_SIZE; i++) {
             CardObjectivePanda pick = this.deck.pick();
             if(pick.equals(card))
                 found++;

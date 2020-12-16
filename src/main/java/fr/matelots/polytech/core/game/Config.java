@@ -20,7 +20,10 @@ public class Config {
                                                         );
 
     /**Taille du paquet de carte objectifs*/
-    public static final int DECK_SIZE = 15;
+    public static final int DECK_OBJECTIVE_SIZE = 15;
+
+    /**Taille du paquet de carte parcelles*/
+    public static final int DECK_PARCEL_SIZE = 27;
 
     /**Position de l'étang*/
     public static final Position POND_POSITION = new Position(0, 0, 0);

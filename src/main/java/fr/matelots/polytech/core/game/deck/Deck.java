@@ -2,8 +2,6 @@ package fr.matelots.polytech.core.game.deck;
 
 import fr.matelots.polytech.core.PickDeckEmptyException;
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,23 +10,23 @@ import java.util.List;
 /**
  * @author Alexandre Arcil
  */
-public abstract class DeckObjective<T extends CardObjective> {
+public abstract class Deck<T> {
 
-    protected final List<T> objectives;
+    protected final List<T> cards;
     protected final Board board;
 
-    public DeckObjective(Board board) {
+    public Deck(Board board) {
         this.board = board;
-        this.objectives = new ArrayList<>();
+        this.cards = new ArrayList<>();
         this.fill();
-        if(this.objectives.size() != Config.DECK_SIZE)
-            throw new RuntimeException("La taille du paquet est de "+this.objectives.size()
-                    + " alors qu'elle devrait être de "+Config.DECK_SIZE);
-        Collections.shuffle(this.objectives);
+        /*if(this.cards.size() != Config.DECK_OBJECTIVE_SIZE) Plus utilisable depuis l'ajout de DeckParcel
+            throw new RuntimeException("La taille du paquet est de "+this.cards.size()
+                    + " alors qu'elle devrait être de "+Config.DECK_OBJECTIVE_SIZE);*/
+        Collections.shuffle(this.cards);
     }
 
     /**
-     * C'est dans cette méthode qu'il faut remplir {@link #objectives}
+     * C'est dans cette méthode qu'il faut remplir {@link #cards}
      */
     protected abstract void fill();
 
@@ -39,7 +37,7 @@ public abstract class DeckObjective<T extends CardObjective> {
      */
     public T pick() {
         if(this.canPick())
-            return this.objectives.remove(0);
+            return this.cards.remove(0);
         else
             throw new PickDeckEmptyException();
     }
@@ -49,7 +47,7 @@ public abstract class DeckObjective<T extends CardObjective> {
      * @return true si le paquet n'est pas vide, false sinon
      */
     public boolean canPick() {
-        return !this.objectives.isEmpty();
+        return !this.cards.isEmpty();
     }
 
 }

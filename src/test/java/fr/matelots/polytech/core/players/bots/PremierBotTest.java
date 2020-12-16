@@ -53,7 +53,7 @@ public class PremierBotTest {
 
     @Test
     public void testBotCantPickParcelGoal() {
-        for(int i = 0; i <= Config.DECK_SIZE; i++) {
+        for(int i = 0; i <= Config.DECK_OBJECTIVE_SIZE; i++) {
             game.getNextParcelObjective();
         }
         //game.run();

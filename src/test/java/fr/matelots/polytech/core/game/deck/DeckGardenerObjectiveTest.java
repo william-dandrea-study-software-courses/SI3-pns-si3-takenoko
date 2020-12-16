@@ -1,5 +1,7 @@
-package fr.matelots.polytech.core.game;
+package fr.matelots.polytech.core.game.deck;
 
+import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
@@ -31,7 +33,7 @@ public class DeckGardenerObjectiveTest {
 
     @Test @DisplayName("taille respecté")
     public void sizeCheck() {
-        for(int i = 0; i < Config.DECK_SIZE; i++)
+        for(int i = 0; i < Config.DECK_OBJECTIVE_SIZE; i++)
             assertDoesNotThrow(() -> this.deck.pick());
         assertFalse(this.deck.canPick());
     }
@@ -74,7 +76,7 @@ public class DeckGardenerObjectiveTest {
 
     private void containCards(CardObjectiveGardener card, int count) {
         int found = 0;
-        for(int i = 0; i < Config.DECK_SIZE; i++) {
+        for(int i = 0; i < Config.DECK_OBJECTIVE_SIZE; i++) {
             CardObjectiveGardener pick = this.deck.pick();
             if(pick.equals(card))
                 found++;

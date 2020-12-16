@@ -5,6 +5,8 @@ import fr.matelots.polytech.core.game.graphics.ConsoleColor;
 import fr.matelots.polytech.core.game.graphics.HexagonePosition;
 import fr.matelots.polytech.core.game.graphics.ParcelDrawer;
 
+import java.util.Objects;
+
 /**
  * @author Gabriel Cogne, Alexandre Arcil
  */
@@ -93,4 +95,16 @@ public class BambooPlantation extends Parcel {
         return this.layout != null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BambooPlantation that = (BambooPlantation) o;
+        return bambooSize == that.bambooSize && bambooColor == that.bambooColor && layout == that.layout;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bambooSize, bambooColor, layout);
+    }
 }
