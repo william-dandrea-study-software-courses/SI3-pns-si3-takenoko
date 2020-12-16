@@ -77,7 +77,7 @@ public class IndividualBoard {
     // @return the number of unfinished objectives (all types of objectives)
     public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives()
-                + countUnfinishedGardenerObjectives();
+                + countUnfinishedGardenerObjectives() + countUnfinishedPandaObjectives();
     }
 
     // @return the number of completed objectives (all types of objectives)
@@ -85,6 +85,7 @@ public class IndividualBoard {
         int n = 0;
         n += objectiveParcels.stream().filter(CardObjective::isCompleted).count();
         n += objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
+        n += objectivePandas.stream().filter(CardObjective::isCompleted).count();
         return n;
     }
 
@@ -92,6 +93,7 @@ public class IndividualBoard {
         int n = 0;
         n += (int)objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
         n += (int)objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
+        n += (int)objectivePandas.stream().filter(CardObjective::isCompleted).count();
         return n;
     }
 
