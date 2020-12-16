@@ -109,7 +109,7 @@ public class DeckParcelObjectiveTest {
         int found = 0;
         for(int i = 0; i < Config.DECK_SIZE; i++) {
             CardObjectiveParcel pick = this.deck.pick();
-            if(pick.equals(card))
+            if(pick.getPattern().equals(card.getPattern()))
                 found++;
         }
         assertEquals(count, found);
