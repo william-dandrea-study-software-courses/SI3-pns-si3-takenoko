@@ -33,10 +33,11 @@ public class Game {
 
     private void setDemoBots() {
         //bots.add(new PremierBot(this));
-        bots.add(new SecondBot(this, "BadBot"));
+        bots.add(new SecondBotTemporaire(this, "BadBot"));
+        bots.add(new SecondBotTemporaire(this, "GoodBot"));
         //bots.add(new ThirdBot(this));
         //bots.add(new FourthBot(this));
-        bots.add(new FifthBot(this, "GentleBot"));
+        //bots.add(new FifthBot(this, "GentleBot"));
     }
 
     public void addBot(Bot bot) {
@@ -176,17 +177,18 @@ public class Game {
                 bot.playTurn(log);
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size()))
                     lastTurn = true;
-                /*System.out.println("Completed : " + bot.getIndividualBoard().countCompletedObjectives());
-                System.out.println("Player : " + bot.toString());*/
+
 
                 if(draw) {
                     ACTIONLOGGER.info("========== ACTIONS ==========\n" + log.toString() + "\n");
                     drawer.print();
                 }
+
+                System.out.println(bot.canPlay());
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
-                //System.out.println("aucun bot ne peux jouer la partie, on l'annule");
+                System.out.println("aucun bot ne peux jouer la partie, on l'annule");
                 break;
             }
         }

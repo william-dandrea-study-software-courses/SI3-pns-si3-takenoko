@@ -62,10 +62,12 @@ public class FourthBot extends Bot {
     private CardObjectiveGardener currentGardenerObjective;
     private int numberOfResolveObjective = 0;
 
+    private TurnLog turnLogger;
+
     public FourthBot(Game game) {
         super(game);
     }
-    public FourthBot(Game game, String name) { super(game, name); }
+    public FourthBot(Game game, String name, TurnLog log) { super(game, name); }
 
     @Override
     public void playTurn(TurnLog log) {
@@ -77,7 +79,7 @@ public class FourthBot extends Bot {
         // directly the objectives.
         if (firstLaunch) {
             firstLaunchPickObjectives(log);
-            placeAnParcelAnywhere();
+            placeAnParcelAnywhere(log);
             firstLaunch = false;
         } else {
 
@@ -103,7 +105,7 @@ public class FourthBot extends Bot {
                 // Now we check if the objective is completed
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
-                    var obj = pickParcelObjective();
+                    var obj = pickParcelObjective(turnLogger);
 
                     obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
                 }
@@ -117,7 +119,7 @@ public class FourthBot extends Bot {
                 // Now we check if the objective is completed
                 if (checkObjective(easiestObjective)) {
                     // We select a new parcel objective
-                    var obj = pickGardenerObjective();
+                    var obj = pickGardenerObjective(log);
 
                     obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
                 }
@@ -149,7 +151,7 @@ public class FourthBot extends Bot {
      * This function pick an new Parcel objective and add this objective to the player deck
      */
     void pickAnParcelObjectiveAndAddToPlayerBoard(TurnLog log) {
-        var obj = pickParcelObjective();
+        var obj = pickParcelObjective(log);
         obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
     }
 
@@ -157,7 +159,7 @@ public class FourthBot extends Bot {
      * This function pick an new Gardener objective and add this objective to the player deck
      */
     void pickAnGardenerObjectiveAndAddToPlayerBoard(TurnLog log) {
-        var obj = pickGardenerObjective();
+        var obj = pickGardenerObjective(log);
         obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
     }
 
@@ -299,7 +301,7 @@ public class FourthBot extends Bot {
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
-            placeAnParcelAnywhere();
+            placeAnParcelAnywhere(log);
         } else {
 
 
@@ -331,7 +333,7 @@ public class FourthBot extends Bot {
                 log.addAction(BotActionType.PLACE_PARCEL, positionsWeChoose.get(position).toString());
             } else {
                 // We put a parcel anywhere
-                var position = placeAnParcelAnywhere();
+                var position = placeAnParcelAnywhere(log);
 
                 position.ifPresent(position1 -> log.addAction(BotActionType.PLACE_PARCEL, position1.toString()));
             }

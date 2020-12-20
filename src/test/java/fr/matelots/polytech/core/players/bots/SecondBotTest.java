@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +24,15 @@ public class SecondBotTest {
     IndividualBoard individualBoard;
     CardObjectiveParcel testCurrentObjective;
 
+    TurnLog turnLogger;
+
     @BeforeEach
     public void init() {
         game = new Game();
-        bot = new SecondBot(game);
+        bot = new SecondBot(game, "SecondBot");
         individualBoard = bot.getIndividualBoard();
         game.addBot(bot);
+        turnLogger = new TurnLog(bot);
     }
 
     @Test
@@ -88,7 +92,7 @@ public class SecondBotTest {
 
         // We pick a new objective and put it in the currentObjective, checkCurrentObjective need to be true
         // because the objective is "active"
-        bot.placeAnParcelAnywhere();
+        bot.placeAnParcelAnywhere(turnLogger);
         bot.pickAnObjectiveAndAddToPlayerBoard();
         bot.selectObjectiveFromPlayerDeck();
         assertTrue(bot.checkCurrentObjective());

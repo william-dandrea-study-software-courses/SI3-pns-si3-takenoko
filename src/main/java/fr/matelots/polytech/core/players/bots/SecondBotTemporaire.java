@@ -1,13 +1,18 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -31,13 +36,14 @@ import java.util.Optional;
  - [ ] Regarder si l’objectif est réalisé
 
  * @author williamdandrea
+ * @todo Impossible de checker les objectifs donc boucle infini, a revoir
  */
 
 
 public class SecondBotTemporaire extends Bot {
 
     private TurnLog turnLogger;
-    private Optional<CardObjectiveParcel> currentObjective;
+    private Optional<CardObjective> currentObjective;
 
 
     public SecondBotTemporaire(Game game) { super(game); }
@@ -45,79 +51,97 @@ public class SecondBotTemporaire extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
-        turnLogger = log;
         currentNumberOfAction = 0;
+        turnLogger = log;
 
 
         int numberOfObjectiveInIndividualBoard = individualBoard.countUnfinishedObjectives();
-        checkCurrentObjective();
+        //checkObjective(currentObjective);
 
         // 1.0 // Si on a aucun objectif dans le deck
         if (numberOfObjectiveInIndividualBoard == 0) {
 
             // 1.1 // Tirer un objectif parcelle (TOUR+1)
-            pickParcelObjectiveAndAddItToThePlayerBoard();
+            currentObjective = pickParcelObjective(log);
 
             // 1.2 // Regarder si l’objectif peut déjà être réalisé sans actions de la part du joueur
-            if(checkCurrentObjective() && canPlay()) {
-                pickParcelObjectiveAndAddItToThePlayerBoard();
+            if(checkObjective(currentObjective) && canPlay()) {
+                currentObjective = pickParcelObjective(log);
 
-                if (canPlay()) {
-                    tryToResolveParcelObjective();
+                if (canPlay() && currentObjective.isPresent()) {
+                    tryToResolveParcelObjective(log);
                 }
             }
         } else {
-            if (canPlay()) {
-                tryToResolveParcelObjective();
+            if (canPlay() && currentObjective.isPresent()) {
+                tryToResolveParcelObjective(log);
             }
         }
+
+        currentNumberOfAction = 0;
 
 
 
     }
 
-    private void tryToResolveParcelObjective() {
+    private void tryToResolveParcelObjective(TurnLog log) {
 
         // Si on a juste l'etang, je met une parcelle n'importe ou
         if(board.getParcelCount() == 1) {
             if (canPlay()) {
-                Optional<Position> placeOfParcel = placeAnParcelAnywhere();
-                placeOfParcel.ifPresent(position -> turnLogger.addAction(BotActionType.PLACE_PARCEL, position.toString()));
+                Optional<Position> placeOfParcel = placeAnParcelAnywhere(turnLogger);
+            }
+        } else {
+            // On récupère l'emplacement des parcelles candidates pour résoudre l'objectif
+            CardObjectiveParcel cardObjectiveParcel = (CardObjectiveParcel) currentObjective.get();
+
+            Set<PositionColored> missingPositionsToComplete = new HashSet<>();
+
+            if (cardObjectiveParcel.getMissingPositionsToComplete() != null) {
+                for (PositionColored positionColored : cardObjectiveParcel.getMissingPositionsToComplete()) {
+                    missingPositionsToComplete.add(positionColored);
+                }
+
+                ArrayList<PositionColored> positionsWeChooseForPlaceAnParcel = new ArrayList<>();
+
+                // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
+                if (missingPositionsToComplete != null) {
+                    missingPositionsToComplete.stream()
+                            .filter(p -> board.isPlaceValid(p.getPosition()) && !p.equals(Config.POND_POSITION))
+                            .forEach(positionsWeChooseForPlaceAnParcel::add);
+                }
+
+                if(positionsWeChooseForPlaceAnParcel.size() != 0) {
+                    // We have an place to put the new parcel
+
+                    // We choose a random parcel in the potential list
+                    Random randomNumber = new Random();
+                    int position = randomNumber.nextInt(positionsWeChooseForPlaceAnParcel.size());
+
+                    // We add the new parcel
+                    board.addParcel(positionsWeChooseForPlaceAnParcel.get(position).getPosition(),
+                            new BambooPlantation(positionsWeChooseForPlaceAnParcel.get(position).getColor())
+                    );
+
+                    if(checkObjective(currentObjective) && canPlay()) {
+                        currentObjective = pickParcelObjective(log);
+                    }
+
+                }
+
+            } else {
+                // We put a parcel anywhere
+                placeAnParcelAnywhere(turnLogger);
             }
         }
     }
 
-    /**
-     * This method pick a new objective parcel, watch if it is present, and add it to the currentGoal class parameter
-     */
-    private void pickParcelObjectiveAndAddItToThePlayerBoard() {
 
-        Optional<CardObjectiveParcel> objectiveParcel = pickParcelObjective();
-        if(objectiveParcel.isPresent()) {
-            turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, objectiveParcel.get().toString());
-            currentObjective = objectiveParcel;
-        }
-
-    }
-
-    /**
-     * This function check the current objective
-     * @return true if the currentObjective is in progress or false if there is any currentObjective or if
-     * the currentObjective is finish
-     */
-    private boolean checkCurrentObjective() {
-
-        // If the currentObjective == null, or if the current goal
-        // is finish (the function verify return true if an objective is completed)
-        return this.currentObjective.isPresent() && !currentObjective.get().verify();
-
-        // Else, we return true because the objective in progress
-    }
 
 
     @Override
     public boolean canPlay() {
-        if (currentNumberOfAction <= 2) {
+        if (this.currentNumberOfAction <= 2) {
             return true;
         }
         return false;

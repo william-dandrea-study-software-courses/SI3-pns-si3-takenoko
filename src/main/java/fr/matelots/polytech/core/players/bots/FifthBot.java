@@ -96,7 +96,7 @@ public class FifthBot extends Bot {
 
         // 1 // Si il n'y a aucune parcelle, placer une parcelle
         if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_BOARD_TO_TRY_TO_RESOLVE_OBJECTIVES) {
-            placeAnParcelAnywhere();
+            placeAnParcelAnywhere(turnLogger);
         }
         else {
             // 2.1 // Regarder la différence entre le nombre de bambou en stock (de chaque couleurs) et l'objectif de bambou en stock (on va prendre 3)
@@ -179,7 +179,7 @@ public class FifthBot extends Bot {
     void moveTheGardenerOrPlaceAnParcel() {
         if (board.getParcelCount() <= MINIMAL_NUMBER_OF_PARCELS_IN_THE_GAME ) {
 
-            var obj = placeAnParcelAnywhere();
+            var obj = placeAnParcelAnywhere(turnLogger);
 
             if(obj.isPresent())
                 turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
@@ -294,7 +294,7 @@ public class FifthBot extends Bot {
      */
     boolean pickAnPandaObjectiveAndAddToThePlayerBoard() {
         if (individualBoard.countUnfinishedPandaObjectives() < 5) {
-            var obj = pickPandaObjective();
+            var obj = pickPandaObjective(turnLogger);
 
             if(obj.isPresent() && turnLogger != null)
                 turnLogger.addAction(BotActionType.PICK_PANDA_GOAL, obj.get().toString());

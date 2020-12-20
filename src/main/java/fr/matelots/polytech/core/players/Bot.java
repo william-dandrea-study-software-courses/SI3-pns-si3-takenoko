@@ -9,10 +9,12 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author Gabriel Cogne
@@ -28,6 +30,7 @@ public abstract class Bot {
     private int numberOfParcelsGreenInTheGame = 0;
     private int numberOfParcelsYellowInTheGame = 0;
     private int numberOfParcelsPinkInTheGame = 0;
+
 
     protected int currentNumberOfAction;
 
@@ -55,14 +58,15 @@ public abstract class Bot {
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
      * @return the objective that we pick
      */
-    public Optional<CardObjectiveParcel> pickParcelObjective() {
-        CardObjectiveParcel obj = game.getNextParcelObjective();
+    public Optional<CardObjective> pickParcelObjective(TurnLog log) {
+        CardObjective obj = game.getNextParcelObjective();
         if (obj == null) {
             return Optional.empty();
         }
-        if(!individualBoard.addNewParcelObjective(obj)) {
+        if(!individualBoard.addNewParcelObjective((CardObjectiveParcel) obj)) {
             return Optional.empty();
         }
+        log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.toString());
         currentNumberOfAction++;
         return Optional.of(obj);
     }
@@ -71,14 +75,15 @@ public abstract class Bot {
      * This method pick a new Gardener objective from the pile of card and add this objective to the individual board
      * @return the objective that we pick
      */
-    public Optional<CardObjectiveGardener> pickGardenerObjective() {
-        CardObjectiveGardener obj = game.getNextGardenerObjective();
+    public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
+        CardObjective obj = game.getNextGardenerObjective();
         if (obj == null) {
             return Optional.empty();
         }
-        if(!individualBoard.addNewGardenerObjective(obj)) {
+        if(!individualBoard.addNewGardenerObjective((CardObjectiveGardener) obj)) {
             return Optional.empty();
         }
+        log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.toString());
         currentNumberOfAction++;
         return Optional.of(obj);
     }
@@ -87,15 +92,19 @@ public abstract class Bot {
      * This method pick a new Panda objective from the pile of card and add this objective to the individual board
      * @return the objective that we pick
      */
-    public Optional<CardObjectivePanda> pickPandaObjective() {
-        CardObjectivePanda obj = game.getNextPandaObjective();
+    public Optional<CardObjective> pickPandaObjective(TurnLog log) {
+        CardObjective obj = game.getNextPandaObjective();
         if (obj == null) {
             return Optional.empty();
         }
-        if(!individualBoard.addNewPandaObjective(obj)) {
+        if(!individualBoard.addNewPandaObjective((CardObjectivePanda) obj)) {
             return Optional.empty();
         }
+
+
+        log.addAction(BotActionType.PICK_PANDA_GOAL, obj.toString());
         currentNumberOfAction++;
+
         return Optional.of(obj);
     }
 
@@ -122,6 +131,7 @@ public abstract class Bot {
     public void playTurn() {
         TurnLog log = new TurnLog(this);
         playTurn(log);
+        currentNumberOfAction = 0;
     }
 
     public abstract boolean canPlay();
@@ -136,7 +146,7 @@ public abstract class Bot {
      * This method will place a parcel anywhere in the board, the color of the new parcel is random
      * @return true if we have place a parcel, false else
      */
-    public Optional<Position> placeAnParcelAnywhere() {
+    public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
         if (board.getParcelCount() <= 27) {
             // We check where we can put an parcel
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
@@ -149,7 +159,10 @@ public abstract class Bot {
 
             //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
             Position pos = placeWhereWeCanPlaceAnParcel.get(position);
+            currentNumberOfAction++;
             board.addParcel(pos, new BambooPlantation(randomEnum(BambooColor.class)));
+
+            Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
             return Optional.of(pos);
         }
         return Optional.empty();
@@ -160,7 +173,7 @@ public abstract class Bot {
      * @param color the color of the parcel we want
      * @return true if we have place a parcel, false else
      */
-    public Optional<Position> placeAnParcelAnywhere(BambooColor color) {
+    public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
         if (board.getParcelCount() <= 27) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
@@ -175,6 +188,7 @@ public abstract class Bot {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsPinkInTheGame++;
                         }
+                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
                     }
                 }
@@ -184,6 +198,7 @@ public abstract class Bot {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsYellowInTheGame++;
                         }
+                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
                     }
                 }
@@ -194,12 +209,12 @@ public abstract class Bot {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsGreenInTheGame++;
                         }
+                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
                     }
                 }
             }
         }
-
 
         return Optional.empty();
     }

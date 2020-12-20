@@ -14,6 +14,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -27,10 +28,10 @@ public class SecondBot extends Bot {
     private TurnLog turnLogger;
     private CardObjectiveParcel currentObjective;
 
-    public SecondBot(Game game) {
+    public SecondBot(Game game, String badBot) {
         super(game);
     }
-    public SecondBot(Game game, String name) {
+    public SecondBot(Game game, String name, TurnLog log) {
         super(game, name);
     }
 
@@ -64,7 +65,7 @@ public class SecondBot extends Bot {
      * This function pick an new objective and add this objective to the player deck
      */
     void pickAnObjectiveAndAddToPlayerBoard() {
-        var obj = pickParcelObjective();
+        var obj = pickParcelObjective(turnLogger);
 
         if(obj.isPresent() && turnLogger != null)
             turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
@@ -100,7 +101,7 @@ public class SecondBot extends Bot {
         // We check if the game board is just composed of the pond (étang) or if we have more parcels
         if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
-            var obj = placeAnParcelAnywhere();
+            var obj = placeAnParcelAnywhere(turnLogger);
 
             if(obj.isPresent() && turnLogger != null)
                 turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
@@ -137,7 +138,7 @@ public class SecondBot extends Bot {
                 turnLogger.addAction(BotActionType.PLACE_PARCEL, param);
             } else {
                 // We put a parcel anywhere
-                var obj = placeAnParcelAnywhere();
+                var obj = placeAnParcelAnywhere(turnLogger);
                 if(obj.isPresent())
                     turnLogger.addAction(BotActionType.PLACE_PARCEL, obj.get().toString());
 

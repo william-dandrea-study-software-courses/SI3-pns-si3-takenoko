@@ -36,22 +36,21 @@ public class ThirdBot extends Bot {
         super(game);
         rnd = new Random();
     }
-    public ThirdBot(Game game, String name) {
+    public ThirdBot(Game game, String name, TurnLog log) {
         super(game, name);
         rnd = new Random();
     }
 
     // Bot actions
     private void pickParcelGoal() {
-        var obj = pickParcelObjective();
-        if(obj.isPresent()) {
-            havePlayed = true;
+        var obj = pickParcelObjective(turnLogger);
+        if(obj.isPresent()) { havePlayed = true;
             turnLogger.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString());
         }
     }
 
     private void pickGardenerGoal() {
-        var obj = pickGardenerObjective();
+        var obj = pickGardenerObjective(turnLogger);
 
         if(obj.isPresent()) {
             havePlayed = true;

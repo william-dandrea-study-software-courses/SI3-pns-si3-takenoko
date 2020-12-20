@@ -8,6 +8,7 @@ import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ public class FifthBotTest {
     CardObjectiveParcel testCurrentObjective;
     Board board;
     Panda panda;
+    TurnLog turnLog;
 
     @BeforeEach
     public void init() {
@@ -40,6 +42,7 @@ public class FifthBotTest {
         board = game.getBoard();
         game.addBot(bot);
         panda = board.getPanda();
+        turnLog = new TurnLog(bot);
     }
 
     /**
@@ -129,7 +132,7 @@ public class FifthBotTest {
         assertTrue(bot.searchTheParcelWhereWeHaveABambooWithTheGoodColor(GREEN).isEmpty());
         // We will place a lot of parcels and try to find a bamboo
         for (int i = 0; i < 20 ; i++) {
-            bot.placeAnParcelAnywhere();
+            bot.placeAnParcelAnywhere(turnLog);
         }
 
         // We move a lot of time the garder in order to grow the bamboo
@@ -142,7 +145,7 @@ public class FifthBotTest {
     @Test
     public void testMoveThePandaAnywhere() {
         for (int i = 0; i < 30 ; i++) {
-            bot.placeAnParcelAnywhere();
+            bot.placeAnParcelAnywhere(turnLog);
         }
 
         Position position = panda.getPosition();
@@ -154,7 +157,7 @@ public class FifthBotTest {
     @Test
     public void testMoveThePandaAtACertainPosition() {
         for (int i = 0; i < 30 ; i++) {
-            bot.placeAnParcelAnywhere();
+            bot.placeAnParcelAnywhere(turnLog);
         }
 
 

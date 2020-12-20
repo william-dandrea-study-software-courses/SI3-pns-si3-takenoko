@@ -148,7 +148,7 @@ public class PremierBot extends Bot {
      * The bot take a Parcel goal card
      */
     private void pickGoal(TurnLog log) {
-        var obj = pickParcelObjective();
+        var obj = pickParcelObjective(log);
 
         obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.get().toString()));
     }
