@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.graphics;
 
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -15,27 +16,50 @@ public class ParcelDrawer {
         this.buffer = buffer;
     }
 
-    public void set(HexagonePosition position, ConsoleColor color, char c) {
-        Position p = position.getPosition().add(pos);
+    private Position getPosition(Position position) {
+        return position.add(pos);
+    }
 
+    public void set(HexagonePosition position, ConsoleColor color, char c) {
+        var p = getPosition(position.getPosition());
         buffer.setCharacter(p.getX(), p.getY(), c, color);
     }
 
     public void setIrrigate(Side side) {
-        var characPos = pos.add(side.getConsoleDelta());
+        var characPos = getPosition(side.getConsoleDelta());
         buffer.changeColor(characPos.getX(), characPos.getY(), ConsoleColor.BLUE);
     }
 
-    public void setFertilizer() {
-        buffer.setCharacter(0, 1, '⚡', ConsoleColor.WHITE);
+    private void setLayoutChar(char charac) {
+        buffer.setCharacter(pos.getX(), pos.getY() + 1, charac, ConsoleColor.WHITE);
     }
 
-    public void setPool() {
-        buffer.setCharacter(0, 1, 'P', ConsoleColor.WHITE);
+    private void setFertilizer() {
+        setLayoutChar('G');
     }
 
-    public void setFence() {
-        buffer.setCharacter(0, 1, 'F', ConsoleColor.WHITE);
+    private void setPool() {
+        setLayoutChar('P');
+    }
+
+    private void setFence() {
+        setLayoutChar('F');
+    }
+
+    public void setLayout(Layout layout) {
+        if(layout != null) {
+            switch (layout) {
+                case FERTILIZER:
+                    setFertilizer();
+                    break;
+                case BASIN:
+                    setPool();
+                    break;
+                case ENCLOSURE:
+                    setFence();
+                    break;
+            }
+        }
     }
 
     // Amenagement : "⚡💧🚪"
