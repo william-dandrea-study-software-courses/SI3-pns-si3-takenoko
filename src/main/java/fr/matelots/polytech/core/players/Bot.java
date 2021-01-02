@@ -52,7 +52,9 @@ public abstract class Bot {
     public Board getBoard() {
         return board;
     }
-
+    public void setCurrentNumberOfAction(int currentNumberOfAction) {
+        this.currentNumberOfAction = currentNumberOfAction;
+    }
 
     /**
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
@@ -123,6 +125,17 @@ public abstract class Bot {
         // is finish (the function verify return true if an objective is completed)
         return cardObjective.isPresent() && !cardObjective.get().verify();
         // Else, we return true because the objective in progress
+    }
+
+    /**
+     * This function check the current objective
+     * @return true if the cardObjective is in progress or false if there is any currentObjective or if
+     * the currentObjective is finish
+     */
+    public void checkAllObjectives() {
+
+        getIndividualBoard().checkAllGoal();
+
     }
 
 
@@ -230,4 +243,5 @@ public abstract class Bot {
     public int getCurrentNumberOfAction() {
         return currentNumberOfAction;
     }
+
 }

@@ -184,13 +184,15 @@ public class Game {
                     drawer.print();
                 }
 
-                System.out.println(bot.canPlay());
+                //System.out.println(bot.canPlay());
+                System.out.println( bot.toString() + " " + bot.getIndividualBoard().countCompletedObjectives());
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
                 System.out.println("aucun bot ne peux jouer la partie, on l'annule");
                 break;
             }
+
         }
     }
 

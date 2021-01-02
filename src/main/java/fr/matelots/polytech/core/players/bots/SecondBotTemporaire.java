@@ -60,20 +60,10 @@ public class SecondBotTemporaire extends Bot {
 
         // 1.0 // Si on a aucun objectif dans le deck
         if (numberOfObjectiveInIndividualBoard == 0) {
+            actionIfWeHaveAnyObjectives(log);
 
-            // 1.1 // Tirer un objectif parcelle (TOUR+1)
-            currentObjective = pickParcelObjective(log);
-
-            // 1.2 // Regarder si l’objectif peut déjà être réalisé sans actions de la part du joueur
-            if(checkObjective(currentObjective) && canPlay()) {
-                currentObjective = pickParcelObjective(log);
-
-                if (canPlay() && currentObjective.isPresent()) {
-                    tryToResolveParcelObjective(log);
-                }
-            }
         } else {
-            if (canPlay() && currentObjective.isPresent()) {
+            if (canDoAnAction() && currentObjective.isPresent()) {
                 tryToResolveParcelObjective(log);
             }
         }
@@ -84,12 +74,27 @@ public class SecondBotTemporaire extends Bot {
 
     }
 
-    private void tryToResolveParcelObjective(TurnLog log) {
+    void actionIfWeHaveAnyObjectives(TurnLog log) {
+        // 1.1 // Tirer un objectif parcelle (TOUR+1)
+        currentObjective = pickParcelObjective(log);
 
+        // 1.2 // Regarder si l’objectif peut déjà être réalisé sans actions de la part du joueur
+        checkAllObjectives();
+        if(canDoAnAction() && getIndividualBoard().countUnfinishedObjectives() >= 1) {
+            currentObjective = pickParcelObjective(log);
+
+            if (canDoAnAction() && currentObjective.isPresent()) {
+                tryToResolveParcelObjective(log);
+            }
+        }
+    }
+
+    void tryToResolveParcelObjective(TurnLog log) {
+        System.out.println("tryToResolveParcelObjective");
         // Si on a juste l'etang, je met une parcelle n'importe ou
         if(board.getParcelCount() == 1) {
-            if (canPlay()) {
-                Optional<Position> placeOfParcel = placeAnParcelAnywhere(turnLogger);
+            if (canDoAnAction()) {
+                Optional<Position> placeOfParcel = placeAnParcelAnywhere(log);
             }
         } else {
             // On récupère l'emplacement des parcelles candidates pour résoudre l'objectif
@@ -123,7 +128,7 @@ public class SecondBotTemporaire extends Bot {
                             new BambooPlantation(positionsWeChooseForPlaceAnParcel.get(position).getColor())
                     );
 
-                    if(checkObjective(currentObjective) && canPlay()) {
+                    if(checkObjective(currentObjective) && canDoAnAction()) {
                         currentObjective = pickParcelObjective(log);
                     }
 
@@ -131,25 +136,46 @@ public class SecondBotTemporaire extends Bot {
 
             } else {
                 // We put a parcel anywhere
-                placeAnParcelAnywhere(turnLogger);
+                placeAnParcelAnywhere(log);
             }
         }
     }
 
 
 
+    public boolean canDoAnAction() {
+        if (this.currentNumberOfAction <= 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public boolean canPlay() {
-        if (this.currentNumberOfAction <= 2) {
-            return true;
-        }
-        return false;
-    }
 
+        if (this.currentNumberOfAction < 0)
+            throw new IllegalArgumentException("We can't have negative actions");
+        if (this.currentNumberOfAction <= 2)
+            return true;
+
+        return false;
+
+
+    }
 
     @Override
     public String getTurnMessage() {
         return null;
+    }
+
+
+
+    public Optional<CardObjective> getCurrentObjective() {
+        return currentObjective;
+    }
+
+    public TurnLog getLogger() {
+        return turnLogger;
     }
 }
