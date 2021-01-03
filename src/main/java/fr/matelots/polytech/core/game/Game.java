@@ -33,6 +33,7 @@ public class Game {
 
     private void setDemoBots() {
         //bots.add(new PremierBot(this));
+        //bots.add(new PremierBot(this));
         bots.add(new SecondBotTemporaire(this, "BadBot"));
         bots.add(new SecondBotTemporaire(this, "GoodBot"));
         //bots.add(new ThirdBot(this));

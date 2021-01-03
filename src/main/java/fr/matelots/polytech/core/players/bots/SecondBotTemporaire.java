@@ -35,7 +35,35 @@ import java.util.*;
  -              [ ] Mettre une parcelle de couleur random a un endroit random (TOUR+1)
  - [ ] Regarder si l’objectif est réalisé
 
+
+     - [ ] Essayer de résoudre un objectif parcelle
+        - [ ] Enregistrer le nombre de parcelles de chaques couleurs qu’il faut pour résoudre l’objectif et leur emplacement
+        - [ ] Si l’objectif comporte que des parcelles de meme couleur
+            - [ ] Si il y a sur le board une parcelle de la meme couleur
+                - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
+                    - [ ] Si on peut placer une parcelle autour
+                        - [ ] Placer la parcelle de la bonne couleur a cet endroit
+                        - [ ] Sortir de la boucle
+            - [ ] Sinon (s’il n’y pas pas de parcelle de la meme couleur que les parcelles de l’objectif sur le board)
+                - [ ] Placer une parcelle de la couleur de l’objectif n’importe ou
+        - [ ] Si l’objectif comporte des parcelles de couleur différentes
+            - [ ] Mettre dans des variables la couleur1 et la couleur2 (couleur des parcelles de l’objectif)
+            - [ ] Si il y a sur le board une parcelle de la couleur1
+                - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
+                    - [ ] Placer la parcelle de la bonne couleur a cet endroit
+                    - [ ] Sortir de la boucle
+        - [ ] Si il y a sur le board une parcelle de la couleur2
+            - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
+                - [ ] Placer la parcelle de la bonne couleur a cet endroit
+                - [ ] Sortir de la boucle
+        - [ ] Sinon, placer une parcelle avec la couleur1 n’importe ou
+     - [ ] Si l’objectif est résolu
+        - [ ] Piocher un nouvel objectif
+     - [ ] Sinon
+        - [ ] Garder le même objectif et recommancer
  * @author williamdandrea
+ *
+ *
  * @todo Impossible de checker les objectifs donc boucle infini, a revoir
  */
 
@@ -55,12 +83,14 @@ public class SecondBotTemporaire extends Bot {
         turnLogger = log;
 
 
+
         int numberOfObjectiveInIndividualBoard = individualBoard.countUnfinishedObjectives();
         //checkObjective(currentObjective);
 
         // 1.0 // Si on a aucun objectif dans le deck
         if (numberOfObjectiveInIndividualBoard == 0) {
-            actionIfWeHaveAnyObjectives(log);
+            currentObjective = pickParcelObjective(log);
+            tryToResolveParcelObjective(log);
 
         } else {
             if (canDoAnAction() && currentObjective.isPresent()) {
@@ -74,20 +104,50 @@ public class SecondBotTemporaire extends Bot {
 
     }
 
-    void actionIfWeHaveAnyObjectives(TurnLog log) {
-        // 1.1 // Tirer un objectif parcelle (TOUR+1)
-        currentObjective = pickParcelObjective(log);
+    /**
+     * We except that the currentObjective is present
+     */
+    void tryToResolveParcelObjective() {
 
-        // 1.2 // Regarder si l’objectif peut déjà être réalisé sans actions de la part du joueur
-        checkAllObjectives();
-        if(canDoAnAction() && getIndividualBoard().countUnfinishedObjectives() >= 1) {
-            currentObjective = pickParcelObjective(log);
+        CardObjectiveParcel actualCard = (CardObjectiveParcel) currentObjective.get();
+        BambooColor[] colors = actualCard.getColors();
 
-            if (canDoAnAction() && currentObjective.isPresent()) {
-                tryToResolveParcelObjective(log);
+        if (!checkIfTheColorsInAnObjectiveAreTheSameOrNot(colors)) {
+            // Si l’objectif comporte que des parcelles de meme couleur
+
+            Set<PositionColored> missingPositionsToComplete = new HashSet<>();
+            if (actualCard.getMissingPositionsToComplete() != null) {
+                for (PositionColored positionColored : actualCard.getMissingPositionsToComplete()) {
+                    missingPositionsToComplete.add(positionColored);
+                }
+            }
+
+
+        } else {
+
+        }
+
+
+    }
+
+    /**
+     *
+     * @param colors
+     * @return true if we have differents colors
+     */
+    boolean checkIfTheColorsInAnObjectiveAreTheSameOrNot(BambooColor[] colors) {
+        for (int i=0; i<colors.length; i++) {
+            if (!colors[i].equals(colors[i+1])) {
+                return true;
             }
         }
+        return false;
+
     }
+
+
+
+
 
     void tryToResolveParcelObjective(TurnLog log) {
         System.out.println("tryToResolveParcelObjective");
@@ -128,7 +188,7 @@ public class SecondBotTemporaire extends Bot {
                             new BambooPlantation(positionsWeChooseForPlaceAnParcel.get(position).getColor())
                     );
 
-                    if(checkObjective(currentObjective) && canDoAnAction()) {
+                    if(checkCurrentObjective() && canDoAnAction()) {
                         currentObjective = pickParcelObjective(log);
                     }
 
@@ -139,6 +199,23 @@ public class SecondBotTemporaire extends Bot {
                 placeAnParcelAnywhere(log);
             }
         }
+    }
+
+    /**
+     * This methid check the currentObjective, if it is completed, we pick a new Parcel objective
+     * @return true if the objective is completed, false if the currentObjective doesn't change
+     */
+    private boolean checkCurrentObjective() {
+
+        if (currentObjective.isPresent()) {
+            if (currentObjective.get().isCompleted() && currentObjective.get().verify()) {
+                return true;
+            }
+        }
+
+        return false;
+
+
     }
 
 
@@ -154,11 +231,12 @@ public class SecondBotTemporaire extends Bot {
     @Override
     public boolean canPlay() {
 
-        if (this.currentNumberOfAction < 0)
-            throw new IllegalArgumentException("We can't have negative actions");
-        if (this.currentNumberOfAction <= 2)
-            return true;
-
+        if (board.getParcelCount() <= Config.DECK_PARCEL_SIZE) {
+            if (this.currentNumberOfAction < 0)
+                throw new IllegalArgumentException("We can't have negative actions");
+            if (this.currentNumberOfAction <= 2)
+                return true;
+        }
         return false;
 
 

@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
@@ -181,5 +182,20 @@ public class BotTest {
             cardObjective = bot.pickPandaObjective(turnLog);
         }
         assertEquals(Optional.empty(), cardObjective);
+    }
+
+    @Test
+    public void testGetTheColorsWhoseComposeAnCardbjectiveParcel() {
+        CardObjective cardObjective = new CardObjectiveParcel(bot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
+        BambooColor[] list1 = bot.getTheColorsWhoseComposeAnCardbjectiveParcel(Optional.of(cardObjective));
+        for (BambooColor bambooColor: list1) {
+            assertTrue(bambooColor.equals(bambooColor.GREEN));
+        }
+
+        CardObjective cardObjective2 = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
+        BambooColor[] list2 = bot.getTheColorsWhoseComposeAnCardbjectiveParcel(Optional.of(cardObjective2));
+        for (BambooColor bambooColor: list2) {
+            assertTrue(bambooColor.equals(bambooColor.GREEN) || bambooColor.equals(bambooColor.YELLOW));
+        }
     }
 }

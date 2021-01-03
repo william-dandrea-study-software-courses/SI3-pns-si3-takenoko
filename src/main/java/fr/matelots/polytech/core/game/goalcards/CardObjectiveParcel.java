@@ -83,4 +83,8 @@ public class CardObjectiveParcel extends CardObjective {
                 ", missingPositions=" + missingPositions +
                 '}';
     }
+
+    public BambooColor[] getColors() {
+        return colors;
+    }
 }

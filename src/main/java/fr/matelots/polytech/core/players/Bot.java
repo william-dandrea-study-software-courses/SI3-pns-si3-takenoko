@@ -232,6 +232,16 @@ public abstract class Bot {
         return Optional.empty();
     }
 
+    /**
+     * This method return the colors whose compose the card objective parcel, for exemple Green
+     * @param objective
+     * @return
+     */
+    public BambooColor[] getTheColorsWhoseComposeAnCardbjectiveParcel(Optional<CardObjective> objective) {
+        CardObjectiveParcel card = (CardObjectiveParcel) objective.get();
+        return card.getColors();
+    }
+
 
 
     public abstract String getTurnMessage();

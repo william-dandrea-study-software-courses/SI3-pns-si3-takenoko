@@ -63,6 +63,13 @@ public class SecondBotTemporaireTest {
 
     }
 
+    @Test
+    public void testCheckIfTheColorsInAnObjectiveAreTheSameOrNot() {
+        CardObjective cardObjective = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
+        BambooColor[] list2 = bot.getTheColorsWhoseComposeAnCardbjectiveParcel(Optional.of(cardObjective));
+        assertTrue(bot.checkIfTheColorsInAnObjectiveAreTheSameOrNot(list2));
+    }
+
 
     @Test
     public void testActionIfWeHaveAnyObjectivesWhenAnyNewParcelObjectives() throws Exception{
@@ -76,9 +83,6 @@ public class SecondBotTemporaireTest {
         botMoc.pickParcelObjective(log);
         botMoc.pickParcelObjective(log);
 
-
-        botMoc.actionIfWeHaveAnyObjectives(botMoc.getLogger());
-        System.out.println(individualBoard1.countUnfinishedObjectives());
     }
 
 
