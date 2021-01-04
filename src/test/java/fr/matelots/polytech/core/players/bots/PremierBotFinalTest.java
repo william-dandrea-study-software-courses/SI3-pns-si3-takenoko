@@ -12,12 +12,14 @@ import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class PremierBotFinalTest {
 
@@ -73,15 +75,30 @@ public class PremierBotFinalTest {
     }
 
     @Test
-    public void testInilializeOrUpdateListOfCurrentsObjectiveAndVerifySomeObjectives() {
+    public void testEasiestObjectiveToResolve() {
+        PremierBotFinal mockBot = mock(PremierBotFinal.class);
+        List<Optional<CardObjective>> cardList = mock(List.class);
+        TurnLog mockLog = mock(TurnLog.class);
 
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 3, Patterns.TRIANGLE, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 4, Patterns.LINE, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
 
-        //CardObjectiveParcel cardActive = (CardObjectiveParcel) currentList.get(0).get();
-        bot.placeAnParcelAnywhere(turnLog);
-        CardObjectiveParcel cardActive = new CardObjectiveParcel(bot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
+        mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
 
-        System.out.println(cardActive.toString());
+        Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
+
+        mockBot.easiestObjectiveToResolve();
+
+        System.out.println(mockBot.getListOfCurrentsObjectives());
+        if (Whitebox.getInternalState(mockBot, "cardWeActuallyTryToResolve") != null) {
+            System.out.println("Coool");
+        }
+
 
 
     }
+
 }
