@@ -77,8 +77,7 @@ public class SecondBotTemporaireTest {
         SecondBotTemporaire botMoc = mock(SecondBotTemporaire.class);
         IndividualBoard individualBoard1 = botMoc.getIndividualBoard();
 
-        //when(botMoc.pickParcelObjective(any(TurnLog.class))).thenReturn(Optional.empty());
-        doNothing().when(botMoc).tryToResolveParcelObjective(isA(TurnLog.class));
+
 
         botMoc.pickParcelObjective(log);
         botMoc.pickParcelObjective(log);

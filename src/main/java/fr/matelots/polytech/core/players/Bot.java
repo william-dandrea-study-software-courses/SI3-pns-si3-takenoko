@@ -161,7 +161,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
-        if (board.getParcelCount() <= 27) {
+        if (board.getParcelCount() <= 27 && currentNumberOfAction < 2) {
             // We check where we can put an parcel
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
             // Now, we have an ArrayList of the potentials places where we can add a parcel
@@ -188,7 +188,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
-        if (board.getParcelCount() <= 27) {
+        if (board.getParcelCount() <= 27 && currentNumberOfAction < 2) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
 

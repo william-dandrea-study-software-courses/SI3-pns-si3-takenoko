@@ -118,9 +118,6 @@ public class SecondBotTemporaire extends Bot {
             placeAnParcelAnywhere(positionColored.getColor(), turnLogger);
         }
 
-
-
-
     }
 
 
@@ -144,57 +141,7 @@ public class SecondBotTemporaire extends Bot {
 
 
 
-    void tryToResolveParcelObjective(TurnLog log) {
-        System.out.println("tryToResolveParcelObjective");
-        // Si on a juste l'etang, je met une parcelle n'importe ou
-        if(board.getParcelCount() == 1) {
-            if (canDoAnAction()) {
-                Optional<Position> placeOfParcel = placeAnParcelAnywhere(log);
-            }
-        } else {
-            // On récupère l'emplacement des parcelles candidates pour résoudre l'objectif
-            CardObjectiveParcel cardObjectiveParcel = (CardObjectiveParcel) currentObjective.get();
 
-            Set<PositionColored> missingPositionsToComplete = new HashSet<>();
-
-            if (cardObjectiveParcel.getMissingPositionsToComplete() != null) {
-                for (PositionColored positionColored : cardObjectiveParcel.getMissingPositionsToComplete()) {
-                    missingPositionsToComplete.add(positionColored);
-                }
-
-                ArrayList<PositionColored> positionsWeChooseForPlaceAnParcel = new ArrayList<>();
-
-                // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
-                if (missingPositionsToComplete != null) {
-                    missingPositionsToComplete.stream()
-                            .filter(p -> board.isPlaceValid(p.getPosition()) && !p.equals(Config.POND_POSITION))
-                            .forEach(positionsWeChooseForPlaceAnParcel::add);
-                }
-
-                if(positionsWeChooseForPlaceAnParcel.size() != 0) {
-                    // We have an place to put the new parcel
-
-                    // We choose a random parcel in the potential list
-                    Random randomNumber = new Random();
-                    int position = randomNumber.nextInt(positionsWeChooseForPlaceAnParcel.size());
-
-                    // We add the new parcel
-                    board.addParcel(positionsWeChooseForPlaceAnParcel.get(position).getPosition(),
-                            new BambooPlantation(positionsWeChooseForPlaceAnParcel.get(position).getColor())
-                    );
-
-                    if(checkCurrentObjective() && canDoAnAction()) {
-                        currentObjective = pickParcelObjective(log);
-                    }
-
-                }
-
-            } else {
-                // We put a parcel anywhere
-                placeAnParcelAnywhere(log);
-            }
-        }
-    }
 
     /**
      * This methid check the currentObjective, if it is completed, we pick a new Parcel objective
