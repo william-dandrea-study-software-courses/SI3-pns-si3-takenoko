@@ -58,12 +58,15 @@ public class BotTest {
         bot.placeAnParcelAnywhere(turnLog);
         assertEquals(bot.getBoard().getParcelCount(), initialNumber + 1);
 
+        bot.setCurrentNumberOfAction(0);
+
         // We verify if we can't place more than 27 parcels
         for (int i = 0; i < 35 ; i++) {
+            bot.setCurrentNumberOfAction(0);
             bot.placeAnParcelAnywhere(turnLog);
         }
 
-        assertEquals(bot.getBoard().getParcelCount(), 28);
+        assertEquals(28, bot.getBoard().getParcelCount());
     }
 
     /**
@@ -73,15 +76,18 @@ public class BotTest {
     @Test
     public void testPlaceAnParcelAnywhereChosenColor() {
 
-
+        bot.setCurrentNumberOfAction(0);
         // We verify if we can't place more than 27 parcels
-        for (int i = 0; i < 35 ; i++) {
+        for (int i = 0; i < 50 ; i++) {
             bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+            bot.setCurrentNumberOfAction(0);
         }
-        for (int i = 0; i < 35 ; i++) {
+        for (int i = 0; i < 50 ; i++) {
             bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+            bot.setCurrentNumberOfAction(0);
         }
-        for (int i = 0; i < 35 ; i++) {
+        for (int i = 0; i < 50 ; i++) {
+            bot.setCurrentNumberOfAction(0);
             bot.placeAnParcelAnywhere(BambooColor.PINK, turnLog);
         }
 

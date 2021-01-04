@@ -16,6 +16,7 @@ import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -64,16 +65,25 @@ public abstract class Bot {
      * @return the objective that we pick
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
-        CardObjective obj = game.getNextParcelObjective();
-        if (obj == null) {
-            return Optional.empty();
+        if (currentNumberOfAction < 2
+                && getBoard().getGreenParcelLeftToPlace() != 0
+                && getBoard().getYellowParcelLeftToPlace() != 0
+                && getBoard().getPinkParcelLeftToPlace() != 0
+        ) {
+            CardObjective obj = game.getNextParcelObjective();
+            if (obj == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addNewParcelObjective((CardObjectiveParcel) obj)) {
+                return Optional.empty();
+            }
+
+            log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.toString());
+            currentNumberOfAction++;
+            return Optional.of(obj);
         }
-        if(!individualBoard.addNewParcelObjective((CardObjectiveParcel) obj)) {
-            return Optional.empty();
-        }
-        log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.toString());
-        currentNumberOfAction++;
-        return Optional.of(obj);
+        return Optional.empty();
+
     }
 
     /**
@@ -81,16 +91,19 @@ public abstract class Bot {
      * @return the objective that we pick
      */
     public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
-        CardObjective obj = game.getNextGardenerObjective();
-        if (obj == null) {
-            return Optional.empty();
+        if (currentNumberOfAction < 2) {
+            CardObjective obj = game.getNextGardenerObjective();
+            if (obj == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addNewGardenerObjective((CardObjectiveGardener) obj)) {
+                return Optional.empty();
+            }
+            log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.toString());
+            currentNumberOfAction++;
+            return Optional.of(obj);
         }
-        if(!individualBoard.addNewGardenerObjective((CardObjectiveGardener) obj)) {
-            return Optional.empty();
-        }
-        log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.toString());
-        currentNumberOfAction++;
-        return Optional.of(obj);
+        return Optional.empty();
     }
 
     /**
@@ -98,19 +111,22 @@ public abstract class Bot {
      * @return the objective that we pick
      */
     public Optional<CardObjective> pickPandaObjective(TurnLog log) {
-        CardObjective obj = game.getNextPandaObjective();
-        if (obj == null) {
-            return Optional.empty();
+        if (currentNumberOfAction < 2) {
+            CardObjective obj = game.getNextPandaObjective();
+            if (obj == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addNewPandaObjective((CardObjectivePanda) obj)) {
+                return Optional.empty();
+            }
+
+
+            log.addAction(BotActionType.PICK_PANDA_GOAL, obj.toString());
+            currentNumberOfAction++;
+
+            return Optional.of(obj);
         }
-        if(!individualBoard.addNewPandaObjective((CardObjectivePanda) obj)) {
-            return Optional.empty();
-        }
-
-
-        log.addAction(BotActionType.PICK_PANDA_GOAL, obj.toString());
-        currentNumberOfAction++;
-
-        return Optional.of(obj);
+        return Optional.empty();
     }
 
     /**
@@ -163,7 +179,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
-        if (board.getParcelCount() <= 27 && currentNumberOfAction < 2) {
+        if (board.getParcelCount() <= 27 && canDoAction()) {
             // We check where we can put an parcel
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
             // Now, we have an ArrayList of the potentials places where we can add a parcel
@@ -175,13 +191,42 @@ public abstract class Bot {
 
             //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
             Position pos = placeWhereWeCanPlaceAnParcel.get(position);
-            currentNumberOfAction++;
-            board.addParcel(pos, new BambooPlantation(randomEnum(BambooColor.class)));
 
-            Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
-            return Optional.of(pos);
+            BambooColor color = randomEnum(BambooColor.class);
+            if (verifyIfWeCanPlaceAColoredParcel(color)) {
+                currentNumberOfAction++;
+                board.addParcel(pos, new BambooPlantation(color));
+
+                Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
+                return Optional.of(pos);
+            }
         }
         return Optional.empty();
+    }
+
+    boolean verifyIfWeCanPlaceAColoredParcel(BambooColor color) {
+        switch (color) {
+            case GREEN: {
+                if (getBoard().getGreenParcelLeftToPlace() > 0) {
+                    return true;
+                }
+                break;
+            }
+
+            case YELLOW:{
+                if (getBoard().getYellowParcelLeftToPlace() > 0) {
+                    return true;
+                }
+                break;
+            }
+            case PINK:{
+                if (getBoard().getPinkParcelLeftToPlace() > 0) {
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     /**
@@ -190,7 +235,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
-        if (board.getParcelCount() <= 27 && currentNumberOfAction < 2) {
+        if (board.getParcelCount() <= 27 && canDoAction()) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
 
@@ -288,6 +333,14 @@ public abstract class Bot {
          }
     }
 
+    public boolean canDoAction() {
+        if (currentNumberOfAction < Config.TOTAL_NUMBER_OF_ACTIONS) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public abstract String getTurnMessage();
 
     public String getName() {
@@ -297,5 +350,6 @@ public abstract class Bot {
     public int getCurrentNumberOfAction() {
         return currentNumberOfAction;
     }
+
 
 }

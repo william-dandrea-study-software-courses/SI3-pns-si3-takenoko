@@ -253,6 +253,18 @@ public class Board {
         return 0;
     }
 
+    public int getYellowParcelLeftToPlace() {
+        return yellowParcelLeftToPlace;
+    }
+
+    public int getPinkParcelLeftToPlace() {
+        return pinkParcelLeftToPlace;
+    }
+
+    public int getGreenParcelLeftToPlace() {
+        return greenParcelLeftToPlace;
+    }
+
     /**
      * Place a game pawn on a parcel defined by her position
      * @param pawn The pawn to place

@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 
 /**
  * @author Yann Clodong
+ * @author D'Andrea William
+ *
+ * Prendre plusieurs objectifs parcelles et essayer de les resoudres
  */
 public class PremierBot extends Bot {
 
