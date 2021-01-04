@@ -186,7 +186,7 @@ public class Game {
                 }
 
                 //System.out.println(bot.canPlay());
-                System.out.println( bot.toString() + " " + bot.getIndividualBoard().countCompletedObjectives());
+                //System.out.println( bot.toString() + " " + bot.getIndividualBoard().countCompletedObjectives());
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
