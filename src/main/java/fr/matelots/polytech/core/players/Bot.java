@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
@@ -10,6 +11,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
@@ -265,6 +267,26 @@ public abstract class Bot {
     }
 
 
+    /**
+     * Allow to place a parcel.
+     * @param position: Position of the parcel to place
+     * @param color: Color of the parcel
+     * @param log: Logger par tour
+     * @return true if the parcel is placed else return false
+     */
+    public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
+        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return false;
+         try {
+             var success = board.addParcel(position, new BambooPlantation(color));
+             if(success) {
+                 log.addAction(BotActionType.PLACE_PARCEL, position.toString());
+                 currentNumberOfAction++;
+             }
+             return success;
+         } catch (NoParcelLeftToPlaceException e) {
+             return false;
+         }
+    }
 
     public abstract String getTurnMessage();
 

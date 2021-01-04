@@ -42,6 +42,8 @@ public class Config {
     private static final int NB_OBJ_LAST_TURN_3_PLAYERS = 8;
     private static final int NB_OBJ_LAST_TURN_4_PLAYERS = 7;
 
+    public static final int TOTAL_NUMBER_OF_ACTIONS = 2;
+
 
 
     private Config () throws InstantiationException {

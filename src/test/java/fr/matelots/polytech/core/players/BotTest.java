@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
@@ -8,8 +9,10 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -224,6 +227,28 @@ public class BotTest {
         assertTrue(missingPositionsToComplete2.size() > 0);
 
 
+    }
+
+    @Test
+    void placeParcelTestLimitOfColoredParcelVersion() {
+        for(int i = 0; i < Config.NB_MAX_GREEN_PARCELS; i++) {
+            assertTrue(bot.getBoard().addParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), new BambooPlantation(BambooColor.GREEN)));
+        }
+
+        assertFalse(bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
+    }
+
+    @Test
+    void placeParcelTestInvalidPlace() {
+        assertFalse(bot.placeParcel(new Position(50, 50, 50), BambooColor.GREEN, turnLog));
+    }
+
+    @Test
+    void placeParcelNumberOfActions() {
+        for(int i = 0; i < Config.TOTAL_NUMBER_OF_ACTIONS; i++) {
+            bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog);
+        }
+        assertFalse(bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
     }
 
 }
