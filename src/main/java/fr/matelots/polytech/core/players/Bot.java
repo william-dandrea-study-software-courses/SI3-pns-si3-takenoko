@@ -341,11 +341,12 @@ public abstract class Bot {
         }
     }
 
-    public void moveGardener(Position position) {
+    public void moveGardener(Position position, TurnLog log) {
         if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return;
         var success = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
         if(success) {
             currentNumberOfAction++;
+            log.addAction(BotActionType.MOVE_GARDENER, position.toString());
         }
     }
 
