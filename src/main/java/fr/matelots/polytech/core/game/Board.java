@@ -244,6 +244,15 @@ public class Board {
         return parcelLeftToPlace;
     }
 
+    public int getParcelLeftToPlace(BambooColor color) {
+        switch (color) {
+            case PINK: return pinkParcelLeftToPlace;
+            case YELLOW: return yellowParcelLeftToPlace;
+            case GREEN: return greenParcelLeftToPlace;
+        }
+        return 0;
+    }
+
     /**
      * Place a game pawn on a parcel defined by her position
      * @param pawn The pawn to place
