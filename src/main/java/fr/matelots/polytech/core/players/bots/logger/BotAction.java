@@ -2,7 +2,7 @@ package fr.matelots.polytech.core.players.bots.logger;
 
 import fr.matelots.polytech.core.players.Bot;
 
-class BotAction {
+public class BotAction {
     private final Bot bot;
     private final BotActionType action;
     private final String parameter;
