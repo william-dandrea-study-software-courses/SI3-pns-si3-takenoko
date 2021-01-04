@@ -11,8 +11,7 @@ import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,18 +85,21 @@ public class PremierBotFinalTest {
         cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
         cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
 
+        verify(cardList).add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
+
+
         mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
 
-        Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
+        //Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
+
+
+
 
         mockBot.easiestObjectiveToResolve();
 
         System.out.println(mockBot.getListOfCurrentsObjectives());
-        if (Whitebox.getInternalState(mockBot, "cardWeActuallyTryToResolve") != null) {
-            System.out.println("Coool");
-        }
 
-
+        //assertTrue(Whitebox.getInternalState(mockBot, "cardWeActuallyTryToResolve") != null);
 
     }
 
