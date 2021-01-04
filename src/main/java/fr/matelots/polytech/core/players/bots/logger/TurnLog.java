@@ -18,6 +18,14 @@ public class TurnLog {
         this.actions.add(new BotAction(bot, action, parameter));
     }
 
+    public BotAction[] getActions() {
+        return actions.toArray(BotAction[]::new);
+    }
+
+    public BotAction getLastAction() {
+        return actions.get(actions.size() - 1);
+    }
+
     @Override
     public String toString() {
         if(actions.size() == 0) return "";

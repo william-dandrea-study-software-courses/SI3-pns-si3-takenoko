@@ -13,6 +13,14 @@ class BotAction {
         this.parameter = parameter;
     }
 
+    public BotActionType getType() {
+        return action;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
     @Override
     public String toString() {
         return action.getMessage(bot, parameter);
