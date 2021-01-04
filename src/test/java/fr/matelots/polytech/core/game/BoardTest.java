@@ -8,6 +8,8 @@ import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -84,18 +86,6 @@ public class BoardTest {
     public void testNumberOfParcelLeftToPlaceGoingDown () {
         board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.GREEN));
         assertEquals(Config.NB_PLACEABLE_PARCEL - 1, board.getParcelLeftToPlace());
-    }
-
-    @Test
-    public void testNoParcelLeftToPlace () {
-        board.addParcel(1, 0, -1, new BambooPlantation(BambooColor.GREEN));
-        for (int i = 1; i < Config.NB_PLACEABLE_PARCEL / 2 + 1; i++) {
-            board.addParcel(i, -i, 0, new BambooPlantation(BambooColor.GREEN));
-            board.addParcel(i+1, -i, -1, new BambooPlantation(BambooColor.GREEN));
-        }
-
-        assertThrows(NoParcelLeftToPlaceException.class,
-                () -> board.addParcel(-1, 1, 0, new BambooPlantation(BambooColor.GREEN)));
     }
 
     @Test
@@ -206,6 +196,39 @@ public class BoardTest {
         board.addParcel(1, 0, -1, bambooPlantation2);
         board.placeIrrigation(new Position(0, 1, -1), Side.RIGHT);
         assertFalse(board.placeIrrigation(new Position(0, 1, -1), Side.RIGHT));
+    }
+
+    @Test
+    public void testLimitOfVersionOnPinkParcel() {
+        for(int i = 0; i < Config.NB_MAX_PINK_PARCELS; i++) {
+            var validPlace = board.getValidPlaces().stream().findAny();
+            validPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.PINK)));
+        }
+        var finalValidPlace = board.getValidPlaces().stream().findAny();
+        assertThrows(NoParcelLeftToPlaceException.class, () ->
+                finalValidPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.PINK))));
+    }
+
+    @Test
+    public void testLimitOfVersionOnYellowParcel() {
+        for(int i = 0; i < Config.NB_MAX_YELLOW_PARCELS; i++) {
+            var validPlace = board.getValidPlaces().stream().findAny();
+            validPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.YELLOW)));
+        }
+        var finalValidPlace = board.getValidPlaces().stream().findAny();
+        assertThrows(NoParcelLeftToPlaceException.class, () ->
+                finalValidPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.YELLOW))));
+    }
+
+    @Test
+    public void testLimitOfVersionOnGreenParcel() {
+        for(int i = 0; i < Config.NB_MAX_GREEN_PARCELS; i++) {
+            var validPlace = board.getValidPlaces().stream().findAny();
+            validPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.GREEN)));
+        }
+        var finalValidPlace = board.getValidPlaces().stream().findAny();
+        assertThrows(NoParcelLeftToPlaceException.class, () ->
+                finalValidPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.GREEN))));
     }
 
 

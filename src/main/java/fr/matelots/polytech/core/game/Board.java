@@ -24,7 +24,12 @@ public class Board {
     private final DeckGardenerObjective deckGardenerObjective;
     private final DeckPandaObjective deckPandaObjective;
     private final DeckParcel deckParcel;
+
     private int parcelLeftToPlace;
+    private int yellowParcelLeftToPlace;
+    private int pinkParcelLeftToPlace;
+    private int greenParcelLeftToPlace;
+
     private final Gardener gardener;
     private final Panda panda;
 
@@ -43,6 +48,9 @@ public class Board {
         placePawn(panda, Config.POND_POSITION);
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
+        yellowParcelLeftToPlace = Config.NB_MAX_YELLOW_PARCELS;
+        greenParcelLeftToPlace = Config.NB_MAX_GREEN_PARCELS;
+        pinkParcelLeftToPlace = Config.NB_MAX_PINK_PARCELS;
     }
 
     // Methods and Function
@@ -61,6 +69,26 @@ public class Board {
     public boolean addParcel (int x, int y, int z, Parcel p) throws NoParcelLeftToPlaceException {
         if (parcelLeftToPlace <= 0)
             throw new NoParcelLeftToPlaceException();
+
+        if(p.getBambooColor() != null) {
+            // The tile have a color
+            switch (p.getBambooColor()) {
+                case YELLOW:
+                    // if tile of color exhausted, throw error
+                    if(yellowParcelLeftToPlace <= 0) throw  new NoParcelLeftToPlaceException();
+                    // else decrement corresponding counter
+                    else yellowParcelLeftToPlace--;
+                    break;
+                case GREEN:
+                    if(greenParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
+                    else greenParcelLeftToPlace--;
+                    break;
+                case PINK:
+                    if(pinkParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
+                    else pinkParcelLeftToPlace--;
+                    break;
+            }
+        }
 
         if (isPlaceValid(x, y, z)) {
             Position position = new Position(x, y, z);
