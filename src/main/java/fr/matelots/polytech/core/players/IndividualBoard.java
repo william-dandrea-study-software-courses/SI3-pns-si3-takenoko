@@ -166,7 +166,8 @@ public class IndividualBoard {
     }
 
     public void addAnEatenUnitOfBamboo (BambooColor color) {
-        bamboos[color.ordinal()]++;
+        if (color != null)
+            bamboos[color.ordinal()]++;
     }
 
     public int getGreenEatenBamboo () {
