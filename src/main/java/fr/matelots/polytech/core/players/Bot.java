@@ -341,6 +341,14 @@ public abstract class Bot {
         }
     }
 
+    public void moveGardener(Position position) {
+        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return;
+        var success = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
+        if(success) {
+            currentNumberOfAction++;
+        }
+    }
+
     public abstract String getTurnMessage();
 
     public String getName() {
