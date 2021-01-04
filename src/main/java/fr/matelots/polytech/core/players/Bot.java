@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -200,6 +201,7 @@ public abstract class Bot {
                     if (numberOfParcelsPinkInTheGame < Config.NB_MAX_PINK_PARCELS) {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsPinkInTheGame++;
+                            currentNumberOfAction++;
                         }
                         Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
@@ -210,6 +212,7 @@ public abstract class Bot {
                     if (numberOfParcelsYellowInTheGame < Config.NB_MAX_YELLOW_PARCELS) {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsYellowInTheGame++;
+                            currentNumberOfAction++;
                         }
                         Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
@@ -221,6 +224,7 @@ public abstract class Bot {
                     if (numberOfParcelsGreenInTheGame < Config.NB_MAX_GREEN_PARCELS) {
                         if (board.addParcel(pos, new BambooPlantation(color))) {
                             numberOfParcelsGreenInTheGame++;
+                            currentNumberOfAction++;
                         }
                         Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
@@ -240,6 +244,24 @@ public abstract class Bot {
     public BambooColor[] getTheColorsWhoseComposeAnCardbjectiveParcel(Optional<CardObjective> objective) {
         CardObjectiveParcel card = (CardObjectiveParcel) objective.get();
         return card.getColors();
+    }
+
+    /**
+     * This method recover the missings positions to complete a Parcel Objective
+     * @param card
+     * @return
+     */
+     public Set<PositionColored> recoverTheMissingsPositionsToCompleteForParcelObjective(CardObjectiveParcel card) {
+
+        Set<PositionColored> missingPositionsToComplete = new HashSet<>();
+        card.verify();
+        if (card.getMissingPositionsToComplete() != null) {
+            for (PositionColored positionColored : card.getMissingPositionsToComplete()) {
+                missingPositionsToComplete.add(positionColored);
+            }
+        }
+
+        return missingPositionsToComplete;
     }
 
 

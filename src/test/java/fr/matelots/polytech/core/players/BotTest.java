@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,4 +200,30 @@ public class BotTest {
             assertTrue(bambooColor.equals(bambooColor.GREEN) || bambooColor.equals(bambooColor.YELLOW));
         }
     }
+
+    @Test
+    public void testRecoverTheMissingsPositionsToCompleteForParcelObjective() {
+        CardObjectiveParcel cardObjective = new CardObjectiveParcel(bot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
+
+
+        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+
+        Set<PositionColored> missingPositionsToComplete = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective);
+        assertTrue(missingPositionsToComplete.size() > 0);
+
+        CardObjectiveParcel cardObjective2 = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
+
+        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+
+        Set<PositionColored> missingPositionsToComplete2 = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective2);
+        assertTrue(missingPositionsToComplete2.size() > 0);
+
+
+    }
+
 }

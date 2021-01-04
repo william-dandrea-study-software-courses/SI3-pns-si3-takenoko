@@ -90,11 +90,11 @@ public class SecondBotTemporaire extends Bot {
         // 1.0 // Si on a aucun objectif dans le deck
         if (numberOfObjectiveInIndividualBoard == 0) {
             currentObjective = pickParcelObjective(log);
-            tryToResolveParcelObjective(log);
+            tryToResolveParcelObjective2();
 
         } else {
             if (canDoAnAction() && currentObjective.isPresent()) {
-                tryToResolveParcelObjective(log);
+                tryToResolveParcelObjective2();
             }
         }
 
@@ -107,28 +107,23 @@ public class SecondBotTemporaire extends Bot {
     /**
      * We except that the currentObjective is present
      */
-    void tryToResolveParcelObjective() {
+    void tryToResolveParcelObjective2() {
 
         CardObjectiveParcel actualCard = (CardObjectiveParcel) currentObjective.get();
         BambooColor[] colors = actualCard.getColors();
 
-        if (!checkIfTheColorsInAnObjectiveAreTheSameOrNot(colors)) {
-            // Si l’objectif comporte que des parcelles de meme couleur
+        Set<PositionColored> missingPositionsToComplete = recoverTheMissingsPositionsToCompleteForParcelObjective(actualCard);
 
-            Set<PositionColored> missingPositionsToComplete = new HashSet<>();
-            if (actualCard.getMissingPositionsToComplete() != null) {
-                for (PositionColored positionColored : actualCard.getMissingPositionsToComplete()) {
-                    missingPositionsToComplete.add(positionColored);
-                }
-            }
-
-
-        } else {
-
+        for (PositionColored positionColored : missingPositionsToComplete) {
+            placeAnParcelAnywhere(positionColored.getColor(), turnLogger);
         }
 
 
+
+
     }
+
+
 
     /**
      *
