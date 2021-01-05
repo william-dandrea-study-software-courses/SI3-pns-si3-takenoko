@@ -266,11 +266,6 @@ public class QuintusBot extends Bot {
         return turnDoingNothing < MAX_TURN_DOING_NOTHING && turnPastMovingGardener < MAX_TURN_MOVING_GARDENNER;
     }
 
-    @Override
-    public String getTurnMessage() {
-        return getName();
-    }
-
     /**
      * See which objective is now complete
      */

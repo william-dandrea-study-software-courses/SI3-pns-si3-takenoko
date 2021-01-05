@@ -155,12 +155,4 @@ public class SecondBot extends Bot {
         return "Bot 2";
     }
 
-
-
-
-    @Override
-    public String getTurnMessage() {
-        return ""; //action.getMessage(this, "Some parameter");
-    }
-
 }

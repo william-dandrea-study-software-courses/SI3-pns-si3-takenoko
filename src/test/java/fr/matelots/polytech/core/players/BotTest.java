@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -50,7 +49,15 @@ public class BotTest {
         assertFalse(bot.getIndividualBoard().getUnfinishedParcelObjectives().isEmpty());
     }
 
-
+    @Test
+    public void testRandomPlaceableColor() {
+        for (int i = 0; i < Config.NB_PLACEABLE_PARCEL; i++)
+            bot.board.addParcel(bot.board.getValidPlaces().iterator().next(), new BambooPlantation(bot.getRandomPlaceableColor()));
+        assertEquals(0, bot.board.getParcelLeftToPlace(BambooColor.GREEN));
+        assertEquals(0, bot.board.getParcelLeftToPlace(BambooColor.YELLOW));
+        assertEquals(0, bot.board.getParcelLeftToPlace(BambooColor.PINK));
+        assertNull(bot.getRandomPlaceableColor());
+    }
 
     @Test
     public void testPlaceAnParcelAnywhereRandomColor() {
@@ -61,12 +68,12 @@ public class BotTest {
         bot.setCurrentNumberOfAction(0);
 
         // We verify if we can't place more than 27 parcels
-        for (int i = 0; i < 35 ; i++) {
+        for (int i = 0; i < Config.NB_PLACEABLE_PARCEL - 1; i++) {
             bot.setCurrentNumberOfAction(0);
-            bot.placeAnParcelAnywhere(turnLog);
+            assertNotEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
         }
-
-        assertEquals(28, bot.getBoard().getParcelCount());
+        assertEquals(Config.MAX_PARCEL_ON_BOARD, bot.getBoard().getParcelCount());
+        assertEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
     }
 
     /**
@@ -75,7 +82,6 @@ public class BotTest {
 
     @Test
     public void testPlaceAnParcelAnywhereChosenColor() {
-
         bot.setCurrentNumberOfAction(0);
         // We verify if we can't place more than 27 parcels
         for (int i = 0; i < 50 ; i++) {
@@ -91,10 +97,9 @@ public class BotTest {
             bot.placeAnParcelAnywhere(BambooColor.PINK, turnLog);
         }
 
-
-        assertEquals(11, bot.getBoard().getParcelCount(BambooColor.GREEN));
-        assertEquals(9, bot.getBoard().getParcelCount(BambooColor.YELLOW) );
-        assertEquals(7, bot.getBoard().getParcelCount(BambooColor.PINK));
+        assertEquals(Config.NB_MAX_GREEN_PARCELS, bot.getBoard().getParcelCount(BambooColor.GREEN));
+        assertEquals(Config.NB_MAX_YELLOW_PARCELS, bot.getBoard().getParcelCount(BambooColor.YELLOW) );
+        assertEquals(Config.NB_MAX_PINK_PARCELS, bot.getBoard().getParcelCount(BambooColor.PINK));
     }
 
 
@@ -195,7 +200,7 @@ public class BotTest {
         assertEquals(Optional.empty(), cardObjective);
     }
 
-    @Test
+    /*@Test
     public void testGetTheColorsWhoseComposeAnCardbjectiveParcel() {
         CardObjective cardObjective = new CardObjectiveParcel(bot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
         BambooColor[] list1 = bot.getTheColorsWhoseComposeAnCardbjectiveParcel(Optional.of(cardObjective));
@@ -208,7 +213,7 @@ public class BotTest {
         for (BambooColor bambooColor: list2) {
             assertTrue(bambooColor.equals(bambooColor.GREEN) || bambooColor.equals(bambooColor.YELLOW));
         }
-    }
+    }*/
 
     @Test
     public void testRecoverTheMissingsPositionsToCompleteForParcelObjective() {
@@ -255,6 +260,27 @@ public class BotTest {
             bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog);
         }
         assertFalse(bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
+    }
+
+    @Test
+    public void testCantMoveGardener() {
+        Position pos = new Position(0, 1, -1);
+        bot.board.addBambooPlantation(pos);
+        bot.setCurrentNumberOfAction(Config.TOTAL_NUMBER_OF_ACTIONS);
+        assertFalse(bot.moveGardener(pos, turnLog));
+    }
+
+    @Test
+    public void testMoveGardenerNotSuccess() {
+        Position pos = new Position(0, 1, -1);
+        assertFalse(bot.moveGardener(pos, turnLog));
+    }
+
+    @Test
+    public void testMoveGardenerSuccess() {
+        Position pos = new Position(0, 1, -1);
+        bot.board.addBambooPlantation(pos);
+        assertTrue(bot.moveGardener(pos, turnLog));
     }
 
 }

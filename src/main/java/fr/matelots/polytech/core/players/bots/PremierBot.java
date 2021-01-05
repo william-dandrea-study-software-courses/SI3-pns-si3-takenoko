@@ -169,9 +169,4 @@ public class PremierBot extends Bot {
         return "Bot 1";
     }
 
-
-    @Override
-    public String getTurnMessage() {
-        return ""; //action.getMessage(this, "Some parameter");
-    }
 }

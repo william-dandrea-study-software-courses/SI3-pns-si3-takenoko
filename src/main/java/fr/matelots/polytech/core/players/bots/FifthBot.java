@@ -354,11 +354,6 @@ public class FifthBot extends Bot {
     }
 
     @Override
-    public String getTurnMessage() {
-        return ""; //action.getMessage(this, action.name());
-    }
-
-    @Override
     public String toString() {
         return "Rush Panda";
     }

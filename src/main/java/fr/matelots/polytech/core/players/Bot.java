@@ -11,31 +11,24 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
-import javax.swing.text.html.Option;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * @author Gabriel Cogne
  * @author D'Andrea William
+ * @author Alexandre Arcil
  */
 public abstract class Bot {
 
     private final Game game;
-    protected Board board;
+    protected final Board board;
     protected final IndividualBoard individualBoard;
-    private static final Random random = new Random();
+    protected static final Random random = new Random();
     private String name;
-    private int numberOfParcelsGreenInTheGame = 0;
-    private int numberOfParcelsYellowInTheGame = 0;
-    private int numberOfParcelsPinkInTheGame = 0;
-
-
     protected int currentNumberOfAction;
 
     public Bot(Game game, String name) {
@@ -46,34 +39,23 @@ public abstract class Bot {
     public Bot(Game game) {
         this.game = game;
         this.board = game.getBoard();
-        individualBoard = new IndividualBoard();
-        name = toString();
-    }
-
-    public IndividualBoard getIndividualBoard() {
-        return individualBoard;
-    }
-    public Board getBoard() {
-        return board;
-    }
-    public void setCurrentNumberOfAction(int currentNumberOfAction) {
-        this.currentNumberOfAction = currentNumberOfAction;
+        this.name = toString();
+        this.individualBoard = new IndividualBoard();
     }
 
     /**
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
-     * @return the objective that we pick
+     * @return the objective that is picked
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
-        if (canDoAction()) {
-            CardObjective obj = game.getNextParcelObjective();
+        if(this.canDoAction()) {
+            CardObjectiveParcel obj = game.getNextParcelObjective();
             if (obj == null) {
                 return Optional.empty();
             }
-            if(!individualBoard.addNewParcelObjective((CardObjectiveParcel) obj)) {
+            if (!individualBoard.addNewParcelObjective(obj)) {
                 return Optional.empty();
             }
-
             log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.toString());
             currentNumberOfAction++;
             return Optional.of(obj);
@@ -81,26 +63,17 @@ public abstract class Bot {
         return Optional.empty();
     }
 
-    public Optional<CardObjective> selectParcelObjectiveFromIndividualBoard(TurnLog log) {
-        if (getIndividualBoard().countUnfinishedParcelObjectives() == 0) {
-            pickParcelObjective(log);
-        } else {
-            return Optional.of(getIndividualBoard().getNextParcelGoal());
-        }
-        return Optional.empty();
-    }
-
     /**
      * This method pick a new Gardener objective from the pile of card and add this objective to the individual board
-     * @return the objective that we pick
+     * @return the objective that is picked
      */
     public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
-        if (currentNumberOfAction < 2) {
-            CardObjective obj = game.getNextGardenerObjective();
+        if(this.canDoAction()) {
+            CardObjectiveGardener obj = game.getNextGardenerObjective();
             if (obj == null) {
                 return Optional.empty();
             }
-            if(!individualBoard.addNewGardenerObjective((CardObjectiveGardener) obj)) {
+            if (!individualBoard.addNewGardenerObjective(obj)) {
                 return Optional.empty();
             }
             log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.toString());
@@ -112,15 +85,15 @@ public abstract class Bot {
 
     /**
      * This method pick a new Panda objective from the pile of card and add this objective to the individual board
-     * @return the objective that we pick
+     * @return the objective that is picked
      */
     public Optional<CardObjective> pickPandaObjective(TurnLog log) {
-        if (currentNumberOfAction < 2) {
-            CardObjective obj = game.getNextPandaObjective();
+        if (this.canDoAction()) {
+            CardObjectivePanda obj = game.getNextPandaObjective();
             if (obj == null) {
                 return Optional.empty();
             }
-            if(!individualBoard.addNewPandaObjective((CardObjectivePanda) obj)) {
+            if(!individualBoard.addNewPandaObjective(obj)) {
                 return Optional.empty();
             }
 
@@ -150,17 +123,16 @@ public abstract class Bot {
     }
 
     /**
-     * This function check the current objective
-     * @return true if the cardObjective is in progress or false if there is any currentObjective or if
-     * the currentObjective is finish
+     * This function check all the objectives
      */
     public void checkAllObjectives() {
-
         getIndividualBoard().checkAllGoal();
-
     }
 
-
+    /**
+     * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
+     * @param log A logger to log action made
+     */
     public abstract void playTurn (TurnLog log);
 
     public void playTurn() {
@@ -169,44 +141,57 @@ public abstract class Bot {
         currentNumberOfAction = 0;
     }
 
+    /**
+     * Describe if the bot can continue to play. He needs to return false if he thinks he's blocked and can't play to
+     * avoid a infinite loop.
+     * @return true if the bot can continue to play, false otherwise
+     */
     public abstract boolean canPlay();
-
-    public static <T extends Enum<?>> T randomEnum(Class<T> classe){
-        int x = random.nextInt(classe.getEnumConstants().length);
-        return classe.getEnumConstants()[x];
-    }
-
 
     /**
      * This method will place a parcel anywhere in the board, the color of the new parcel is random
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
-        if (board.getParcelCount() <= 27 && canDoAction()) {
-            // We check where we can put an parcel
-            ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
+        if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
+            // We get where we can put an parcel
+            ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
             // Now, we have an ArrayList of the potentials places where we can add a parcel
 
             // We choose a random parcel in the potential list
-            int position = random.nextInt(placeWhereWeCanPlaceAnParcel.size());
+            int position = random.nextInt(validPositions.size());
 
             // We finally add to the board the new parcel
-
-            //board.addParcel(placeWhereWeCanPlaceAnParcel.get(position), new BambooPlantation(BambooColor.GREEN));
-            Position pos = placeWhereWeCanPlaceAnParcel.get(position);
-
-            BambooColor color = randomEnum(BambooColor.class);
-            if (verifyIfWeCanPlaceAColoredParcel(color)) {
-                currentNumberOfAction++;
+            Position pos = validPositions.get(position);
+            BambooColor color = this.getRandomPlaceableColor();
+            if (color != null) {
                 board.addParcel(pos, new BambooPlantation(color));
-
-                Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
+                log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
+                currentNumberOfAction++;
                 return Optional.of(pos);
             }
         }
         return Optional.empty();
     }
 
+    /**
+     * @return A random bamboo color that can be place on the board, null otherwise
+     */
+    BambooColor getRandomPlaceableColor() {
+        List<BambooColor> colors = new ArrayList<>();
+        for(BambooColor color : BambooColor.values()) {
+            if(this.board.getParcelLeftToPlace(color) > 0)
+                colors.add(color);
+        }
+        Collections.shuffle(colors);
+        return colors.isEmpty() ? null : colors.get(0);
+    }
+
+    /**
+     * Check if the color can be placed on the board.
+     * @param color The color to check
+     * @return true if this color can be placed, false otherwise
+     */
     boolean verifyIfWeCanPlaceAColoredParcel(BambooColor color) {
         switch (color) {
             case GREEN: {
@@ -238,82 +223,66 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
-        if (board.getParcelCount() <= 27 && canDoAction()) {
+        if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
 
             int position = random.nextInt(placeWhereWeCanPlaceAnParcel.size());
 
             Position pos = placeWhereWeCanPlaceAnParcel.get(position);
+            if (this.verifyIfWeCanPlaceAColoredParcel(color)) {
+                if (this.board.addParcel(pos, new BambooPlantation(color))) {
+                    this.currentNumberOfAction++;
+                    log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
+                }
+                return Optional.of(pos);
+            }
 
-            switch (color) {
+            /*switch (color) {
                 case PINK: {
-                    if (verifyIfWeCanPlaceAColoredParcel(BambooColor.PINK)) {
-                        if (board.addParcel(pos, new BambooPlantation(BambooColor.PINK))) {
-                            numberOfParcelsPinkInTheGame++;
-                            currentNumberOfAction++;
-                        }
-                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
-                        return Optional.of(pos);
-                    }
+
                 }
 
                 case YELLOW: {
-                    if (verifyIfWeCanPlaceAColoredParcel(BambooColor.YELLOW)) {
-                        if (board.addParcel(pos, new BambooPlantation(BambooColor.YELLOW))) {
-                            numberOfParcelsYellowInTheGame++;
+                    if (verifyIfWeCanPlaceAColoredParcel(color)) {
+                        if (board.addParcel(pos, new BambooPlantation(color))) {
                             currentNumberOfAction++;
+                            log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
                         }
-                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
                     }
                 }
 
 
                 case GREEN: {
-                    if ((verifyIfWeCanPlaceAColoredParcel(BambooColor.GREEN))) {
-                        if (board.addParcel(pos, new BambooPlantation(BambooColor.GREEN))) {
-                            numberOfParcelsGreenInTheGame++;
+                    if (verifyIfWeCanPlaceAColoredParcel(color)) {
+                        if (board.addParcel(pos, new BambooPlantation(color))) {
                             currentNumberOfAction++;
+                            log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
                         }
-                        Optional.of(pos).ifPresent(positions -> log.addAction(BotActionType.PLACE_PARCEL, positions.toString()));
                         return Optional.of(pos);
                     }
                 }
-            }
+            }*/
         }
 
         return Optional.empty();
     }
 
     /**
-     * This method return the colors whose compose the card objective parcel, for exemple Green
-     * @param objective
-     * @return
-     */
-    public BambooColor[] getTheColorsWhoseComposeAnCardbjectiveParcel(Optional<CardObjective> objective) {
-        CardObjectiveParcel card = (CardObjectiveParcel) objective.get();
-        return card.getColors();
-    }
-
-    /**
-     * This method recover the missings positions to complete a Parcel Objective
-     * @param card
-     * @return
+     * This method recover the missing positions to complete a Parcel Objective
+     * @param card The parcel objective to verify
+     * @return The missing position to complete the objective. Can be empty if he's completed.
      */
      public Set<PositionColored> recoverTheMissingsPositionsToCompleteForParcelObjective(CardObjectiveParcel card) {
          Set<PositionColored> missingPositionsToComplete = new HashSet<>();
          if (card != null) {
-
              card.verify();
-             if (card.getMissingPositionsToComplete() != null) {
-                 for (PositionColored positionColored : card.getMissingPositionsToComplete()) {
-                     missingPositionsToComplete.add(positionColored);
-                 }
+             if (card.getMissingPositionsToComplete() != null) { //Normalement tjr false
+                 missingPositionsToComplete.addAll(card.getMissingPositionsToComplete());
              }
          }
          return missingPositionsToComplete;
-
     }
 
 
@@ -325,7 +294,7 @@ public abstract class Bot {
      * @return true if the parcel is placed else return false
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
-        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return false;
+        if(!this.canDoAction()) return false;
 
         if (board.getParcelLeftToPlace(color) != 0) {
             try {
@@ -344,24 +313,45 @@ public abstract class Bot {
        return false;
     }
 
+    /**
+     * @return true if the bot can do action, like placing a parcel, or false otherwise
+     */
     public boolean canDoAction() {
-        if (currentNumberOfAction < Config.TOTAL_NUMBER_OF_ACTIONS) {
-            return true;
-        } else {
+        return currentNumberOfAction < Config.TOTAL_NUMBER_OF_ACTIONS;
+    }
+
+    public IndividualBoard getIndividualBoard() {
+        return individualBoard;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setCurrentNumberOfAction(int currentNumberOfAction) {
+        this.currentNumberOfAction = currentNumberOfAction;
+    }
+
+    /**
+     * Move the gardener at the position given in parameter. Nothing is done if he can't do an action or if the move
+     * fail.
+     * @param position The position where to move the gardener
+     * @param log The logger
+     */
+    public boolean moveGardener(Position position, TurnLog log) {
+        if(!this.canDoAction()) return false;
+        boolean success;
+        try {
+            success = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
+            if(success) {
+                currentNumberOfAction++;
+                log.addAction(BotActionType.MOVE_GARDENER, position.toString());
+            }
+            return success;
+        } catch (UnreachableParcelException e) {
             return false;
         }
     }
-
-    public void moveGardener(Position position, TurnLog log) {
-        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return;
-        var success = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
-        if(success) {
-            currentNumberOfAction++;
-            log.addAction(BotActionType.MOVE_GARDENER, position.toString());
-        }
-    }
-
-    public abstract String getTurnMessage();
 
     public String getName() {
         return name;
@@ -370,6 +360,5 @@ public abstract class Bot {
     public int getCurrentNumberOfAction() {
         return currentNumberOfAction;
     }
-
 
 }

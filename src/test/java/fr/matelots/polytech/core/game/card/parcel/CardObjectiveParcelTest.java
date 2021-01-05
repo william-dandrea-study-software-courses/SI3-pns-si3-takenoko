@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.game.card.parcel;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.engine.util.Position;
@@ -55,8 +56,8 @@ public class CardObjectiveParcelTest {
     public void missingParcelsRightPositions() {
         this.board.addParcel(0, 1, -1, new BambooPlantation(BambooColor.GREEN));
         this.board.addParcel(1, 0, -1, new BambooPlantation(BambooColor.GREEN));
-        Set<Position> positions = new HashSet<>();
-        positions.add(new Position(1, 1, -2));
+        Set<PositionColored> positions = new HashSet<>();
+        positions.add(new PositionColored(new Position(1, 1, -2), BambooColor.GREEN));
         obj.verify();
         assertEquals(positions, obj.getMissingPositionsToComplete());
     }

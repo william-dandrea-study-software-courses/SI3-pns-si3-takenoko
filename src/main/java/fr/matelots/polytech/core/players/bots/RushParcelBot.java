@@ -192,8 +192,4 @@ public class RushParcelBot extends Bot {
         }
     }
 
-    @Override
-    public String getTurnMessage() {
-        return null;
-    }
 }

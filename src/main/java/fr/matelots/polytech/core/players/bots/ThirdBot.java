@@ -284,9 +284,4 @@ public class ThirdBot extends Bot {
         return "Bot 3";
     }
 
-
-    @Override
-    public String getTurnMessage() {
-        return ""; //action.getMessage(this, actionParameter);
-    }
 }

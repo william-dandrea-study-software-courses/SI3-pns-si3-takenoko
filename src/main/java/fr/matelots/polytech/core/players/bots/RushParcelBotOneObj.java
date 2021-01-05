@@ -211,11 +211,6 @@ public class RushParcelBotOneObj extends Bot {
 
     }
 
-    @Override
-    public String getTurnMessage() {
-        return null;
-    }
-
 
 
     public Optional<CardObjective> getCurrentObjective() {
