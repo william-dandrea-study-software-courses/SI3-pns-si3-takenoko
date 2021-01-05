@@ -5,14 +5,9 @@ import fr.matelots.polytech.core.game.Config;
 /**
  * @author Gabriel Cogne
  */
-public class CardObjectiveEmperor extends CardObjective {
+public class CardObjectiveEmperor {
 
-    public CardObjectiveEmperor() {
-        super (Config.EMPEROR_VALUE);
-    }
-
-    @Override
-    public boolean verify() {
-        return (completed = true);
+    public int getScore () {
+        return Config.EMPEROR_VALUE;
     }
 }
