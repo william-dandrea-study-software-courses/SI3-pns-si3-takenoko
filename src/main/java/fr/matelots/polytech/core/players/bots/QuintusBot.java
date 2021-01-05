@@ -22,6 +22,7 @@ import java.util.logging.Logger;
  * Je pioche 4 objectifs panda
  *
  * @author williamdandrea
+ * @author Gabriel Cogne
  */
 public class QuintusBot extends Bot {
     private final Panda panda;
@@ -50,6 +51,9 @@ public class QuintusBot extends Bot {
         int action = 0;
 
         for ( ; action < Config.TOTAL_NUMBER_OF_ACTIONS; action++){
+            if (!canPlay())
+                return;
+
             // Do an action
             if (getIndividualBoard().countUnfinishedPandaObjectives() < 1) {
                 turnLeftToPick = Math.max(1, turnLeftToPick);
@@ -108,6 +112,12 @@ public class QuintusBot extends Bot {
 
         log.addAction(BotActionType.MOVE_PANDA, chosen.toString());
         turnDoingNothing = 0;
+
+        final int MAX_EATEN_BEFORE_ERROR = 100;
+        if (getIndividualBoard().getGreenEatenBamboo() > MAX_EATEN_BEFORE_ERROR
+            || getIndividualBoard().getPinkEatenBamboo() > MAX_EATEN_BEFORE_ERROR
+            || getIndividualBoard().getYellowEatenBamboo() > MAX_EATEN_BEFORE_ERROR)
+            turnDoingNothing = 3;
     }
 
     void moveGardener (TurnLog log) {
