@@ -552,5 +552,62 @@ public class CardObjectiveGardenerTest {
         assertTrue(card.verify());
     }
 
+    @Test @DisplayName("Le nombre de bamboo manquant est de 3")
+    public void testCountMissingThree() {
+        BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(-1, 1, 0, parcel);
+        parcel.growBamboo();
+        parcel.growBamboo();
+        parcel.growBamboo();
+        CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.GREEN, 3, 4);
+        card.verify();
+        assertEquals(3, card.getCountMissing());
+    }
+
+    @Test @DisplayName("Le nombre de parcel bamboo manquant pour compléter l'objectif est de 0")
+    public void testCountMissingZero() {
+        BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(-1, 1, 0, parcel);
+        this.board.addParcel(1, -1, 0, parcel2);
+        this.board.addParcel(-1, 0, 1, parcel3);
+        this.board.addParcel(0, -1, 1, parcel4);
+        for (int i = 0; i < 3; i++) {
+            parcel.growBamboo();
+            parcel2.growBamboo();
+            parcel3.growBamboo();
+            parcel4.growBamboo();
+        }
+        CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.GREEN, 3, 4);
+        card.verify();
+        assertEquals(0, card.getCountMissing());
+    }
+
+    @Test @DisplayName("Le nombre de bamboo manquant est de 0 alors qu'il y a plus de parcelle bamboo qui respecte l'objectif")
+    public void testCountMissingZeroNotLess() {
+        BambooPlantation parcel = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel2 = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel3 = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel4 = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation parcel5 = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(-1, 1, 0, parcel);
+        this.board.addParcel(1, -1, 0, parcel2);
+        this.board.addParcel(-1, 0, 1, parcel3);
+        this.board.addParcel(0, -1, 1, parcel4);
+        this.board.addParcel(0, 1, -1, parcel5);
+        for (int i = 0; i < 3; i++) {
+            parcel.growBamboo();
+            parcel2.growBamboo();
+            parcel3.growBamboo();
+            parcel4.growBamboo();
+            parcel5.growBamboo();
+        }
+        CardObjectiveGardener card = new CardObjectiveGardener(this.board, 1, BambooColor.GREEN, 3, 4);
+        card.verify();
+        assertEquals(0, card.getCountMissing());
+    }
+
 
 }

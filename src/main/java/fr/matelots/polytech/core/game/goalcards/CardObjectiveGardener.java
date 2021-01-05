@@ -19,6 +19,7 @@ public class CardObjectiveGardener extends CardObjective {
     private final BambooColor color;
     private final int size;
     private final int count;
+    private int countMissing;
 
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {
         super(score);
@@ -42,6 +43,7 @@ public class CardObjectiveGardener extends CardObjective {
             }
         }
         this.completed = count >= this.count;
+        this.countMissing = Math.max(this.count - count, 0);
         return this.completed;
     }
 
@@ -53,30 +55,32 @@ public class CardObjectiveGardener extends CardObjective {
         return size;
     }
 
+    public int getCountMissing() {
+        return countMissing;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         CardObjectiveGardener that = (CardObjectiveGardener) o;
-        return size == that.size &&
-                count == that.count &&
-                color == that.color;
+        return size == that.size && count == that.count && countMissing == that.countMissing && Objects.equals(board, that.board) && color == that.color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), color, size, count);
+        return Objects.hash(super.hashCode(), board, color, size, count, countMissing);
     }
 
     @Override
     public String toString() {
         return "CardObjectiveGardener{" +
-                "completed=" + completed +
-                ", board=" + board +
+                "board=" + board +
                 ", color=" + color +
                 ", size=" + size +
                 ", count=" + count +
+                ", countMissing=" + countMissing +
                 '}';
     }
 }
