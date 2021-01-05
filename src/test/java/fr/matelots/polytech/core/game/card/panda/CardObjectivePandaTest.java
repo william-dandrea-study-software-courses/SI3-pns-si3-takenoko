@@ -124,9 +124,6 @@ public class CardObjectivePandaTest {
         assertFalse(this.pinkBambooCard.verify());
     }
 
-
-
-
     @Test @DisplayName("carte '2 bambous jaune' avec aucun bambou")
     public void twoYellowBambooNoBamboo() {
         this.yellowBambooCard.setIndividualBoard(this.board);
@@ -172,9 +169,6 @@ public class CardObjectivePandaTest {
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertFalse(this.yellowBambooCard.verify());
     }
-
-
-
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec aucun bambou")
     public void everyColorBambooNoBamboo() {
@@ -237,6 +231,16 @@ public class CardObjectivePandaTest {
         this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
         this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
         assertTrue(this.everyColorCard.verify());
+    }
+
+    @Test @DisplayName("L'objectif est bien complété")
+    public void objectifIsCompleted() {
+        this.everyColorCard.setIndividualBoard(this.board);
+        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.everyColorCard.verify();
+        assertTrue(this.everyColorCard.isCompleted());
     }
 
 

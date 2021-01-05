@@ -25,7 +25,7 @@ public class CardObjectivePanda extends CardObjective {
 
     @Override
     public boolean verify() {
-        return this.individualBoard.getGreenEatenBamboo() >= this.greenCount &&
+        return this.completed = this.individualBoard.getGreenEatenBamboo() >= this.greenCount &&
                 this.individualBoard.getPinkEatenBamboo() >= this.pinkCount &&
                 this.individualBoard.getYellowEatenBamboo() >= this.yellowCount;
     }
