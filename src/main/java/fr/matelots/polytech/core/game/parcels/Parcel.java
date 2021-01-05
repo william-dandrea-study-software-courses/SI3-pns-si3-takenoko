@@ -88,10 +88,10 @@ public abstract class Parcel {
 
     public void draw(ParcelDrawer drawer) {
         //System.out.println("irrigate : ");
-        if(isIrrigate()) {
+        /*if(isIrrigate()) {
             Arrays.stream(Side.values()).forEach(drawer::setIrrigate);
             return;
-        }
+        }*/
 
         // Si elle n'est pas irrigué, elle peut partager des bordures qui le sont
         irrigate.forEach((side, isIrrigated) -> {
