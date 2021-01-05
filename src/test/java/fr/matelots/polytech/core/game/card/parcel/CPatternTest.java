@@ -63,8 +63,8 @@ public class CPatternTest {
     public void onePosition() {
         this.positions.add(new PositionColored(new Position(1, -1, 0), BambooColor.GREEN));
         HashSet<PositionColored> expected = new HashSet<>();
-        expected.add(new PositionColored(new Position(1, 0, -1), BambooColor.GREEN));
-        expected.add(new PositionColored(new Position(2, 0, -2), BambooColor.GREEN));
+        expected.add(new PositionColored(new Position(0, -1, 1), BambooColor.GREEN));
+        expected.add(new PositionColored(new Position(0, -2, 2), BambooColor.GREEN));
         Set<PositionColored> check = Patterns.C.check(this.positions, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
         assertTrue(expected.containsAll(check));
     }
