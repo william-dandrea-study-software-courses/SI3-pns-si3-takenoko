@@ -4,8 +4,6 @@ import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.engine.util.Position;
 
-import java.awt.*;
-
 public class ParcelDrawer {
 
     private final Position pos;
@@ -26,8 +24,8 @@ public class ParcelDrawer {
     }
 
     public void setIrrigate(Side side) {
-        var characPos = getPosition(side.getConsoleDelta());
-        buffer.changeColor(characPos.getX(), characPos.getY(), ConsoleColor.BLUE);
+        var position = getPosition(side.getConsoleDelta()); // ??? getConsoleDelta ne devrais pas pouvoir retourner null...
+        buffer.changeColor(position.getX(), position.getY(), ConsoleColor.BLUE);
     }
 
     private void setLayoutChar(char charac) {
