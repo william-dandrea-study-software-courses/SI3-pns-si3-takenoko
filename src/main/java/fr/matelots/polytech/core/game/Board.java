@@ -341,4 +341,23 @@ public class Board {
     public DeckParcel getDeckParcel() {
         return deckParcel;
     }
+    
+    public List<Parcel> pickParcels () {
+        List<Parcel> res = new ArrayList<>();
+        int dice;
+        for (int i = 0; i < Config.NB_PARCEL_PICKED; i++) {
+            dice = Config.RANDOM.nextInt(greenParcelLeftToPlace + pinkParcelLeftToPlace + yellowParcelLeftToPlace);
+            if (dice < greenParcelLeftToPlace) {
+                res.add(new BambooPlantation(BambooColor.GREEN));
+            }
+            else if (dice < greenParcelLeftToPlace + pinkParcelLeftToPlace) {
+                res.add(new BambooPlantation(BambooColor.PINK));
+            }
+            else {
+                res.add(new BambooPlantation(BambooColor.YELLOW));
+            }
+        }
+
+        return res;
+    }
 }

@@ -7,7 +7,6 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -35,7 +34,7 @@ public class QuintusBot extends Bot {
 
     private List<BambooColor> neededColors;
 
-    private static final Random random = new Random();
+    private static final Random random = Config.RANDOM;
 
     public QuintusBot(Game game, String name) {
         super(game, name);
@@ -199,7 +198,21 @@ public class QuintusBot extends Bot {
         }
 
         Position chosen = placeablePositions.get(random.nextInt(placeablePositions.size()));
-        board.addParcel(chosen, new BambooPlantation(colors.get(0)));
+        Parcel chosenParcel = null;
+
+        List<Parcel> placeable = board.pickParcels();
+
+        for (Parcel p : placeable) {
+            if (colors.get(0).equals(p.getBambooColor())) {
+                chosenParcel = p;
+                break;
+            }
+        }
+        if (chosenParcel == null) {
+            chosenParcel = placeable.get(random.nextInt(placeable.size()));
+        }
+
+        board.addParcel(chosen, chosenParcel);
         log.addAction(BotActionType.PLACE_PARCEL, chosen.toString());
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;

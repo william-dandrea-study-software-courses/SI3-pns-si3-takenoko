@@ -29,7 +29,7 @@ public abstract class Bot {
     private final Game game;
     protected final Board board;
     protected final IndividualBoard individualBoard;
-    protected static final Random random = new Random();
+    protected static final Random random = Config.RANDOM;
     private String name;
     protected int currentNumberOfAction;
 

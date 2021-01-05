@@ -4,6 +4,7 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Config {
 
@@ -49,6 +50,10 @@ public class Config {
     public static final int MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND = 5;
 
     public static final int EMPEROR_VALUE = 2;
+
+    public static final int NB_PARCEL_PICKED = 3;
+
+    public static final Random RANDOM = new Random();
 
 
     private Config () throws InstantiationException {
