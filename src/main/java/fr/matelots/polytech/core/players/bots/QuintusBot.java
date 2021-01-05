@@ -86,6 +86,7 @@ public class QuintusBot extends Bot {
 
     private void movePanda (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(panda.getPosition());
+        accessibles.remove(panda.getPosition());
 
         Position chosen = null;
 
@@ -112,6 +113,7 @@ public class QuintusBot extends Bot {
 
     private void moveGardener (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(gardener.getPosition());
+        accessibles.remove(gardener.getPosition());
 
         Position chosen = null;
 
@@ -225,28 +227,24 @@ public class QuintusBot extends Bot {
     }
 
     private void checkObjectives () {
-        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> {
-            getIndividualBoard().verify(obj);
-        });
+        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
     }
 
     private void displayState () {
         StringBuilder builder = new StringBuilder("Objectifs :\n");
-        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> {
-            builder.append("{green ")
-                    .append(obj.getCountForColor(BambooColor.GREEN))
-                    .append(" (")
-                    .append(getIndividualBoard().getGreenEatenBamboo())
-                    .append("), pink ")
-                    .append(obj.getCountForColor(BambooColor.PINK))
-                    .append(" (")
-                    .append(getIndividualBoard().getPinkEatenBamboo())
-                    .append("), yellow ")
-                    .append(obj.getCountForColor(BambooColor.YELLOW))
-                    .append(" (")
-                    .append(getIndividualBoard().getYellowEatenBamboo())
-                    .append(")\n");
-        });
+        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> builder.append("{green ")
+                .append(obj.getCountForColor(BambooColor.GREEN))
+                .append(" (")
+                .append(getIndividualBoard().getGreenEatenBamboo())
+                .append("), pink ")
+                .append(obj.getCountForColor(BambooColor.PINK))
+                .append(" (")
+                .append(getIndividualBoard().getPinkEatenBamboo())
+                .append("), yellow ")
+                .append(obj.getCountForColor(BambooColor.YELLOW))
+                .append(" (")
+                .append(getIndividualBoard().getYellowEatenBamboo())
+                .append(")\n"));
         builder.append("Needed colors :\n");
         neededColors.forEach(bambooColor -> builder.append(bambooColor).append("\n"));
 
