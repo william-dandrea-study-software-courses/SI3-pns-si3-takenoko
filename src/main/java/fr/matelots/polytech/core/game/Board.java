@@ -94,12 +94,12 @@ public class Board {
             Position position = new Position(x, y, z);
             grid.put(position, p);
             parcelLeftToPlace--;
+
             for(Side side : Side.values()) { //Les parcels à côté de l'étang sont irrigués
                 Position posAdjacent = position.add(side.getDirection());
                 Parcel parcel = this.getParcel(posAdjacent);
-                if(parcel != null && parcel.isPond()) {
+                if(parcel != null && parcel.isIrrigate(side.oppositeSide())) {
                     p.setIrrigate(side);
-                    break;
                 }
             }
             return true;
@@ -176,15 +176,37 @@ public class Board {
         Parcel parcel = this.getParcel(position);
         Side sideAdjacent = side.oppositeSide();
         Parcel parcelAdjacent = this.getParcel(position.add(side.getDirection()));
-        if(parcel != null && parcelAdjacent != null) {
-            if(!parcel.isIrrigate(side)) {
-                if (parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide()) ||
-                        parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) ||
-                        parcelAdjacent.isIrrigate(sideAdjacent.leftSide())) {
-                    parcel.setIrrigate(side);
-                    parcelAdjacent.setIrrigate(sideAdjacent);
-                    return true;
-                }
+
+        // si parcel null on recommence avec la parcelle adjacente.
+        // parcelAdjacent != null evite les boucles infinies
+        if(parcel == null && parcelAdjacent != null) return placeIrrigation(position.add(side.getDirection()), side.oppositeSide());
+
+        if (canPlaceIrrigation(position, side)) {
+            if(parcel.isIrrigate(side)) return false;
+            parcel.setIrrigate(side);
+            if(parcelAdjacent != null)
+                parcelAdjacent.setIrrigate(sideAdjacent);
+
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canPlaceIrrigation(Position position, Side side) {
+        Parcel parcel = this.getParcel(position);
+        Side sideAdjacent = side.oppositeSide();
+        Parcel parcelAdjacent = this.getParcel(position.add(side.getDirection()));
+
+        // si parcel null on recommence avec la parcelle adjacente.
+        // parcelAdjacent != null evite les boucles infinies
+        if(parcel == null && parcelAdjacent != null) return placeIrrigation(position.add(side.getDirection()), side.oppositeSide());
+
+
+        if(parcel != null) {
+
+            if(parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide())) return true;
+            if(parcelAdjacent != null) {
+                return parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) || parcelAdjacent.isIrrigate(sideAdjacent.leftSide());
             }
         }
         return false;

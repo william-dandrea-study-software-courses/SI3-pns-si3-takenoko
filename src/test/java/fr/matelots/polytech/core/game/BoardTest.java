@@ -199,6 +199,32 @@ public class BoardTest {
     }
 
     @Test
+    public void testIrrigateFromTheBorderOfTheMap() {
+        BambooPlantation border = new BambooPlantation(BambooColor.GREEN);
+        board.addParcel(0, 1, -1, border);
+
+        assertTrue(board.placeIrrigation(new Position(0, 1, -1), Side.RIGHT));
+        assertTrue(border.isIrrigate(Side.RIGHT));
+
+        BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
+        board.addParcel(1, 0, -1, afterPlaceIrrigation);
+        assertTrue(afterPlaceIrrigation.isIrrigate(Side.LEFT));
+    }
+
+    @Test
+    public void testIrrigateFromEmptyPositionButNotEmptyNeighbour() {
+        BambooPlantation border = new BambooPlantation(BambooColor.GREEN);
+        board.addParcel(0, 1, -1, border);
+
+        assertTrue(board.placeIrrigation(new Position(1, 0, -1), Side.LEFT));
+        assertTrue(border.isIrrigate(Side.RIGHT));
+
+        BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
+        board.addParcel(1, 0, -1, afterPlaceIrrigation);
+        assertTrue(afterPlaceIrrigation.isIrrigate(Side.LEFT));
+    }
+
+    @Test
     public void testLimitOfVersionOnPinkParcel() {
         for(int i = 0; i < Config.NB_MAX_PINK_PARCELS; i++) {
             var validPlace = board.getValidPlaces().stream().findAny();
