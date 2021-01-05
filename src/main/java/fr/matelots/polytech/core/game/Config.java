@@ -25,6 +25,9 @@ public class Config {
     /**Taille du paquet de carte parcelles*/
     public static final int DECK_PARCEL_SIZE = 27;
 
+    /**Nombre de parcelles pouvant être sur le plateau*/
+    public static final int MAX_PARCEL_ON_BOARD = 28;
+
     /**Position de l'étang*/
     public static final Position POND_POSITION = new Position(0, 0, 0);
 
