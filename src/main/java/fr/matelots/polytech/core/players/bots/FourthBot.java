@@ -378,9 +378,4 @@ public class FourthBot extends Bot {
     public String toString() {
         return "Bot 4";
     }
-
-    @Override
-    public String getTurnMessage() {
-        return ""; //action.getMessage(this, "Some parameter");
-    }
 }

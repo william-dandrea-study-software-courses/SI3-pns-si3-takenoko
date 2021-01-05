@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
+import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
@@ -153,7 +154,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
-        if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
+        if (board.getParcelCount() < Config.NB_PLACEABLE_PARCEL && this.canDoAction()) {
             // We get where we can put an parcel
             ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
             // Now, we have an ArrayList of the potentials places where we can add a parcel
@@ -223,7 +224,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
-        if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
+        if (board.getParcelCount() < Config.NB_PLACEABLE_PARCEL && this.canDoAction()) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
 
