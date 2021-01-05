@@ -188,7 +188,6 @@ public class IndividualBoard {
     public void verify (CardObjectivePanda objectivePanda) {
         objectivePanda.setIndividualBoard(this);
         if (objectivePanda.verify()) {
-            objectivePanda.setCompleted(true);
             bamboos[BambooColor.GREEN.ordinal()] -= objectivePanda.getCountForColor(BambooColor.GREEN);
             bamboos[BambooColor.PINK.ordinal()] -= objectivePanda.getCountForColor(BambooColor.PINK);
             bamboos[BambooColor.YELLOW.ordinal()] -= objectivePanda.getCountForColor(BambooColor.YELLOW);
