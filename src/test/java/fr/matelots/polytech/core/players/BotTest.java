@@ -72,7 +72,7 @@ public class BotTest {
             bot.setCurrentNumberOfAction(0);
             assertNotEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
         }
-        assertEquals(Config.NB_PLACEABLE_PARCEL, bot.getBoard().getParcelCount());
+        assertEquals(Config.MAX_PARCEL_ON_BOARD, bot.getBoard().getParcelCount());
         assertEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
     }
 
