@@ -361,7 +361,7 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
-        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return false;
+        if(!canDoAction()) return false;
         var success = position.irrigate();
         if(success) {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());

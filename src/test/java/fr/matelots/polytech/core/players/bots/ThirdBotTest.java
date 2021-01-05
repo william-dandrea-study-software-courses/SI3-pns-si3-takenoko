@@ -1,112 +1,105 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.graphics.BoardDrawer;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
-import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 public class ThirdBotTest {
 
     private ThirdBot bot;
-    private ThirdBot bot2;
     private TurnLog log;
-    private TurnLog log2;
     private Game game;
+    private Board board;
 
     @BeforeEach
     void Init() {
         game = new Game();
+        board = game.getBoard();
         bot = new ThirdBot(game);
+
         log = new TurnLog(bot);
-
-        bot2 = new ThirdBot(game);
-        log2 = new TurnLog(bot2);
     }
 
     @Test
-    @Timeout(2)
-    void testConvergenceSolo() {
-        game.addBot(bot);
-        game.launchTurnLoop();
-    }
-
-    @Test
-    @Timeout(2)
-    void testCovergenceDualBot() {
-        game.addBot(bot);
-        game.addBot(bot2);
-
-        Timer timer = new Timer(true);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                assertTrue(false);
-                throw new RuntimeException("too long !");
-            }
-        }, 2000);
-        game.launchTurnLoop();
-        timer.cancel();
-    }
-
-    @Test
-    @Timeout(2)
-    void testObjectiveParcelDeckEmpty() {
-        game.addBot(bot);
-        bot.playTurn(log);
-        while(game.getNextParcelObjective() != null) ;
-        game.launchTurnLoop();
-    }
-
-    @Test
-    @Timeout(1)
-    void testGardenerGardenerDeckEmpty() {
-        game.addBot(bot);
-        //bot.playTurn();
-        while(game.getNextGardenerObjective() != null) ;
-        game.launchTurnLoop();
-    }
-
-    @Test
-    @Timeout(1)
-    void testGardenerAndParcelEmpty() {
-        while(game.getNextGardenerObjective() != null) ;
-        while(game.getNextParcelObjective() != null) ;
-
-        game.addBot(bot);
-        game.launchTurnLoop();
-    }
-
-    @Test
-    @Timeout(1)
-    void test_Have_Not_Parcel_To_Place_And_No_Gardener_Goals() throws Exception {
-        game.addBot(bot);
-
-        int oldVal = game.getBoard().getParcelLeftToPlace();
-        while(game.getBoard().getParcelLeftToPlace() != 0) {
-            ArrayList<Position> valids = new ArrayList<>(game.getBoard().getValidPlaces());
-            if(valids.size() == 0) throw new Exception("No place valid !");
-            else {
-                game.getBoard().addParcel(valids.get(0), new BambooPlantation(BambooColor.GREEN));
-
-                // dodge infinite loop
-                if(game.getBoard().getParcelLeftToPlace() >= oldVal) throw  new Exception("The system of parcel limitation dont working properly, now");
-            }
+    void FillHand() {
+        bot.DecideAction(log);
+        var opt = log.getLastAction();
+        while(opt.isEmpty()) {
+            bot.DecideAction(log);
+            opt = log.getLastAction();
         }
-
-        while(game.getNextGardenerObjective() != null) ;
-
-        assertFalse(bot.canPlay());
+        var action = opt.get();
+        assertTrue(action.getType() == BotActionType.PICK_GARDENER_GOAL || action.getType() == BotActionType.PICK_PARCEL_GOAL);
     }
+
+    @Test
+    void AfterFilling() {
+        bot.DecideAction(log);
+        var opt = log.getLastAction();
+        while(opt.isEmpty() || (opt.get().getType() == BotActionType.PICK_PARCEL_GOAL || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL)) {
+            bot.DecideAction(log);
+            opt = log.getLastAction();
+            bot.setCurrentNumberOfAction(0);
+        }
+        var action = opt.get();
+        assertEquals(action.getType(), BotActionType.PLACE_PARCEL);
+        bot.checkAllObjectives();
+
+    }
+
+    @Test
+    void AfterCompleteParcelObjectives() {
+        bot.DecideAction(log);
+        var opt = log.getLastAction();
+        while(bot.canPlay() && (opt.isEmpty()
+                || opt.get().getType() == BotActionType.PICK_PARCEL_GOAL
+                || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL
+                || opt.get().getType() == BotActionType.PLACE_PARCEL )) {
+            bot.DecideAction(log);
+            opt = log.getLastAction();
+            bot.setCurrentNumberOfAction(0);
+            log = new TurnLog(bot);
+        }
+        var action = opt.get();
+        assertTrue(action.getType() == BotActionType.MOVE_GARDENER || action.getType() == BotActionType.PLACE_IRRIGATION);
+    }
+
+     @Test
+    void AfterCompleteGardenerObjectives() {
+
+         bot.DecideAction(log);
+         var opt = log.getLastAction();
+         BoardDrawer drawer = new BoardDrawer(board);
+
+         while(opt.isEmpty()
+                 || opt.get().getType() == BotActionType.PICK_PARCEL_GOAL
+                 || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL) {
+             bot.DecideAction(log);
+             opt = log.getLastAction();
+             bot.setCurrentNumberOfAction(0);
+         }
+         while(opt.isEmpty() ||
+                 opt.get().getType() == BotActionType.PLACE_PARCEL ||
+                    opt.get().getType() == BotActionType.MOVE_GARDENER ||
+                opt.get().getType() == BotActionType.PLACE_IRRIGATION) {
+             try {
+                 bot.DecideAction(log);
+             } catch (RuntimeException e) {
+                 drawer.print();
+                 throw e;
+             }
+             opt = log.getLastAction();
+             bot.setCurrentNumberOfAction(0);
+         }
+         var action = opt.get();
+         assertTrue(action.getType() == BotActionType.PICK_GARDENER_GOAL || action.getType() == BotActionType.PICK_PARCEL_GOAL);
+     }
+
 }
