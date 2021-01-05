@@ -73,6 +73,9 @@ public class SecondBotTemporaire extends Bot {
     private TurnLog turnLogger;
     private Optional<CardObjective> currentObjective;
 
+    private int minNumberOfParcels = 6;
+    private int finishIncrement = 0;
+
 
     public SecondBotTemporaire(Game game) { super(game); }
     public SecondBotTemporaire(Game game, String name) { super(game, name); }
@@ -87,16 +90,35 @@ public class SecondBotTemporaire extends Bot {
         int numberOfObjectiveInIndividualBoard = individualBoard.countUnfinishedObjectives();
         //checkObjective(currentObjective);
 
-        // 1.0 // Si on a aucun objectif dans le deck
-        if (numberOfObjectiveInIndividualBoard == 0) {
-            currentObjective = pickParcelObjective(log);
-            tryToResolveParcelObjective2();
+        if (minimumParcelsInTheBoard()) {
+            // 1.0 // Si on a aucun objectif dans le deck
+            if (numberOfObjectiveInIndividualBoard == 0) {
+                currentObjective = pickParcelObjective(log);
+                if (currentObjective.isPresent()) {
+                    tryToResolveParcelObjective2();
+                } else {
+                    currentObjective = pickParcelObjective(log);
+                    placeAnParcelAnywhere(turnLogger);
+                    finishIncrement++;
+                }
+            } else {
 
-        } else {
-            if (canDoAnAction() && currentObjective.isPresent()) {
-                tryToResolveParcelObjective2();
+                if (numberOfObjectiveInIndividualBoard >= 1) {
+                    if (canDoAction() && currentObjective.isPresent()) {
+                        tryToResolveParcelObjective2();
+                    } else {
+                        currentObjective = pickParcelObjective(log);
+                        //pickParcelObjective(log);
+                        placeAnParcelAnywhere(turnLogger);
+                        finishIncrement++;
+                    }
+                }
+
             }
+        } else {
+            placeAnParcelAnywhere(turnLogger);
         }
+
 
         currentNumberOfAction = 0;
 
@@ -116,8 +138,16 @@ public class SecondBotTemporaire extends Bot {
 
         for (PositionColored positionColored : missingPositionsToComplete) {
             placeAnParcelAnywhere(positionColored.getColor(), turnLogger);
+            //placeParcel(positionColored.getPosition(), positionColored.getColor(), turnLogger);
         }
 
+    }
+
+    boolean minimumParcelsInTheBoard() {
+        if (getBoard().getParcelCount() <= minNumberOfParcels) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -162,13 +192,7 @@ public class SecondBotTemporaire extends Bot {
 
 
 
-    public boolean canDoAnAction() {
-        if (this.currentNumberOfAction <= 2) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
 
     @Override
     public boolean canPlay() {

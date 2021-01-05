@@ -4,6 +4,7 @@ import fr.matelots.polytech.core.players.Bot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TurnLog {
     private final Bot bot;
@@ -16,6 +17,15 @@ public class TurnLog {
 
     public void addAction(BotActionType action, String parameter) {
         this.actions.add(new BotAction(bot, action, parameter));
+    }
+
+    public BotAction[] getActions() {
+        return actions.toArray(BotAction[]::new);
+    }
+
+    public Optional<BotAction> getLastAction() {
+        if(actions.size() == 0) return Optional.empty();
+        return Optional.of(actions.get(actions.size() - 1));
     }
 
     @Override

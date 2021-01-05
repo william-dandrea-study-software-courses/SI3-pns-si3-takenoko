@@ -65,11 +65,7 @@ public abstract class Bot {
      * @return the objective that we pick
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
-        if (currentNumberOfAction < 2
-                && getBoard().getGreenParcelLeftToPlace() != 0
-                && getBoard().getYellowParcelLeftToPlace() != 0
-                && getBoard().getPinkParcelLeftToPlace() != 0
-        ) {
+        if (canDoAction()) {
             CardObjective obj = game.getNextParcelObjective();
             if (obj == null) {
                 return Optional.empty();
@@ -83,7 +79,15 @@ public abstract class Bot {
             return Optional.of(obj);
         }
         return Optional.empty();
+    }
 
+    public Optional<CardObjective> selectParcelObjectiveFromIndividualBoard(TurnLog log) {
+        if (getIndividualBoard().countUnfinishedParcelObjectives() == 0) {
+            pickParcelObjective(log);
+        } else {
+            return Optional.of(getIndividualBoard().getNextParcelGoal());
+        }
+        return Optional.empty();
     }
 
     /**
@@ -119,7 +123,6 @@ public abstract class Bot {
             if(!individualBoard.addNewPandaObjective((CardObjectivePanda) obj)) {
                 return Optional.empty();
             }
-
 
             log.addAction(BotActionType.PICK_PANDA_GOAL, obj.toString());
             currentNumberOfAction++;
@@ -245,8 +248,8 @@ public abstract class Bot {
 
             switch (color) {
                 case PINK: {
-                    if (numberOfParcelsPinkInTheGame < Config.NB_MAX_PINK_PARCELS) {
-                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                    if (verifyIfWeCanPlaceAColoredParcel(BambooColor.PINK)) {
+                        if (board.addParcel(pos, new BambooPlantation(BambooColor.PINK))) {
                             numberOfParcelsPinkInTheGame++;
                             currentNumberOfAction++;
                         }
@@ -256,8 +259,8 @@ public abstract class Bot {
                 }
 
                 case YELLOW: {
-                    if (numberOfParcelsYellowInTheGame < Config.NB_MAX_YELLOW_PARCELS) {
-                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                    if (verifyIfWeCanPlaceAColoredParcel(BambooColor.YELLOW)) {
+                        if (board.addParcel(pos, new BambooPlantation(BambooColor.YELLOW))) {
                             numberOfParcelsYellowInTheGame++;
                             currentNumberOfAction++;
                         }
@@ -268,8 +271,8 @@ public abstract class Bot {
 
 
                 case GREEN: {
-                    if (numberOfParcelsGreenInTheGame < Config.NB_MAX_GREEN_PARCELS) {
-                        if (board.addParcel(pos, new BambooPlantation(color))) {
+                    if ((verifyIfWeCanPlaceAColoredParcel(BambooColor.GREEN))) {
+                        if (board.addParcel(pos, new BambooPlantation(BambooColor.GREEN))) {
                             numberOfParcelsGreenInTheGame++;
                             currentNumberOfAction++;
                         }
@@ -338,6 +341,15 @@ public abstract class Bot {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void moveGardener(Position position, TurnLog log) {
+        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return;
+        var success = board.getGardener().moveTo(position.getX(), position.getY(), position.getZ());
+        if(success) {
+            currentNumberOfAction++;
+            log.addAction(BotActionType.MOVE_GARDENER, position.toString());
         }
     }
 

@@ -27,6 +27,9 @@ public class Gardener extends Pawn {
         Parcel current = getBoard().getParcel(getPosition());
         current.growBamboo();
 
+        if (current.getBambooColor() == null)
+            return;
+
         neighbours.stream()
                 .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
                 .forEach(Parcel::growBamboo);
