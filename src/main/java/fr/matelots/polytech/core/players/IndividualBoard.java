@@ -1,10 +1,7 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
-import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.*;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 
 import java.util.ArrayList;
@@ -27,6 +24,7 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
     private final List<CardObjectivePanda> objectivePandas;
+    private CardObjectiveEmperor emperor;
 
     // Eaten bamboo
     private final int[] bamboos;
@@ -35,11 +33,15 @@ public class IndividualBoard {
         objectiveParcels = new ArrayList<>();
         objectiveGardeners = new ArrayList<>();
         objectivePandas = new ArrayList<>();
+        emperor = null;
 
         bamboos = new int[BambooColor.values().length];
         Arrays.fill(bamboos, 0);
     }
 
+    public void setEmperor(CardObjectiveEmperor emperor) {
+        this.emperor = emperor;
+    }
 
     /**
      * Get the score of the player
@@ -51,7 +53,8 @@ public class IndividualBoard {
                 + objectiveGardeners.stream().filter(CardObjective::isCompleted)
                 .mapToInt(CardObjective::getScore).sum()
                 + objectivePandas.stream().filter(CardObjective::isCompleted)
-                .mapToInt(CardObjective::getScore).sum();
+                .mapToInt(CardObjective::getScore).sum()
+                + (emperor != null ? emperor.getScore() : 0);
     }
 
 

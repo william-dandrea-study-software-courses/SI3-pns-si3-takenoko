@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveEmperor;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
@@ -48,21 +49,6 @@ public class Game {
     public void addBot(Bot bot) {
         if(bots.contains(bot)) return; // Eviter les doubles coups ;)
         bots.add(bot);
-    }
-
-    // Methods
-    public Bot getWinner() {
-        Bot winner = null;
-        int bestScore = 0;
-        for (Bot bot : bots) {
-            int score = bot.getIndividualBoard().getPlayerScore();
-            if(score > bestScore) {
-                winner = bot;
-                bestScore = score;
-            }
-        }
-
-        return winner;
     }
 
     private List<List<Bot>> getRanks()
@@ -180,8 +166,13 @@ public class Game {
             bots.forEach(bot -> {
                 TurnLog log = new TurnLog(bot);
                 bot.playTurn(log);
-                if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size()))
+                if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size())) {
+                    if (!lastTurn) {
+                        ACTIONLOGGER.info(bot.getName() + " is the Emperor owner !!");
+                        bot.getIndividualBoard().setEmperor(new CardObjectiveEmperor());
+                    }
                     lastTurn = true;
+                }
 
 
                 if(draw) {

@@ -48,6 +48,8 @@ public class Config {
     public static final int TOTAL_NUMBER_OF_ACTIONS = 2;
     public static final int MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND = 5;
 
+    public static final int EMPEROR_VALUE = 2;
+
 
     private Config () throws InstantiationException {
         throw new InstantiationException("This is a static class");
