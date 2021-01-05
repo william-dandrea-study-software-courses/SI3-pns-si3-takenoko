@@ -44,7 +44,7 @@ public class IAforBotTest {
         CardObjectiveParcel cardObjectiveParcelLine = new CardObjectiveParcel(game.getBoard(), 2, Patterns.LINE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
         cardObjectiveParcelLine.verify();
 
-        assertTrue(IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard()) != null);
+        assertTrue(IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard()) != null);
 
     }
 
@@ -58,7 +58,7 @@ public class IAforBotTest {
         cardObjectiveParcelLine.verify();
 
         PositionColored pos = new PositionColored(new Position(1,0,-1), BambooColor.GREEN);
-        assertEquals(pos, IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard()));
+        assertEquals(pos, IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard()));
 
     }
 
@@ -72,7 +72,7 @@ public class IAforBotTest {
         CardObjectiveParcel cardObjectiveParcelLine = new CardObjectiveParcel(game.getBoard(), 2, Patterns.LINE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
         cardObjectiveParcelLine.verify();
 
-        assertNull(IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard()));
+        assertNull(IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard()));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class IAforBotTest {
         PositionColored potentialPos3 = new PositionColored(new Position(-1,0,1), BambooColor.GREEN);
         PositionColored potentialPos4 = new PositionColored(new Position(-1,-1,2), BambooColor.GREEN);
 
-        PositionColored test = IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard());
+        PositionColored test = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
 
         assertTrue(test.equals(potentialPos1) || test.equals(potentialPos2) || test.equals(potentialPos3) ||test.equals(potentialPos4));
 
@@ -118,7 +118,7 @@ public class IAforBotTest {
 
         PositionColored placeWeWant = new PositionColored(new Position(1,2,-3), BambooColor.GREEN);
 
-        PositionColored test = IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard());
+        PositionColored test = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
         assertEquals(placeWeWant, test);
 
 
@@ -144,7 +144,7 @@ public class IAforBotTest {
 
         PositionColored placeWeWant = new PositionColored(new Position(1,2,-3), BambooColor.GREEN);
 
-        PositionColored test = IAforBot.resolvePatternLine(cardObjectiveParcelC, game.getBoard());
+        PositionColored test = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelC, game.getBoard());
         assertEquals(placeWeWant, test);
 
     }
@@ -160,13 +160,13 @@ public class IAforBotTest {
         cardObjectiveParcelLine.verify();
 
         PositionColored placeWeWant = new PositionColored(new Position(1,1,-2), BambooColor.GREEN);
-        PositionColored test = IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard());
+        PositionColored test = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
         assertEquals(placeWeWant, test);
 
     }
 
     @Test
-    public void resolvePatternLineWithTriangleObjectiveWithOneParcel() {
+    public void resolvePatternTriangleBesideTheBoardWithJust3ParcelsInTriangleAndOneGreen() {
 
         game.getBoard().addParcel(-1,0,1, new BambooPlantation(BambooColor.YELLOW));
         game.getBoard().addParcel(0,-1,1, new BambooPlantation(BambooColor.YELLOW));
@@ -175,11 +175,75 @@ public class IAforBotTest {
         CardObjectiveParcel cardObjectiveParcelLine = new CardObjectiveParcel(game.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
         cardObjectiveParcelLine.verify();
 
-        PositionColored placeWeWant = new PositionColored(new Position(1,1,-2), BambooColor.GREEN);
-        PositionColored test = IAforBot.resolvePatternLine(cardObjectiveParcelLine, game.getBoard());
-        //assertEquals(placeWeWant, test);
+        //PositionColored placeWeWant = new PositionColored(new Position(1,1,-2), BambooColor.GREEN);
+
+        PositionColored placeWeWant1 = new PositionColored(new Position(0,-2,2), BambooColor.GREEN);
+        PositionColored test1 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        assertEquals(placeWeWant1, test1);
+
+        game.getBoard().addParcel(test1.getPosition(), new BambooPlantation(BambooColor.GREEN));
+
+        PositionColored placeWeWant2 = new PositionColored(new Position(-1,-2,3), BambooColor.GREEN);
+        PositionColored test2 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        assertEquals(placeWeWant2, test2);
+
+        game.getBoard().addParcel(test2.getPosition(), new BambooPlantation(BambooColor.GREEN));
+
+        PositionColored placeWeWant3 = new PositionColored(new Position(-2,-1,3), BambooColor.GREEN);
+        PositionColored test3 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        assertEquals(placeWeWant3, test3);
 
     }
+
+
+    @Test
+    public void resolvePatternRhombusWithOneParcelWithTheSameColor() {
+
+        game.getBoard().addParcel(0,1,-1, new BambooPlantation(BambooColor.YELLOW));
+
+        CardObjectiveParcel cardObjectiveParcelLine = new CardObjectiveParcel(board, 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
+        cardObjectiveParcelLine.verify();
+
+        //PositionColored placeWeWant = new PositionColored(new Position(1,1,-2), BambooColor.GREEN);
+
+        PositionColored placeWeWant1 = new PositionColored(new Position(1,0,-1), BambooColor.GREEN);
+        PositionColored test1 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        //assertEquals(placeWeWant1, test1);
+        System.out.println("==================" + test1);
+
+        game.getBoard().addParcel(test1.getPosition(), new BambooPlantation(test1.getColor()));
+
+        PositionColored placeWeWant2 = new PositionColored(new Position(1,1,-2), BambooColor.GREEN);
+        PositionColored test2 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        //assertEquals(placeWeWant2, test2);
+        System.out.println("=================="  + test2);
+
+        game.getBoard().addParcel(test2.getPosition(), new BambooPlantation(test2.getColor()));
+
+        PositionColored placeWeWant3 = new PositionColored(new Position(0,2,-2), BambooColor.GREEN);
+        PositionColored test3 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        //assertEquals(placeWeWant3, test3);
+        System.out.println("=================="  + test3);
+
+        game.getBoard().addParcel(test3.getPosition(), new BambooPlantation(test3.getColor()));
+
+        PositionColored placeWeWant4 = new PositionColored(new Position(1,2,-3), BambooColor.GREEN);
+        PositionColored test4 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        //assertEquals(placeWeWant4, test4);
+
+        System.out.println("=================="  + test4);
+
+        game.getBoard().addParcel(test4.getPosition(), new BambooPlantation(test4.getColor()));
+
+        PositionColored placeWeWant5 = new PositionColored(new Position(1,2,-3), BambooColor.GREEN);
+        PositionColored test5 = IAforBot.findTheBestPlaceToPlaceAnParcel(cardObjectiveParcelLine, game.getBoard());
+        //assertEquals(placeWeWant4, test4);
+
+        System.out.println("=================="  + test5);
+
+    }
+
+
 
 
 }

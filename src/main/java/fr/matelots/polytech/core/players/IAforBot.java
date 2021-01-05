@@ -10,18 +10,15 @@ import java.util.*;
 
 public class IAforBot {
 
-    public static PositionColored finTheBestPlaceToPlaceAnParcel(CardObjectiveParcel objective, Board board) {
+    public static PositionColored findTheBestPlaceToPlaceAnParcel(CardObjectiveParcel objective, Board board) {
 
         switch (objective.getPattern()) {
-            case C:
-                break;
-            case LINE:
-                resolvePatternLine(objective, board);
-                break;
-            case RHOMBUS:
-                break;
             case TRIANGLE:
-                break;
+            case C:
+            case LINE:
+                return resolvePatternLine(objective, board);
+            case RHOMBUS:
+                return resolveRhombusLine(objective, board);
         }
         return null;
     }
@@ -85,6 +82,7 @@ public class IAforBot {
 
         }
 
+
         // If we have some parcels, we can return the parcel with the max of pos
         if (candidateParcels.size() != 0) {
             return Collections.max(candidateParcels.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
@@ -94,6 +92,75 @@ public class IAforBot {
             }
             return null;
         }
+    }
+
+
+
+
+
+
+
+
+    public static PositionColored resolveRhombusLine(CardObjectiveParcel objective, Board board) {
+        Set<Position> actualGrid = board.getPositions();
+        objective.verify();
+
+        PositionColored positionFinalWithOneParcelAround = null;
+        Map<PositionColored, Integer> candidateParcels = new HashMap<PositionColored, Integer>();
+        Set<PositionColored> missingPositions = objective.getMissingPositionsToComplete();
+        System.out.println("missingPosition : " + missingPositions);
+
+
+        for (PositionColored pos : missingPositions) {
+            int numberOfPlaceValidAroundThePosition = 0;
+
+            // We turn around the position
+            for (int i = 1; i <= 6; i++) {
+                Position newPosition = nextPositionIncrement(i, pos.getPosition());
+                if (board.containTile(newPosition)) {
+                    numberOfPlaceValidAroundThePosition++;
+                }
+            }
+
+            System.out.println("Position : " + pos);
+            System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
+
+
+
+            // We can't place an parcel because we don't have more than 2 parcels around,
+            // So, we will put a parcel at the closest of the first parcel
+            if (numberOfPlaceValidAroundThePosition != 0) {
+                for (int i = 1; i <= 6; i++) {
+                    Position internalPosition = nextPositionIncrement(i, pos.getPosition());
+                    System.out.println(internalPosition);
+
+                    if (board.containTile(internalPosition)) {
+
+                        for (int u = 6; u >= 1; u--) {
+                            Position internalPosition2 = nextPositionIncrement(u, internalPosition);
+                            if (board.isPlaceValid(internalPosition2)) {
+
+                                for (PositionColored missingPos: missingPositions) {
+                                    if (internalPosition2.equals(missingPos.getPosition())) {
+                                        positionFinalWithOneParcelAround = new PositionColored(internalPosition2, missingPos.getColor());
+                                    } else {
+                                        positionFinalWithOneParcelAround = new PositionColored(internalPosition2, objective.getColors()[0]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        if (positionFinalWithOneParcelAround != null) {
+            return positionFinalWithOneParcelAround;
+        }
+        return null;
+
     }
 
 
