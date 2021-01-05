@@ -5,9 +5,7 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
-import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,21 +14,20 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class PremierBotFinalTest {
+public class RushParcelBotTest {
 
-    private PremierBotFinal bot;
+    private RushParcelBot bot;
     private Game game;
     private TurnLog turnLog;
 
     @BeforeEach
     public void init () {
         game = new Game();
-        bot = new PremierBotFinal(game);
+        bot = new RushParcelBot(game);
         turnLog = new TurnLog(bot);
         bot.setTurnLogger(turnLog);
 
@@ -76,7 +73,7 @@ public class PremierBotFinalTest {
 
     @Test
     public void testEasiestObjectiveToResolve() {
-        PremierBotFinal mockBot = mock(PremierBotFinal.class);
+        RushParcelBot mockBot = mock(RushParcelBot.class);
         List<Optional<CardObjective>> cardList = mock(List.class);
         TurnLog mockLog = mock(TurnLog.class);
         Board mockBoard = mock(Board.class);

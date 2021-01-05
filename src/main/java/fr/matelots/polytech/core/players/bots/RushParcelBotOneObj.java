@@ -68,7 +68,7 @@ import java.util.*;
  */
 
 
-public class SecondBotTemporaire extends Bot {
+public class RushParcelBotOneObj extends Bot {
 
     private TurnLog turnLogger;
     private Optional<CardObjective> currentObjective;
@@ -78,8 +78,8 @@ public class SecondBotTemporaire extends Bot {
     private int inc = 0;
 
 
-    public SecondBotTemporaire(Game game) { super(game); }
-    public SecondBotTemporaire(Game game, String name) { super(game, name); }
+    public RushParcelBotOneObj(Game game) { super(game); }
+    public RushParcelBotOneObj(Game game, String name) { super(game, name); }
 
     @Override
     public void playTurn(TurnLog log) {

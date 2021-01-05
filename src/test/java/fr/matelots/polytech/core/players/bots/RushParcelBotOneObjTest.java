@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class SecondBotTemporaireTest {
+public class RushParcelBotOneObjTest {
 
     Game game;
 
@@ -33,13 +33,13 @@ public class SecondBotTemporaireTest {
     Panda panda;
     TurnLog log;
 
-    SecondBotTemporaire bot;
+    RushParcelBotOneObj bot;
 
 
     @BeforeEach
     public void init() {
         game = new Game();
-        bot = new SecondBotTemporaire(game);
+        bot = new RushParcelBotOneObj(game);
         individualBoard = bot.getIndividualBoard();
         board = game.getBoard();
         game.addBot(bot);
@@ -66,7 +66,11 @@ public class SecondBotTemporaireTest {
     @Test
     public void testCheckIfTheColorsInAnObjectiveAreTheSameOrNot() {
         CardObjective cardObjective = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
-        BambooColor[] list2 = bot.getTheColorsWhoseComposeAnCardbjectiveParcel(Optional.of(cardObjective));
+
+        CardObjectiveParcel card = (CardObjectiveParcel) Optional.of(cardObjective).get();
+
+
+        BambooColor[] list2 = card.getColors();
         assertTrue(bot.checkIfTheColorsInAnObjectiveAreTheSameOrNot(list2));
     }
 
@@ -74,7 +78,7 @@ public class SecondBotTemporaireTest {
     @Test
     public void testActionIfWeHaveAnyObjectivesWhenAnyNewParcelObjectives() throws Exception{
 
-        SecondBotTemporaire botMoc = mock(SecondBotTemporaire.class);
+        RushParcelBotOneObj botMoc = mock(RushParcelBotOneObj.class);
         IndividualBoard individualBoard1 = botMoc.getIndividualBoard();
 
 

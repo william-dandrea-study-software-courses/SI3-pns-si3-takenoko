@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PremierBotFinal extends Bot {
+public class RushParcelBot extends Bot {
 
     private TurnLog turnLogger;
     private List<Optional<CardObjective>> listOfCurrentsObjectives;
@@ -24,12 +24,12 @@ public class PremierBotFinal extends Bot {
     private int canPutMoreParcel = 0;
     private int inc = 0;
 
-    public PremierBotFinal(Game game, String name) {
+    public RushParcelBot(Game game, String name) {
         super(game, name);
         cardWeActuallyTryToResolve = null;
         listOfCurrentsObjectives = new ArrayList<Optional<CardObjective>>();
     }
-    public PremierBotFinal(Game game) {
+    public RushParcelBot(Game game) {
         super(game);
         cardWeActuallyTryToResolve = null;
         listOfCurrentsObjectives = new ArrayList<Optional<CardObjective>>();
