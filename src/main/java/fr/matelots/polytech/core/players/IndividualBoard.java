@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -21,8 +22,6 @@ import java.util.List;
  * @author williamdandrea
  */
 public class IndividualBoard {
-
-    private static final int MAX_UNFINISHED_OBJECTIVES_IN_HAND = 5;
 
     // List of the objectives
     private final List<CardObjectiveParcel> objectiveParcels;
@@ -47,8 +46,12 @@ public class IndividualBoard {
      * @return Number representing the score of the player
      */
     public int getPlayerScore() {
-        return objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted)
-                .mapToInt(CardObjectiveParcel::getScore).sum();
+        return objectiveParcels.stream().filter(CardObjective::isCompleted)
+                .mapToInt(CardObjective::getScore).sum()
+                + objectiveGardeners.stream().filter(CardObjective::isCompleted)
+                .mapToInt(CardObjective::getScore).sum()
+                + objectivePandas.stream().filter(CardObjective::isCompleted)
+                .mapToInt(CardObjective::getScore).sum();
     }
 
 
@@ -105,21 +108,21 @@ public class IndividualBoard {
      * @return false if you can pick the new objective or true if you can
      */
     public boolean addNewParcelObjective (CardObjectiveParcel parcelObjective) {
-        if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
+        if (countUnfinishedObjectives() >= Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND)
             return false;
 
         return objectiveParcels.add(parcelObjective);
     }
 
     public boolean addNewGardenerObjective(CardObjectiveGardener gardenerObjective) {
-        if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
+        if (countUnfinishedObjectives() >= Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND)
             return false;
 
         return objectiveGardeners.add(gardenerObjective);
     }
 
     public boolean addNewPandaObjective(CardObjectivePanda pandaObjective) {
-        if (countUnfinishedObjectives() >= MAX_UNFINISHED_OBJECTIVES_IN_HAND)
+        if (countUnfinishedObjectives() >= Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND)
             return false;
 
         return objectivePandas.add(pandaObjective);
@@ -180,5 +183,15 @@ public class IndividualBoard {
 
     public int getPinkEatenBamboo () {
         return bamboos[BambooColor.PINK.ordinal()];
+    }
+
+    public void verify (CardObjectivePanda objectivePanda) {
+        objectivePanda.setIndividualBoard(this);
+        if (objectivePanda.verify()) {
+            objectivePanda.setCompleted(true);
+            bamboos[BambooColor.GREEN.ordinal()] -= objectivePanda.getCountForColor(BambooColor.GREEN);
+            bamboos[BambooColor.PINK.ordinal()] -= objectivePanda.getCountForColor(BambooColor.PINK);
+            bamboos[BambooColor.YELLOW.ordinal()] -= objectivePanda.getCountForColor(BambooColor.YELLOW);
+        }
     }
 }

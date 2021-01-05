@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.goalcards;
 
+import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.IndividualBoard;
 
 import java.util.Objects;
@@ -32,6 +33,19 @@ public class CardObjectivePanda extends CardObjective {
 
     public void setIndividualBoard(IndividualBoard individualBoard) {
         this.individualBoard = individualBoard;
+    }
+
+    public int getCountForColor (BambooColor color) {
+        switch (color) {
+            case GREEN:
+                return greenCount;
+            case PINK:
+                return pinkCount;
+            case YELLOW:
+                return yellowCount;
+            default:
+                return 0;
+        }
     }
 
     @Override

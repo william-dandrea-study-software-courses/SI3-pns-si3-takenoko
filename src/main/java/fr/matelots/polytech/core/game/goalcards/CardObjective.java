@@ -37,6 +37,10 @@ public abstract class CardObjective {
         return score;
     }
 
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
