@@ -14,6 +14,7 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -354,6 +355,21 @@ public abstract class Bot {
         }
     }
 
+    /**
+     * Place an irrigation on an edge
+     * @param position: Absolute position of the edge
+     * @return true if success, return false otherwise
+     */
+    public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
+        if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return false;
+        var success = position.irrigate();
+        if(success) {
+            log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
+            currentNumberOfAction++;
+        }
+        return success;
+    }
+
     public String getName() {
         return name;
     }
@@ -361,5 +377,4 @@ public abstract class Bot {
     public int getCurrentNumberOfAction() {
         return currentNumberOfAction;
     }
-
 }
