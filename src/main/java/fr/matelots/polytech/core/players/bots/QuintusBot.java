@@ -79,8 +79,10 @@ public class QuintusBot extends Bot {
                 moveGardener(log);
             else if (!BotActionType.MOVE_PANDA.equals(lastAction))
                 movePanda(log);
-            else
+            else {
+                turnDoingNothing++;
                 log.addAction(BotActionType.NONE, "");
+            }
         }
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);

@@ -86,6 +86,30 @@ public class Game {
         return ranked;
     }
 
+    private List<Bot> separate (List<Bot> winners) {
+        List<Bot> trueWinners = new ArrayList<>();
+
+        if (winners != null && !winners.isEmpty()) {
+            Bot max = winners.get(0);
+            int score = max.getIndividualBoard().getObjectivesPandaScore();
+            trueWinners.add(max);
+
+            for (int i = 1; i < winners.size(); i++) {
+                if (winners.get(i).getIndividualBoard().getObjectivesPandaScore() > score) {
+                    trueWinners.clear();
+                    max = winners.get(i);
+                    score = max.getIndividualBoard().getObjectivesPandaScore();
+                    trueWinners.add(max);
+                }
+                else if (winners.get(i).getIndividualBoard().getObjectivesPandaScore() == score) {
+                    trueWinners.add(winners.get(i));
+                }
+            }
+        }
+
+        return trueWinners;
+    }
+
 
     private void drawRanks() {
         List<List<Bot>> ranked = getRanks();
@@ -98,8 +122,47 @@ public class Game {
         int winnerScore = ranked.get(0).get(0).getIndividualBoard().getPlayerScore();
         if(ranked.get(0).size() == 1)
             result.append("The winner (score : ").append(winnerScore).append(") is : ");
-        else
-            result.append("The following bots are winning with equal score (score: ").append(winnerScore).append(") : ");
+        else {
+            List<Bot> winners = new ArrayList<>(ranked.get(0));
+            int rank = 1;
+            while (!winners.isEmpty()) {
+                List<Bot> trueWinners = separate(winners);
+
+                if (rank == 1) {
+                    if (trueWinners.size() == 1) {
+                        result.append("The winner (score : ")
+                                .append(winnerScore)
+                                .append(", panda : ")
+                                .append(trueWinners.get(0).getIndividualBoard().getObjectivesPandaScore())
+                                .append(") is : ")
+                        .append(trueWinners.get(0));
+                    }
+                    else {
+                        result.append("The following bots are winning with equal score (score: ")
+                                .append(winnerScore)
+                                .append(", panda : ")
+                                .append(trueWinners.get(0).getIndividualBoard().getObjectivesPandaScore())
+                                .append(") : ");
+                        for (Bot bot : trueWinners)
+                            result.append(bot.getName()).append(", ");
+                    }
+                }
+                else {
+                    for (Bot bot : trueWinners) {
+                        result.append("Score ")
+                                .append(bot.getIndividualBoard().getPlayerScore())
+                                .append(" (panda : ")
+                                .append(bot.getIndividualBoard().getObjectivesPandaScore())
+                                .append(") : ")
+                                .append(bot.getName());
+                    }
+                }
+
+                winners.removeAll(trueWinners);
+                rank++;
+            }
+
+        }
 
         for(var bot : ranked.get(0)) {
             result.append(bot.getName()).append(", ");

@@ -57,6 +57,15 @@ public class IndividualBoard {
                 + (emperor != null ? emperor.getScore() : 0);
     }
 
+    /**
+     * Get the score of the player regarding only the panda objectives
+     * @return Number representing the score of the player
+     */
+    public int getObjectivesPandaScore () {
+        return objectivePandas.stream().filter(CardObjective::isCompleted)
+                .mapToInt(CardObjective::getScore).sum();
+    }
+
 
     public void checkAllParcelGoal() {
         objectiveParcels.forEach(CardObjectiveParcel::verify);
