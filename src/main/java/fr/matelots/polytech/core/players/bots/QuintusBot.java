@@ -29,6 +29,7 @@ public class QuintusBot extends Bot {
     private final Gardener gardener;
     private int turnLeftToPick;
     private int turnDoingNothing = 0;
+    private int turnPastMovingGardener = 0;
 
     private List<BambooColor> neededColors;
 
@@ -74,19 +75,27 @@ public class QuintusBot extends Bot {
         }
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);
+        displayState();
     }
 
+    /**
+     * Pick a panda objective if possible or do nothing
+     */
     void pickObjectif (TurnLog log) {
         try {
             pickPandaObjective(log);
             neededColors = getNeededColor();
             turnDoingNothing = 0;
+            turnPastMovingGardener = 0;
         } catch (PickDeckEmptyException e) {
             log.addAction(BotActionType.NONE, "");
             turnDoingNothing++;
         }
     }
 
+    /**
+     * Move the panda on a new Parcel
+     */
     void movePanda (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(panda.getPosition());
         accessibles.remove(panda.getPosition());
@@ -109,9 +118,9 @@ public class QuintusBot extends Bot {
         panda.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
 
         checkObjectives();
-
         log.addAction(BotActionType.MOVE_PANDA, chosen.toString());
         turnDoingNothing = 0;
+        turnPastMovingGardener = 0;
 
         final int MAX_EATEN_BEFORE_ERROR = 100;
         if (getIndividualBoard().getGreenEatenBamboo() > MAX_EATEN_BEFORE_ERROR
@@ -120,6 +129,9 @@ public class QuintusBot extends Bot {
             turnDoingNothing = 3;
     }
 
+    /**
+     * Move the gardener on a new parcel
+     */
     void moveGardener (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(gardener.getPosition());
         accessibles.remove(gardener.getPosition());
@@ -139,11 +151,14 @@ public class QuintusBot extends Bot {
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
         gardener.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
-
         log.addAction(BotActionType.MOVE_GARDENER, chosen.toString());
         turnDoingNothing = 0;
+        turnPastMovingGardener++;
     }
 
+    /**
+     * Place a parcel of a needed color
+     */
     private void placeAParcel (TurnLog log) {
         final List<Position> placeablePositions = new ArrayList<>();
         board.getPositions().forEach(position ->
@@ -170,8 +185,12 @@ public class QuintusBot extends Bot {
         board.addParcel(chosen, new BambooPlantation(colors.get(0)));
         log.addAction(BotActionType.PLACE_PARCEL, chosen.toString());
         turnDoingNothing = 0;
+        turnPastMovingGardener = 0;
     }
 
+    /**
+     * @return Return a list of all color needed to complete all objectives
+     */
     List<BambooColor> getNeededColor () {
         final int[] count = new int[BambooColor.values().length];
         Arrays.fill(count, 0);
@@ -191,10 +210,16 @@ public class QuintusBot extends Bot {
         return colors;
     }
 
+    /**
+     * @return Short access to panda objectives in individual board
+     */
     private List<CardObjectivePanda> getPandaObjectives () {
         return getIndividualBoard().getUnfinishedPandaObjectives();
     }
 
+    /**
+     * @return if there is a plantation matching to all needed colors
+     */
     boolean isThereAPlantationWhereYouCanEat () {
         Set<Position> positions = board.getPositions();
 
@@ -213,6 +238,9 @@ public class QuintusBot extends Bot {
         return required.isEmpty();
     }
 
+    /**
+     * @return if there is at least one bamboo to eat that match to the needs of an objective
+     */
     boolean isThereAnythingInterestingToEat() {
         Set<Position> positions = board.getPositions();
 
@@ -234,7 +262,8 @@ public class QuintusBot extends Bot {
     @Override
     public boolean canPlay() {
         final int MAX_TURN_DOING_NOTHING = 3;
-        return turnDoingNothing < MAX_TURN_DOING_NOTHING;
+        final int MAX_TURN_MOVING_GARDENNER = 6;
+        return turnDoingNothing < MAX_TURN_DOING_NOTHING && turnPastMovingGardener < MAX_TURN_MOVING_GARDENNER;
     }
 
     @Override
@@ -242,10 +271,16 @@ public class QuintusBot extends Bot {
         return getName();
     }
 
+    /**
+     * See which objective is now complete
+     */
     private void checkObjectives () {
         getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
     }
 
+    /**
+     * Log the unfinished objectives, the needed colors, the number of objectives complete and the score
+     */
     private void displayState () {
         StringBuilder builder = new StringBuilder("Objectifs :\n");
         getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> builder.append("{green ")

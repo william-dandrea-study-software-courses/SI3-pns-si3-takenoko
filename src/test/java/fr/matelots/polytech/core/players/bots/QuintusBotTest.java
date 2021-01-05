@@ -33,7 +33,7 @@ public class QuintusBotTest {
     @Test
     void numberOfAction () {
         bot.playTurn(log);
-        assertEquals(2, log.getActions().length);
+        assertEquals(Config.TOTAL_NUMBER_OF_ACTIONS, log.getActions().length);
     }
 
     @Test
