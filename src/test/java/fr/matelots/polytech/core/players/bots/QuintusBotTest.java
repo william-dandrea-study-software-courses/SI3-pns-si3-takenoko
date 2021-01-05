@@ -41,7 +41,7 @@ public class QuintusBotTest {
         bot .playTurn(log);
         bot.playTurn(log);
 
-        assertEquals(4, bot.getIndividualBoard().countUnfinishedPandaObjectives());
+        assertEquals(2, bot.getIndividualBoard().countUnfinishedPandaObjectives());
         assertEquals(0, bot.getIndividualBoard().countUnfinishedParcelObjectives());
         assertEquals(0, bot.getIndividualBoard().countUnfinishedGardenerObjectives());
     }
@@ -93,8 +93,7 @@ public class QuintusBotTest {
         when(game.getBoard()).thenReturn(board);
         bot = new QuintusBot(game);
         when(game.getNextPandaObjective()).thenReturn(card);
-        bot.playTurn(log);
-        bot.playTurn(log);
+        bot.pickObjectif(log);
 
         // The board is empty but the bot already have all objectives
         assertFalse(bot.isThereAnythingInterestingToEat());
