@@ -44,7 +44,7 @@ public class AbsolutePositionIrrigation {
      * Set Irrigation to the correct position
      * @return true if an irrigation is has been placed else return false
      */
-    public boolean Irrigate() {
+    public boolean irrigate() {
         if(board == null) throw new RuntimeException("Board were null");
         return board.placeIrrigation(position, side);
     }

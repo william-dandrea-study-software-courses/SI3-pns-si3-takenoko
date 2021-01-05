@@ -5,16 +5,12 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.*;
@@ -39,14 +35,14 @@ public class ParcelRouteFinderTest {
 
     @Test
     void AllIsNormal() {
-        var result = GetIrrigationToIrrigate(board, new Position(0, 0, 0), new Position(2, -3, 1));
+        var result = getIrrigationToIrrigate(board, new Position(0, 0, 0), new Position(2, -3, 1));
         assertFalse(result.isEmpty());
 
 
         while(result.get().stream().filter(Predicate.not(AbsolutePositionIrrigation::isIrrigate)).anyMatch(AbsolutePositionIrrigation::canBeIrrigated)) {
             result.get().stream()
                     .filter(val -> !val.isIrrigate() && val.canBeIrrigated())
-                    .forEach(AbsolutePositionIrrigation::Irrigate);
+                    .forEach(AbsolutePositionIrrigation::irrigate);
         }
 
         drawer.print();
@@ -69,7 +65,7 @@ public class ParcelRouteFinderTest {
         board.placeIrrigation(new Position(1, -1, 0), Side.UPPER_LEFT);
         board.placeIrrigation(new Position(1, -1, 0), Side.UPPER_RIGHT);
 
-        var optpath = GetBestPathToIrrigate(board, new Position(3, -1, -2));
+        var optpath = getBestPathToIrrigate(board, new Position(3, -1, -2));
         assertTrue(optpath.isPresent());
         var path = optpath.get();
 
@@ -89,7 +85,7 @@ public class ParcelRouteFinderTest {
             if(posOpt.isEmpty()) continue;
 
             var pos = posOpt.get();
-            var path = GetBestPathToIrrigate(board, pos);
+            var path = getBestPathToIrrigate(board, pos);
 
             if(path.isEmpty()) continue;
 
