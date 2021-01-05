@@ -89,7 +89,7 @@ public class QuintusBot extends Bot {
             turnDoingNothing++;
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);
-        displayState();
+        //displayState();
     }
 
     /**

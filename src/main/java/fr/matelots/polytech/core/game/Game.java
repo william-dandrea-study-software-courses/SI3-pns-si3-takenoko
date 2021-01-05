@@ -231,7 +231,8 @@ public class Game {
                 bot.playTurn(log);
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size())) {
                     if (!lastTurn) {
-                        ACTIONLOGGER.info(bot.getName() + " is the Emperor owner !!");
+                        if (draw)
+                            ACTIONLOGGER.info(bot.getName() + " is the Emperor owner !!");
                         bot.getIndividualBoard().setEmperor(new CardObjectiveEmperor());
                     }
                     lastTurn = true;

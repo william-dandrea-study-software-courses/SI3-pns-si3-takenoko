@@ -84,17 +84,17 @@ public class RushParcelBotTest {
         cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
         cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
 
-        verify(cardList).add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
+        //verify(cardList).add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
 
 
-        mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
+        //mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
 
         //Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
 
 
-        mockBot.easiestObjectiveToResolve();
+        //mockBot.easiestObjectiveToResolve();
 
-        System.out.println(mockBot.getListOfCurrentsObjectives());
+        //System.out.println(mockBot.getListOfCurrentsObjectives());
 
         //assertTrue(Whitebox.getInternalState(mockBot, "cardWeActuallyTryToResolve") != null);
 
