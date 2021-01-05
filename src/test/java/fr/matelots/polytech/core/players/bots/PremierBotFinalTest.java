@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
@@ -78,12 +79,13 @@ public class PremierBotFinalTest {
         PremierBotFinal mockBot = mock(PremierBotFinal.class);
         List<Optional<CardObjective>> cardList = mock(List.class);
         TurnLog mockLog = mock(TurnLog.class);
+        Board mockBoard = mock(Board.class);
 
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 3, Patterns.TRIANGLE, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 4, Patterns.LINE, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 3, Patterns.TRIANGLE, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 4, Patterns.LINE, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
+        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
 
         verify(cardList).add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
 
@@ -91,8 +93,6 @@ public class PremierBotFinalTest {
         mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
 
         //Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
-
-
 
 
         mockBot.easiestObjectiveToResolve();

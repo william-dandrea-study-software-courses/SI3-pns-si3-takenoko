@@ -75,6 +75,7 @@ public class SecondBotTemporaire extends Bot {
 
     private int minNumberOfParcels = 6;
     private int finishIncrement = 0;
+    private int inc = 0;
 
 
     public SecondBotTemporaire(Game game) { super(game); }
@@ -84,6 +85,7 @@ public class SecondBotTemporaire extends Bot {
     public void playTurn(TurnLog log) {
         currentNumberOfAction = 0;
         turnLogger = log;
+        inc++;
 
 
 
@@ -119,8 +121,9 @@ public class SecondBotTemporaire extends Bot {
             placeAnParcelAnywhere(turnLogger);
         }
 
-
-        currentNumberOfAction = 0;
+        if (currentNumberOfAction != 2) {
+            placeAnParcelAnywhere(log);
+        }
 
 
 
@@ -197,7 +200,7 @@ public class SecondBotTemporaire extends Bot {
     @Override
     public boolean canPlay() {
 
-        if (board.getParcelCount() <= Config.DECK_PARCEL_SIZE) {
+        if (board.getParcelCount() <= Config.DECK_PARCEL_SIZE && inc <= 200) {
             if (this.currentNumberOfAction < 0)
                 throw new IllegalArgumentException("We can't have negative actions");
             if (this.currentNumberOfAction <= 2)

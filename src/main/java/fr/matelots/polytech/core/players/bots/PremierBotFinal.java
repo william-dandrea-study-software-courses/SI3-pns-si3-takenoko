@@ -1,10 +1,16 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
+import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
+import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,12 +22,17 @@ public class PremierBotFinal extends Bot {
     private List<Optional<CardObjective>> listOfCurrentsObjectives;
     private CardObjectiveParcel cardWeActuallyTryToResolve;
     private int canPutMoreParcel = 0;
+    private int inc = 0;
 
-    public PremierBotFinal(Game game, String name) { super(game, name); }
+    public PremierBotFinal(Game game, String name) {
+        super(game, name);
+        cardWeActuallyTryToResolve = null;
+        listOfCurrentsObjectives = new ArrayList<Optional<CardObjective>>();
+    }
     public PremierBotFinal(Game game) {
         super(game);
-        listOfCurrentsObjectives = new ArrayList<>();
         cardWeActuallyTryToResolve = null;
+        listOfCurrentsObjectives = new ArrayList<Optional<CardObjective>>();
     }
 
 
@@ -29,17 +40,27 @@ public class PremierBotFinal extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
+        inc++;
         turnLogger = log;
-
+        currentNumberOfAction = 0;
         // En premier lieu, on vérifie / initialise / met a jour la liste d'objectifs si celle-ci n'est pas rempli
         if (listOfCurrentsObjectives.size() != 5) {
-            inilializeOrUpdateListOfCurrentsObjective();
+            inilializeOrUpdateListOfCurrentsObjective2();
         }
 
-        easiestObjectiveToResolve();
+        easiestObjectiveToResolve2();
 
+        Set<PositionColored> missingsPositions = recoverTheMissingsPositionsToCompleteForParcelObjective(cardWeActuallyTryToResolve);
 
+        if (missingsPositions != null) {
+            for (PositionColored positionColored : missingsPositions) {
+                placeParcel(positionColored.getPosition(), positionColored.getColor(), turnLogger);
+            }
+        }
 
+        if (currentNumberOfAction == 0) {
+            placeAnParcelAnywhere(turnLogger);
+        }
     }
 
 
@@ -49,7 +70,7 @@ public class PremierBotFinal extends Bot {
      */
     void easiestObjectiveToResolve() {
         boolean weDontArrive = true;
-        int min = 5;
+        int min = 10;
         for (Optional<CardObjective> cardOp: listOfCurrentsObjectives) {
             if (cardOp.isPresent()) {
                 CardObjectiveParcel card = (CardObjectiveParcel) cardOp.get();
@@ -76,6 +97,46 @@ public class PremierBotFinal extends Bot {
     }
 
 
+    void easiestObjectiveToResolve2() {
+        boolean weDontArrive = true;
+        int min = 10;
+        for (CardObjective cardOp: individualBoard.getUnfinishedParcelObjectives()) {
+
+            CardObjectiveParcel card = (CardObjectiveParcel) cardOp;
+            cardOp.verify();
+            if (card.getMissingPositionsToComplete().size() <= min) {
+                min = card.getMissingPositionsToComplete().size();
+            }
+
+        }
+
+        for (CardObjective cardOp: individualBoard.getUnfinishedParcelObjectives()) {
+
+            CardObjectiveParcel card = (CardObjectiveParcel) cardOp;
+            if (card.getMissingPositionsToComplete().size() == min) {
+                cardWeActuallyTryToResolve = card;
+            } else {
+                weDontArrive = false;
+            }
+
+        }
+
+        if (weDontArrive) {
+            cardWeActuallyTryToResolve = (CardObjectiveParcel) individualBoard.getUnfinishedParcelObjectives().get(0);
+        }
+    }
+
+    void inilializeOrUpdateListOfCurrentsObjective2() {
+
+        for (int i = 0; i < 5; i++) {
+            if (individualBoard.getUnfinishedParcelObjectives().size() < 5) {
+                pickParcelObjective(turnLogger);
+            }
+        }
+
+    }
+
+
     /**
      * This method update or initialize all the objectives from the static list.
      * @return True if the 5 objectives are initialized, else false
@@ -91,6 +152,7 @@ public class PremierBotFinal extends Bot {
                 }
             }
 
+
             if (listOfCurrentsObjectives.size() > 5) {
                 throw new IllegalArgumentException("We can't possessed more than 5 objectives");
             }
@@ -101,6 +163,7 @@ public class PremierBotFinal extends Bot {
                     if (listOfCurrentsObjectives.size() < 5) {
                         Optional<CardObjective> card = pickParcelObjective(turnLogger);
                         if (card.isPresent()) {
+                            card.get().verify();
                             listOfCurrentsObjectives.add(card);
                         } else {
                             canPutMoreParcel++;
@@ -109,9 +172,6 @@ public class PremierBotFinal extends Bot {
                 }
             }
         }
-
-
-
     }
 
 
@@ -125,7 +185,11 @@ public class PremierBotFinal extends Bot {
 
     @Override
     public boolean canPlay() {
-        return false;
+        if (getBoard().getParcelCount() <= 26 && inc <= 200) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

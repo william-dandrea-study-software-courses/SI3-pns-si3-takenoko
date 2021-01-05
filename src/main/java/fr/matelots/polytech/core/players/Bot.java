@@ -302,16 +302,18 @@ public abstract class Bot {
      * @return
      */
      public Set<PositionColored> recoverTheMissingsPositionsToCompleteForParcelObjective(CardObjectiveParcel card) {
+         Set<PositionColored> missingPositionsToComplete = new HashSet<>();
+         if (card != null) {
 
-        Set<PositionColored> missingPositionsToComplete = new HashSet<>();
-        card.verify();
-        if (card.getMissingPositionsToComplete() != null) {
-            for (PositionColored positionColored : card.getMissingPositionsToComplete()) {
-                missingPositionsToComplete.add(positionColored);
-            }
-        }
+             card.verify();
+             if (card.getMissingPositionsToComplete() != null) {
+                 for (PositionColored positionColored : card.getMissingPositionsToComplete()) {
+                     missingPositionsToComplete.add(positionColored);
+                 }
+             }
+         }
+         return missingPositionsToComplete;
 
-        return missingPositionsToComplete;
     }
 
 
@@ -324,16 +326,22 @@ public abstract class Bot {
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
         if(currentNumberOfAction >= Config.TOTAL_NUMBER_OF_ACTIONS) return false;
-         try {
-             var success = board.addParcel(position, new BambooPlantation(color));
-             if(success) {
-                 log.addAction(BotActionType.PLACE_PARCEL, position.toString());
-                 currentNumberOfAction++;
-             }
-             return success;
-         } catch (NoParcelLeftToPlaceException e) {
-             return false;
-         }
+
+        if (board.getParcelLeftToPlace(color) != 0) {
+            try {
+
+                var success = board.addParcel(position, new BambooPlantation(color));
+                if (success) {
+                    log.addAction(BotActionType.PLACE_PARCEL, position.toString());
+                    currentNumberOfAction++;
+                }
+                return success;
+
+            } catch (NoParcelLeftToPlaceException e) {
+                return false;
+            }
+        }
+       return false;
     }
 
     public boolean canDoAction() {
