@@ -35,12 +35,14 @@ public class Game {
         //bots.add(new PremierBot(this));
         //bots.add(new PremierBot(this));
         //bots.add(new SecondBotTemporaire(this, "BadBot"));
-        bots.add(new SecondBotTemporaire(this, "GoodBot"));
+        //bots.add(new SecondBotTemporaire(this, "GoodBot"));
         //bots.add(new PremierBotFinal(this, "Player 1"));
-        bots.add(new PremierBotFinal(this, "Player 2"));
+        //bots.add(new PremierBotFinal(this, "Player 2"));
         //bots.add(new ThirdBot(this));
         //bots.add(new FourthBot(this));
         //bots.add(new FifthBot(this, "GentleBot"));
+        bots.add(new QuintusBot(this));
+        bots.add(new QuintusBot(this, "Jojo"));
     }
 
     public void addBot(Bot bot) {

@@ -70,10 +70,9 @@ public class QuintusBot extends Bot {
         }
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);
-        displayState();
     }
 
-    private void pickObjectif (TurnLog log) {
+    void pickObjectif (TurnLog log) {
         try {
             pickPandaObjective(log);
             neededColors = getNeededColor();
@@ -84,7 +83,7 @@ public class QuintusBot extends Bot {
         }
     }
 
-    private void movePanda (TurnLog log) {
+    void movePanda (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(panda.getPosition());
         accessibles.remove(panda.getPosition());
 
@@ -111,7 +110,7 @@ public class QuintusBot extends Bot {
         turnDoingNothing = 0;
     }
 
-    private void moveGardener (TurnLog log) {
+    void moveGardener (TurnLog log) {
         List<Position> accessibles = board.getReachablePositionFrom(gardener.getPosition());
         accessibles.remove(gardener.getPosition());
 
@@ -163,7 +162,7 @@ public class QuintusBot extends Bot {
         turnDoingNothing = 0;
     }
 
-    private List<BambooColor> getNeededColor () {
+    List<BambooColor> getNeededColor () {
         final int[] count = new int[BambooColor.values().length];
         Arrays.fill(count, 0);
         getPandaObjectives().forEach(objective -> {
@@ -186,8 +185,11 @@ public class QuintusBot extends Bot {
         return getIndividualBoard().getUnfinishedPandaObjectives();
     }
 
-    private boolean isThereAPlantationWhereYouCanEat () {
+    boolean isThereAPlantationWhereYouCanEat () {
         Set<Position> positions = board.getPositions();
+
+        if (neededColors == null)
+            return false;
 
         List<BambooColor> required = new ArrayList<>(neededColors);
 
@@ -201,8 +203,12 @@ public class QuintusBot extends Bot {
         return required.isEmpty();
     }
 
-    private boolean isThereAnythingInterestingToEat() {
+    boolean isThereAnythingInterestingToEat() {
         Set<Position> positions = board.getPositions();
+
+        if (neededColors == null) {
+            return false;
+        }
 
         for (Position position : positions) {
             Parcel tmp = board.getParcel(position);
