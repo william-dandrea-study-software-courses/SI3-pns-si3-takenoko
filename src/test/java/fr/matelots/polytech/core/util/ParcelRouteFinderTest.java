@@ -102,4 +102,22 @@ public class ParcelRouteFinderTest {
 
     }
 
+
+    @Test
+    void testVerySmallPath() {
+        var path = getBestPathToIrrigate(board, new Position(1, -3, 2));
+        assertTrue(path.isPresent());
+
+        var nextToIrrigate = getNextParcelToIrrigate(path.get());
+
+        while(nextToIrrigate.isPresent()) {
+            nextToIrrigate.get().irrigate();
+            nextToIrrigate = getNextParcelToIrrigate(path.get());
+        }
+
+        assertTrue(board.getParcel(1, -3, 2).isIrrigate());
+
+        var path2 = getBestPathToIrrigate(board, new Position(2, -3, 1));
+        assertTrue(path2.isPresent());
+    }
 }

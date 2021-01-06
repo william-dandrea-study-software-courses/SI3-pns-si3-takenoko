@@ -1,6 +1,8 @@
 package fr.matelots.polytech.engine.util;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 
 import java.util.*;
@@ -8,64 +10,90 @@ import java.util.function.Predicate;
 
 public class ParcelRouteFinder {
     private static List<Side> getPathInParcel(Side input, Side output) {
+        if(input == null || output == null) throw new RuntimeException("Error");
         List<Side> toIrrigate = new ArrayList<>();
-        if(output != null) {
-            if(output == input) return toIrrigate;
-            else if(output == input.leftSide() || output == input.leftSide().leftSide()) {
-                // By the left !
-                toIrrigate.add(input.leftSide());
-                if(output == input.leftSide().leftSide()) {
-                    toIrrigate.add(input.leftSide().leftSide());
-                }
+        // Evalute distance by left
+        int distanceRight = 0;
+        Side temp = input;
+        while(temp != output) {
+            temp = temp.rightSide();
+            distanceRight++;
+        }
+
+        // Evalute distance by left
+        temp = output;
+        int distanceLeft = 0;
+        while(temp != output) {
+            temp = temp.leftSide();
+            distanceLeft++;
+        }
+
+        // return the nearest
+        if(distanceLeft < distanceRight) {
+            temp = input;
+            while(temp != output) {
+                temp = temp.leftSide();
+                toIrrigate.add(temp);
             }
-            else {
-                // by the right !
-                toIrrigate.add(input.rightSide());
-                if(output != input.rightSide()) {
-                    // output is (opposite or two to right)
-                    toIrrigate.add(input.rightSide().rightSide());
-                }
-                if(output == input.oppositeSide()) {
-                    toIrrigate.add(input.oppositeSide());
-                }
+        } else {
+            temp = input;
+            while(temp != output) {
+                temp = temp.rightSide();
+                toIrrigate.add(temp);
             }
         }
+        toIrrigate.add(output);
+
         return toIrrigate;
     }
-    private static List<AbsolutePositionIrrigation> encapsulate(Position position, List<Side> sides, Board board) {
-        List<AbsolutePositionIrrigation> result = new ArrayList<>();
-        sides.forEach(s -> result.add(new AbsolutePositionIrrigation(position, s, board)));
-        return result;
-    }
-    private static List<AbsolutePositionIrrigation> getPathInAParcelWithIrrigation(Board board, Position positionParcel, Position outputPosition, Side inputSide) {
-        if(outputPosition == null && inputSide == null) return new ArrayList<>(); // Final position
+    private static List<Side> getPathInParcel(Parcel currentParcel, Side output) {
+        if(currentParcel == null || output == null) throw new RuntimeException("Error");
+        List<Side> toIrrigate = new ArrayList<>();
+        // Evalute distance by left
+        int distanceRight = 0;
+        Side temp = output;
+        while(!currentParcel.isIrrigate(temp)) {
+            temp = temp.rightSide();
+            distanceRight++;
+        }
 
-        Side input = null;
-        if(inputSide != null) {
-            input = inputSide;
+        // Evalute distance by left
+        temp = output;
+        int distanceLeft = 0;
+        while(!currentParcel.isIrrigate(temp)) {
+            temp = temp.leftSide();
+            distanceLeft++;
+        }
+
+        // return the nearest
+        if(distanceLeft < distanceRight) {
+            temp = output;
+            while(!currentParcel.isIrrigate(temp)) {
+                toIrrigate.add(temp);
+                temp = temp.leftSide();
+            }
         } else {
-            var parcel = board.getParcel(positionParcel);
-            var irrigatedSide = Arrays.stream(Side.values()).filter(parcel::isIrrigate).findAny();
-
-            if(irrigatedSide.isPresent()) {
-                input = irrigatedSide.get();
-            } else {
-                throw new RuntimeException("This parcel is not irrigated");
+            temp = output;
+            while(!currentParcel.isIrrigate(temp)) {
+                toIrrigate.add(temp);
+                temp = temp.rightSide();
             }
         }
 
-        Position delta = new Position(
-                outputPosition.getX() - positionParcel.getX(),
-                outputPosition.getY() - positionParcel.getY(),
-                outputPosition.getZ() - positionParcel.getZ()
-        );
+        return toIrrigate;
+    }
 
-        var output = Arrays.stream(Side.values()).filter(s -> s.getDirection().equals(delta)).findAny();
-        if(output.isPresent()) {
-            return encapsulate(positionParcel, getPathInParcel(input, output.get()), board);
+    private static List<AbsolutePositionIrrigation> getPathInAParcelWithIrrigation(Board board, Position currentPosition, Side output, Side input) {
+        var parcel = board.getParcel(currentPosition);
+        List<AbsolutePositionIrrigation> list = new ArrayList<>();
+        List<Side> result;
+        if(input == null) {
+            result = getPathInParcel(parcel, output);
         } else {
-            throw new RuntimeException("Parcels are not neighbours");
+            result = getPathInParcel(input, output);
         }
+        result.stream().forEach(s -> list.add(new AbsolutePositionIrrigation(currentPosition, s, board)));
+        return list;
     }
 
     public static Optional<Set<AbsolutePositionIrrigation>> getRequiredIrrigation(Board board, Position start, Position end) {
@@ -76,23 +104,13 @@ public class ParcelRouteFinder {
         for(int i = 0; i < positions.size() - 1; i++) {
             if(!board.getPositions().contains(positions.get(i))) return Optional.empty();
 
-            var pathInThisParcel =
-                    getPathInAParcelWithIrrigation(
-                            board,
-                            positions.get(i),
-                            positions.get(i + 1),
-                            oldSide == null ? null : oldSide.oppositeSide()
-                    );
-            result.addAll(pathInThisParcel);
-            if(!pathInThisParcel.isEmpty())
-                oldSide = pathInThisParcel.get(pathInThisParcel.size() - 1).getSide();
-        }
+            Side output = Side.getTouchedSide(positions.get(i), positions.get(i + 1));
+            if(output == null) throw new RuntimeException("Tiles are not neighbour");
 
-        result.addAll(getPathInAParcelWithIrrigation(
-                board,
-                positions.get(positions.size() - 1),
-                null, null)
-        );
+            var pathInThisParcel = getPathInAParcelWithIrrigation(board, positions.get(i), output, oldSide);
+            result.addAll(pathInThisParcel);
+            oldSide = output.oppositeSide();
+        }
 
         return Optional.of(result);
     }
@@ -124,6 +142,7 @@ public class ParcelRouteFinder {
                 .map(p -> getIrrigationToIrrigate(board, p, positionToIrrigate)) // On recherche tout les chemins
                 .filter(Optional::isPresent)        // On retire les positions jugé sans chemin
                 .map(Optional::get)                 // on recupere les valeur des optionnels
+                .filter(p -> !p.isEmpty())
                 .min(Comparator.comparing(Set::size)); // on recupere le chemin le moins couteux
         return shortest;
     }
