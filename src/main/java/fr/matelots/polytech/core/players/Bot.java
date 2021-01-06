@@ -131,7 +131,7 @@ public abstract class Bot {
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public Optional<CardObjective> pickParcelObjective(TurnLog log) {
+    public final Optional<CardObjective> pickParcelObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -155,7 +155,7 @@ public abstract class Bot {
      * This method pick a new Gardener objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
+    public final Optional<CardObjective> pickGardenerObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -179,7 +179,7 @@ public abstract class Bot {
      * This method pick a new Panda objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public Optional<CardObjective> pickPandaObjective(TurnLog log) {
+    public final Optional<CardObjective> pickPandaObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -226,7 +226,7 @@ public abstract class Bot {
 
 
 
-    protected boolean movePanda(TurnLog log, Position pos) {
+    protected final boolean movePanda(TurnLog log, Position pos) {
         if (BotActionType.MOVE_PANDA.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -241,7 +241,7 @@ public abstract class Bot {
         return res;
     }
 
-    protected boolean moveGardener(TurnLog log, Position pos) {
+    protected final boolean moveGardener(TurnLog log, Position pos) {
         if (BotActionType.MOVE_GARDENER.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -255,7 +255,7 @@ public abstract class Bot {
         return res;
     }
 
-    protected boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
+    protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -270,17 +270,19 @@ public abstract class Bot {
         return res;
     }
 
-    protected void placeIrrigation (TurnLog log, Parcel parcel, Side side) {
+    protected final void placeIrrigation (TurnLog log, Parcel parcel1, Parcel parcel2, Side side) {
         if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
-        parcel.setIrrigate(side);
-        log.addAction(BotActionType.PLACE_IRRIGATION, parcel.toString() + " on " + side.toString());
+        parcel1.setIrrigate(side);
+        parcel2.setIrrigate(side);
+        log.addAction(BotActionType.PLACE_IRRIGATION, parcel1.toString() + " on " + side.toString());
+        log.addAction(BotActionType.PLACE_IRRIGATION, parcel2.toString() + " on " + side.toString());
         lastAction = BotActionType.PLACE_IRRIGATION;
         currentNumberOfAction++;
     }
 
-    protected void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
+    protected final void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
         if (BotActionType.PLACE_LAYOUT.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
