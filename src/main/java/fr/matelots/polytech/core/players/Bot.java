@@ -246,20 +246,6 @@ public abstract class Bot {
         return res;
     }
 
-    protected final boolean moveGardener(TurnLog log, Position pos) {
-        if (BotActionType.MOVE_GARDENER.equals(lastAction))
-            throw new IllegalActionRepetitionException();
-
-        boolean res = gardener.moveTo(pos.getX(), pos.getY(), pos.getZ());
-        if (res) {
-            log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
-            lastAction = BotActionType.MOVE_GARDENER;
-            currentNumberOfAction++;
-        }
-
-        return res;
-    }
-
     protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
@@ -527,6 +513,9 @@ public abstract class Bot {
      * @param log The logger
      */
     public boolean moveGardener(Position position, TurnLog log) {
+        if (BotActionType.MOVE_GARDENER.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!this.canDoAction()) return false;
         boolean success;
         try {
