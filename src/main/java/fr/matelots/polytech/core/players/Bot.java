@@ -171,32 +171,45 @@ public abstract class Bot {
         currentNumberOfAction = 0;
     }
 
-    protected void movePanda(TurnLog log, Position pos) {
+    protected boolean movePanda(TurnLog log, Position pos) {
         if (BotActionType.MOVE_PANDA.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
         panda.setCurrentPlayer(this);
-        panda.moveTo(pos.getX(), pos.getY(), pos.getZ());
-        log.addAction(BotActionType.MOVE_PANDA, pos.toString());
-        lastAction = BotActionType.MOVE_PANDA;
+        boolean res = panda.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        if (res) {
+            log.addAction(BotActionType.MOVE_PANDA, pos.toString());
+            lastAction = BotActionType.MOVE_PANDA;
+        }
+
+        return res;
     }
 
-    protected void moveGardener(TurnLog log, Position pos) {
+    protected boolean moveGardener(TurnLog log, Position pos) {
         if (BotActionType.MOVE_GARDENER.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
-        gardener.moveTo(pos.getX(), pos.getY(), pos.getZ());
-        log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
-        lastAction = BotActionType.MOVE_GARDENER;
+        boolean res = gardener.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        if (res) {
+            log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
+            lastAction = BotActionType.MOVE_GARDENER;
+        }
+
+        return res;
     }
 
-    protected void placeParcel (TurnLog log, Position pos, Parcel parcel) {
+    protected boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
-        board.addParcel(pos, parcel);
-        log.addAction(BotActionType.PLACE_PARCEL, parcel.toString() + " in" + pos.toString());
-        lastAction = null;
+        boolean res = board.addParcel(pos, parcel);
+
+        if (res) {
+            log.addAction(BotActionType.PLACE_PARCEL, parcel.toString() + " in" + pos.toString());
+            lastAction = BotActionType.PLACE_PARCEL;
+        }
+
+        return res;
     }
 
     protected void placeIrrigation (TurnLog log, Parcel parcel, Side side) {
