@@ -16,11 +16,9 @@ import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static fr.matelots.polytech.core.players.IAforBot.searchTheParcelsAroundAnIrrigateParcel;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -248,6 +246,18 @@ public class IAforBotTest {
 
         assertTrue(green >=2);
         assertTrue(yellow >=2);
+
+    }
+
+
+    @Test
+    public void testSearchTheParcelsAroundAnIrrigateParcel() {
+        game.getBoard().addParcel(0,1,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,0,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(-1,1,0, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,1,-2, new BambooPlantation(BambooColor.GREEN));
+
+        assertEquals(Optional.of(new Position(1,1,-2)), searchTheParcelsAroundAnIrrigateParcel(game.getBoard()).stream().findAny());
 
     }
 

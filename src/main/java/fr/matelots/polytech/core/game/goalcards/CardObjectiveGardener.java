@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.game.goalcards;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -20,14 +21,22 @@ public class CardObjectiveGardener extends CardObjective {
     private final int size;
     private final int count;
     private int countMissing;
+    private Layout layout;
+
 
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {
+        this(board,score,color,size,count,null);
+    }
+
+    public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count, Layout layout) {
         super(score);
         this.board = board;
         this.color = color;
         this.size = size;
         this.count = count;
+        this.layout = layout;
     }
+
 
     @Override
     public boolean verify() {
@@ -58,6 +67,10 @@ public class CardObjectiveGardener extends CardObjective {
     public int getCountMissing() {
         return countMissing;
     }
+
+    public Layout getLayout() { return layout; }
+
+
 
     @Override
     public boolean equals(Object o) {

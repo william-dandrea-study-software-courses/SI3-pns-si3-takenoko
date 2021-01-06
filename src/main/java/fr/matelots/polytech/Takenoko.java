@@ -24,7 +24,7 @@ public class Takenoko {
         rootLogger.addHandler(new LogHandler());
         long time = System.currentTimeMillis();
 
-        final int NB_GAMES = 1000;
+        final int NB_GAMES = 500;
         final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
