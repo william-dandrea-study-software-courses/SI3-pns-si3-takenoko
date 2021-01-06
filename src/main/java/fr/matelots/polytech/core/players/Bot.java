@@ -35,7 +35,7 @@ public abstract class Bot {
     private String name;
     protected int currentNumberOfAction;
 
-    protected BotActionType lastAction;
+    private BotActionType lastAction;
     protected final Panda panda;
     protected final Gardener gardener;
 
@@ -53,12 +53,17 @@ public abstract class Bot {
         gardener = board.getGardener();
     }
 
+    protected BotActionType getLastAction () {
+        return lastAction;
+    }
+
     /**
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
-        if (BotActionType.PICK_PARCEL_GOAL.equals(lastAction))
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
             throw new IllegalActionRepetitionException();
 
         if(this.canDoAction()) {
@@ -82,7 +87,8 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
-        if (BotActionType.PICK_GARDENER_GOAL.equals(lastAction))
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
             throw new IllegalActionRepetitionException();
 
         if(this.canDoAction()) {
@@ -106,7 +112,8 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickPandaObjective(TurnLog log) {
-        if (BotActionType.PICK_PANDA_GOAL.equals(lastAction))
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
             throw new IllegalActionRepetitionException();
 
         if (this.canDoAction()) {
@@ -201,11 +208,16 @@ public abstract class Bot {
         lastAction = BotActionType.PLACE_IRRIGATION;
     }
 
-    protected void placeLayout (TurnLog log, Parcel parcel, Layout layout) {
+    protected void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
         if (BotActionType.PLACE_LAYOUT.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
-        //
+        if (parcel.setLayout(layout)) {
+            log.addAction(BotActionType.PLACE_LAYOUT, layout.name() + " on " + parcel.toString());
+            lastAction = BotActionType.PLACE_LAYOUT;
+        } else {
+            log.addAction(BotActionType.NONE, "");
+        }
     }
 
     /**

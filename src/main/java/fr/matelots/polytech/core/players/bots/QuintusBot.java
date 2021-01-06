@@ -4,8 +4,6 @@ import fr.matelots.polytech.core.PickDeckEmptyException;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
-import fr.matelots.polytech.core.game.movables.Gardener;
-import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
@@ -28,8 +26,6 @@ public class QuintusBot extends Bot {
     private int turnDoingNothing = 0;
     private int turnPastMovingGardener = 0;
 
-    //private BotActionType lastAction;
-
     private List<BambooColor> neededColors;
 
     private static final Random random = Config.RANDOM;
@@ -49,7 +45,6 @@ public class QuintusBot extends Bot {
 
         setCurrentNumberOfAction(0);
         int action = 0;
-        //lastAction = null;
 
         for ( ; action < Config.TOTAL_NUMBER_OF_ACTIONS; action++){
             if (!canPlay())
@@ -64,17 +59,17 @@ public class QuintusBot extends Bot {
 
             if (turnLeftToPick > 0 &&
                 !(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
-                        BotActionType.PICK_PARCEL_GOAL))).contains(lastAction)) {
+                        BotActionType.PICK_PARCEL_GOAL))).contains(getLastAction())) {
                 pickObjectif(log);
             }
             else if (!isThereAPlantationWhereYouCanEat() &&
-                        !BotActionType.PLACE_PARCEL.equals(lastAction)) {
+                        !BotActionType.PLACE_PARCEL.equals(getLastAction())) {
                 placeAParcel(log);
             }
             else if (!isThereAnythingInterestingToEat() &&
-                        !BotActionType.MOVE_GARDENER.equals(lastAction))
+                        !BotActionType.MOVE_GARDENER.equals(getLastAction()))
                 moveGardener(log);
-            else if (!BotActionType.MOVE_PANDA.equals(lastAction))
+            else if (!BotActionType.MOVE_PANDA.equals(getLastAction()))
                 movePanda(log);
             else {
                 turnDoingNothing++;
@@ -98,7 +93,6 @@ public class QuintusBot extends Bot {
             neededColors = getNeededColor();
             turnDoingNothing = 0;
             turnPastMovingGardener = 0;
-            //lastAction = BotActionType.PICK_PANDA_GOAL;
         } catch (PickDeckEmptyException e) {
             log.addAction(BotActionType.NONE, "");
             turnDoingNothing++;
@@ -127,16 +121,9 @@ public class QuintusBot extends Bot {
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
         super.movePanda(log, chosen);
-        /*
-        panda.setCurrentPlayer(this);
-        panda.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
-
-        log.addAction(BotActionType.MOVE_PANDA, chosen.toString());
-        */
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
         checkObjectives();
-        //lastAction = BotActionType.MOVE_PANDA;
 
         final int MAX_EATEN_BEFORE_ERROR = 100;
         if (getIndividualBoard().getGreenEatenBamboo() > MAX_EATEN_BEFORE_ERROR
@@ -167,12 +154,8 @@ public class QuintusBot extends Bot {
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
         super.moveGardener(log, chosen);
-
-        //gardener.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
-        //log.addAction(BotActionType.MOVE_GARDENER, chosen.toString());
         turnDoingNothing = 0;
         turnPastMovingGardener++;
-        //lastAction = BotActionType.MOVE_GARDENER;
     }
 
     /**
@@ -216,12 +199,8 @@ public class QuintusBot extends Bot {
         }
 
         super.placeParcel(log, chosen, chosenParcel);
-
-        //board.addParcel(chosen, chosenParcel);
-        //log.addAction(BotActionType.PLACE_PARCEL, chosen.toString());
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
-        //lastAction = BotActionType.PLACE_PARCEL;
     }
 
     /**
