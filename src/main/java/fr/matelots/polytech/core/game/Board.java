@@ -9,6 +9,8 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 import fr.matelots.polytech.core.game.parcels.*;
+import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.IndividualBoard;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -30,6 +32,8 @@ public class Board {
     private int pinkParcelLeftToPlace;
     private int greenParcelLeftToPlace;
 
+    private int irrigationLeft;
+
     private final Gardener gardener;
     private final Panda panda;
 
@@ -46,6 +50,8 @@ public class Board {
         placePawn(gardener, Config.POND_POSITION);
         panda = new Panda(this, Config.POND_POSITION);
         placePawn(panda, Config.POND_POSITION);
+
+        irrigationLeft = Config.NB_IRRIGATION;
 
         parcelLeftToPlace = Config.NB_PLACEABLE_PARCEL;
         yellowParcelLeftToPlace = Config.NB_MAX_YELLOW_PARCELS;
@@ -359,5 +365,19 @@ public class Board {
         }
 
         return res;
+    }
+
+    public int getIrrigationLeft() {
+        return irrigationLeft;
+    }
+
+    public boolean canPickIrrigation() {
+        return irrigationLeft > 0;
+    }
+
+    public boolean pickIrrigation() {
+        if(!canPickIrrigation()) return false;
+        irrigationLeft--;
+        return true;
     }
 }

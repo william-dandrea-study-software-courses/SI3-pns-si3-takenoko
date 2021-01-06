@@ -24,6 +24,7 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
     private final List<CardObjectivePanda> objectivePandas;
+    private int irrigations;
     private CardObjectiveEmperor emperor;
 
     // Eaten bamboo
@@ -34,6 +35,7 @@ public class IndividualBoard {
         objectiveGardeners = new ArrayList<>();
         objectivePandas = new ArrayList<>();
         emperor = null;
+        irrigations = 0;
 
         bamboos = new int[BambooColor.values().length];
         Arrays.fill(bamboos, 0);
@@ -138,6 +140,26 @@ public class IndividualBoard {
             return false;
 
         return objectivePandas.add(pandaObjective);
+    }
+
+    // = = = = = = = = = = = = = = = = = = IRRIGATION = = = = = = = = = = = = = = = = = =
+
+    public void addIrrigation() {
+        irrigations++;
+    }
+
+    public boolean canPlaceIrrigation() {
+        return irrigations > 0;
+    }
+
+    public boolean placeIrrigation() {
+        if(!canPlaceIrrigation()) return false;
+        irrigations--;
+        return false;
+    }
+
+    public int getNumberOfIrrigations() {
+        return irrigations;
     }
 
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =

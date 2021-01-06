@@ -452,13 +452,29 @@ public abstract class Bot {
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
         if(!canDoAction()) return false;
+        if(!individualBoard.canPlaceIrrigation()) return false;
+
         var success = position.irrigate();
         if(success) {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
+            individualBoard.placeIrrigation();
             currentNumberOfAction++;
         }
         return success;
     }
+
+    public boolean pickIrrigation(TurnLog log) {
+        if(!canDoAction()) return false;
+        if(board.canPickIrrigation()) {
+            board.pickIrrigation();
+            individualBoard.addIrrigation();
+            log.addAction(BotActionType.PICK_IRRIGATION, "");
+            currentNumberOfAction++;
+            return true;
+        }
+        else return false;
+    }
+
 
     public String getName() {
         return name;

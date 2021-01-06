@@ -8,6 +8,7 @@ public enum BotActionType {
     PICK_PARCEL_GOAL,
     PICK_GARDENER_GOAL,
     PICK_PANDA_GOAL,
+    PICK_IRRIGATION,
 
     PLACE_PARCEL,
     MOVE_GARDENER,
@@ -27,6 +28,8 @@ public enum BotActionType {
                 return bot.getName() + " pick panda goal : " + param;
             case PICK_GARDENER_GOAL:
                 return bot.getName() + " pick gardener goal : " + param;
+            case PICK_IRRIGATION:
+                return bot.getName() + " pick an irrigation";
             case PLACE_PARCEL:
                 return bot.getName() + " place parcel : " + param;
             case MOVE_GARDENER:

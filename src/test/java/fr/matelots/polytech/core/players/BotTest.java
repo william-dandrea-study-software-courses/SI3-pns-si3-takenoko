@@ -10,8 +10,11 @@ import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.bots.PremierBot;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -283,4 +286,50 @@ public class BotTest {
         assertTrue(bot.moveGardener(pos, turnLog));
     }
 
+    @Test
+    public void testIrrigation() {
+        AbsolutePositionIrrigation api = new AbsolutePositionIrrigation(new Position(1, 0, -1), Side.LEFT, game.getBoard());
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        game.getBoard().addParcel(new Position(1, 0, -1), plantation);
+
+        // Check can't irrigate
+        assertFalse(bot.irrigate(api, turnLog));
+        assertFalse(api.isIrrigate());
+
+        // Check pickIrrigation
+        assertTrue(bot.pickIrrigation(turnLog));
+
+        // Check last action
+        var lastOpt = turnLog.getLastAction();
+        assertTrue(lastOpt.isPresent());
+        assertEquals(lastOpt.get().getType(), BotActionType.PICK_IRRIGATION);
+
+        // Check number of irrigations
+        assertEquals(bot.currentNumberOfAction, 1);
+
+        // Check numberOfIrrigation
+        assertEquals(bot.getBoard().getIrrigationLeft(), Config.NB_IRRIGATION - 1);
+        assertEquals(bot.getIndividualBoard().getNumberOfIrrigations(), 1);
+
+        assertTrue(bot.irrigate(api, turnLog));
+
+        // Check last action
+        lastOpt = turnLog.getLastAction();
+        assertTrue(lastOpt.isPresent());
+        assertEquals(lastOpt.get().getType(), BotActionType.PLACE_IRRIGATION);
+
+        // Check numberOfAction
+        assertEquals(bot.currentNumberOfAction, 2);
+
+        // Check the side has been irrigated
+        assertTrue(api.isIrrigate());
+
+        // Check numberOfIrrigation
+        assertEquals(bot.getIndividualBoard().getNumberOfIrrigations(), 0);
+        assertFalse(bot.getIndividualBoard().canPlaceIrrigation());
+
+        AbsolutePositionIrrigation api2 = new AbsolutePositionIrrigation(new Position(0, 1, -1), Side.LEFT, game.getBoard());
+
+        assertFalse(bot.irrigate(api2, turnLog));
+    }
 }

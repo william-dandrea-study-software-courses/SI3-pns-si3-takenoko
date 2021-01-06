@@ -257,5 +257,15 @@ public class BoardTest {
                 finalValidPlace.ifPresent(position -> board.addParcel(position, new BambooPlantation(BambooColor.GREEN))));
     }
 
-
+    @Test
+    public void testLimitOfIrrigations() {
+        for(int i = 0; i < Config.NB_IRRIGATION; i++) {
+            assertTrue(board.canPickIrrigation());
+            assertEquals(board.getIrrigationLeft(), Config.NB_IRRIGATION - i);
+            assertTrue(board.pickIrrigation());
+        }
+        assertEquals(board.getIrrigationLeft(), 0);
+        assertFalse(board.canPickIrrigation());
+        assertFalse(board.pickIrrigation());
+    }
 }

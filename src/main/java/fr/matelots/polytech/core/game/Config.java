@@ -53,6 +53,8 @@ public class Config {
 
     public static final int NB_PARCEL_PICKED = 3;
 
+    public static final int NB_IRRIGATION = 20;
+
     public static final Random RANDOM = new Random();
 
 
