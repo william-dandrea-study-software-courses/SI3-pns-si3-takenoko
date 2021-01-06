@@ -234,7 +234,7 @@ public class QuintusBot extends Bot {
         if (chosen == null)
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
-        super.moveGardener(log, chosen);
+        super.moveGardener(chosen, log);
         turnDoingNothing = 0;
         turnPastMovingGardener++;
     }

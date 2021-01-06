@@ -16,12 +16,15 @@ public abstract class Parcel {
     private Gardener gardener;
     private Panda panda;
     private final EnumMap<Side, Boolean> irrigate;
+    private Layout layout;
 
     public Parcel() {
         this.irrigate = new EnumMap<>(Side.class);
         for(Side side : Side.values())
             this.irrigate.put(side, false);
     }
+
+
 
     // Constructors
     public abstract boolean isPond();
@@ -103,6 +106,8 @@ public abstract class Parcel {
             }
         });
     }
+
+
 
     // Methods
     @Override

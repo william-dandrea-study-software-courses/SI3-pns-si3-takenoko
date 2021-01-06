@@ -92,7 +92,7 @@ public abstract class Bot {
 
 
     void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
-        System.out.println(weather);
+        //System.out.println(weather);
         if (weather!= null) {
             switch (weather) {
                 case SUN: {
@@ -101,6 +101,7 @@ public abstract class Bot {
                 }
                 case RAIN: {
                     canPlaceOneMoreBamboo = true;
+                    weatherCaseRainInitial();
                     break;
                 }
                 case WIND: {
@@ -109,19 +110,40 @@ public abstract class Bot {
                 }
                 case CLOUD: {
                     canAddAmenagement = true;
+                    weatherCaseCloudInitial();
                     break;
                 }
                 case THUNDERSTORM: {
                     canMovePandaSomewhere = true;
+                    weatherCaseThunderstormInitial(log);
                     break;
                 }
                 case INTERROGATION: {
-                    playTurn(log, game.diceRandomWeather());
+                    weatherCaseInterrogationInitial(log);
                     break;
                 }
             }
         }
     }
+
+    void weatherCaseRainInitial() {
+        Optional<Position> place = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate() && !board.getParcel(p).equals(Config.POND_POSITION)).findAny();
+        getBoard().getParcel(place.get()).growBamboo();
+    }
+
+    void weatherCaseCloudInitial() {
+        getIndividualBoard().addLayouts(Layout.BASIN);
+    }
+
+    void weatherCaseThunderstormInitial(TurnLog log) {
+        Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
+        game.movePandaWhenWeather(lastAction, this,place.get(),log);
+    }
+    void weatherCaseInterrogationInitial(TurnLog log) {
+        playTurn(log, game.diceRandomWeather());
+    }
+
+
 
 
     protected BotActionType getLastAction () {
@@ -246,20 +268,6 @@ public abstract class Bot {
         return res;
     }
 
-    protected final boolean moveGardener(TurnLog log, Position pos) {
-        if (BotActionType.MOVE_GARDENER.equals(lastAction))
-            throw new IllegalActionRepetitionException();
-
-        boolean res = gardener.moveTo(pos.getX(), pos.getY(), pos.getZ());
-        if (res) {
-            log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
-            lastAction = BotActionType.MOVE_GARDENER;
-            currentNumberOfAction++;
-        }
-
-        return res;
-    }
-
     protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
@@ -273,18 +281,6 @@ public abstract class Bot {
         }
 
         return res;
-    }
-
-    protected final void placeIrrigation (TurnLog log, Parcel parcel1, Parcel parcel2, Side side) {
-        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
-            throw new IllegalActionRepetitionException();
-
-        parcel1.setIrrigate(side);
-        parcel2.setIrrigate(side);
-        log.addAction(BotActionType.PLACE_IRRIGATION, parcel1.toString() + " on " + side.toString());
-        log.addAction(BotActionType.PLACE_IRRIGATION, parcel2.toString() + " on " + side.toString());
-        lastAction = BotActionType.PLACE_IRRIGATION;
-        currentNumberOfAction++;
     }
 
     protected final void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
@@ -311,6 +307,9 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
             // We get where we can put an parcel
             ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
@@ -326,6 +325,7 @@ public abstract class Bot {
                 board.addParcel(pos, new BambooPlantation(color));
                 log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
                 currentNumberOfAction++;
+                lastAction = BotActionType.PLACE_PARCEL;
                 return Optional.of(pos);
             }
         }
@@ -343,7 +343,6 @@ public abstract class Bot {
      * @return
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log, Parcel parcel) {
-
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
             // We get where we can put an parcel
             ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
@@ -411,6 +410,9 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
@@ -422,6 +424,7 @@ public abstract class Bot {
                 if (this.board.addParcel(pos, new BambooPlantation(color))) {
                     this.currentNumberOfAction++;
                     log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
+                    lastAction = BotActionType.PLACE_PARCEL;
                 }
                 return Optional.of(pos);
             }
@@ -482,6 +485,9 @@ public abstract class Bot {
      * @return true if the parcel is placed else return false
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!this.canDoAction()) return false;
 
         if (board.getParcelLeftToPlace(color) != 0) {
@@ -491,6 +497,7 @@ public abstract class Bot {
                 if (success) {
                     log.addAction(BotActionType.PLACE_PARCEL, position.toString());
                     currentNumberOfAction++;
+                    lastAction = BotActionType.PLACE_PARCEL;
                 }
                 return success;
 
@@ -527,6 +534,9 @@ public abstract class Bot {
      * @param log The logger
      */
     public boolean moveGardener(Position position, TurnLog log) {
+        if (BotActionType.MOVE_GARDENER.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!this.canDoAction()) return false;
         boolean success;
         try {
@@ -534,6 +544,7 @@ public abstract class Bot {
             if(success) {
                 currentNumberOfAction++;
                 log.addAction(BotActionType.MOVE_GARDENER, position.toString());
+                lastAction = BotActionType.MOVE_GARDENER;
             }
             return success;
         } catch (UnreachableParcelException e) {
@@ -547,6 +558,9 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
+        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!canDoAction()) return false;
         if(!individualBoard.canPlaceIrrigation()) return false;
 
@@ -555,6 +569,7 @@ public abstract class Bot {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
             individualBoard.placeIrrigation();
             currentNumberOfAction++;
+            lastAction = BotActionType.PLACE_IRRIGATION;
         }
         return success;
     }
@@ -580,5 +595,7 @@ public abstract class Bot {
         return currentNumberOfAction;
     }
 
-
+    public boolean isCanMovePandaSomewhere() {
+        return canMovePandaSomewhere;
+    }
 }
