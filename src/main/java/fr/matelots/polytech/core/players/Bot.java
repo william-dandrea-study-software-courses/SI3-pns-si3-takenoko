@@ -42,8 +42,11 @@ public abstract class Bot {
 
     // Weather
     private boolean playWithWeather;
-    private int maxNumberOfActions;
-    private boolean canDoSameActionInOneTour;
+    private int maxNumberOfActions;             // SUN
+    private boolean canDoSameActionInOneTour;   // WIND
+    private boolean canPlaceOneMoreBamboo;      // RAIN
+    private boolean canMovePandaSomewhere;      // THUNDERSTORM
+    private boolean canAddAmenagement;          // CLOUD
 
     public Bot(Game game, String name) {
         this(game);
@@ -72,8 +75,12 @@ public abstract class Bot {
         currentNumberOfAction = 0;
         maxNumberOfActions = Config.TOTAL_NUMBER_OF_ACTIONS;    // SUN
         canDoSameActionInOneTour = false;                       // WIND
+        canPlaceOneMoreBamboo = false;                          // RAIN
+        canMovePandaSomewhere = false;                          // THUNDERSTORM
+        canAddAmenagement = false;                              // CLOUD
+        whatWeCanDoWithWeather(weatherCard, log);
 
-        whatWeCanDoWithWeather(weatherCard);
+
     }
 
     public void playTurn(Weather weatherCard) {
@@ -81,20 +88,32 @@ public abstract class Bot {
         playTurn(log, weatherCard);
     }
 
+    public void playTurn(TurnLog log) {
+        playTurn(log, null);
+    }
 
-    private void whatWeCanDoWithWeather(Weather weather) {
+
+    private void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
         if (weather!= null) {
             switch (weather) {
                 case SUN: {
                     maxNumberOfActions = 3;
                 }
-                case RAIN:
+                case RAIN: {
+                    canPlaceOneMoreBamboo = true;
+                }
                 case WIND: {
                     canDoSameActionInOneTour = true;
                 }
-                case CLOUD:
-                case THUNDERSTORM:
-                case INTERROGATION:
+                case CLOUD: {
+                    canAddAmenagement = true;
+                }
+                case THUNDERSTORM: {
+                    canMovePandaSomewhere = true;
+                }
+                case INTERROGATION: {
+                    //this.playTurn(log, weather);
+                }
             }
         }
     }

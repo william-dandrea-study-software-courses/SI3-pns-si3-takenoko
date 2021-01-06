@@ -35,14 +35,14 @@ public class SecondBotTest {
 
         // Tant que l'on a pas réaliser un objectif, la liste d'objectifs comprends un seul objectif
         for(int i = 1; i <= 5; i++) {
-            bot.playTurn(null);
+            bot.playTurn(turnLogger);
             assertEquals(individualBoard.getUnfinishedParcelObjectives().size(), 1);
         }
 
         // test complete phase
         int oldSize = individualBoard.getUnfinishedParcelObjectives().size();
         while(oldSize > 0) {
-            bot.playTurn(null);
+            bot.playTurn(turnLogger);
             int currentSize = individualBoard.getUnfinishedParcelObjectives().size();
             assertTrue(currentSize <= oldSize);
             oldSize = currentSize;
