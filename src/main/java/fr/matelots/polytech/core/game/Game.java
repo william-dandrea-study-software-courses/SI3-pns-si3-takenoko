@@ -38,7 +38,8 @@ public class Game {
     }
 
     private void setDemoBots() {
-        bots.add(new QuintusBot(this, "Jojo"));
+        bots.add(new QuintusBot(this, "Jojo (Rush Panda)"));
+        //bots.add(new QuintusBot(this));
         //bots.add(new RushParcelBot(this, "RushParcel"));
         bots.add(new RushParcelBot(this, "RushParcel2"));
     }

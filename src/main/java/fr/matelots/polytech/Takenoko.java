@@ -33,6 +33,8 @@ public class Takenoko {
         List<List<Bot>> ranksTmp;
         List<Bot> winnerTmp;
 
+        rootLogger.info("Lancement de " + NB_GAMES + " partie(s)...");
+
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             game = new Game();
 
