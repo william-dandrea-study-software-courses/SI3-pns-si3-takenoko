@@ -39,7 +39,8 @@ public class Game {
 
     private void setDemoBots() {
         bots.add(new QuintusBot(this, "Jojo"));
-        bots.add(new RushParcelBot(this, "RushParcel"));
+        //bots.add(new RushParcelBot(this, "RushParcel"));
+        bots.add(new RushParcelBot(this, "RushParcel2"));
     }
 
     public void addBot(Bot bot) {
@@ -190,7 +191,7 @@ public class Game {
         }
 
 
-        launchTurnLoop(false);
+        launchTurnLoop(true);
         drawRanks();
 
     }
