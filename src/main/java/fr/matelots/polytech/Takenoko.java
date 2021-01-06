@@ -6,6 +6,8 @@ import fr.matelots.polytech.core.players.bots.QuintusBot;
 import fr.matelots.polytech.core.players.bots.RushParcelBot;
 import fr.matelots.polytech.engine.util.LogHandler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
