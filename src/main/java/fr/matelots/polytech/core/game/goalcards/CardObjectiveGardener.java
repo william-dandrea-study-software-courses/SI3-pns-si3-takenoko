@@ -76,7 +76,8 @@ public class CardObjectiveGardener extends CardObjective {
     @Override
     public String toString() {
         return "CardObjectiveGardener{" +
-                "board=" + board +
+                "completed=" + completed +
+                //", board=" + board +
                 ", color=" + color +
                 ", size=" + size +
                 ", count=" + count +

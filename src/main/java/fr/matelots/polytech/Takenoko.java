@@ -22,8 +22,9 @@ public class Takenoko {
         LogManager.getLogManager().reset();
         Logger rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.addHandler(new LogHandler());
+        long time = System.currentTimeMillis();
 
-        final int NB_GAMES = 100;
+        final int NB_GAMES = 1000;
         final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
@@ -37,6 +38,8 @@ public class Takenoko {
         rootLogger.info("Lancement de " + NB_GAMES + " partie(s)...");
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
+            if(nbGame % 25 == 0)
+                System.out.println(nbGame);
             game = new Game();
 
             game.run(LOG_DETAIL);
@@ -80,6 +83,8 @@ public class Takenoko {
         builder.append(nbDraw).append(" égalité(s).\n");
 
         Logger.getGlobal().info(builder.toString());
+        long duration = System.currentTimeMillis() - time;
+        System.out.println((new SimpleDateFormat("mm:ss:SSS")).format(new Date(duration)));
     }
 
 }

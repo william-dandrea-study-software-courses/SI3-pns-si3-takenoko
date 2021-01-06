@@ -314,7 +314,7 @@ public class Game {
 
     public Weather diceRandomWeather() {
         int num = Config.RANDOM.nextInt(Weather.values().length);
-        return Weather.class.getEnumConstants()[num];
+        return Weather.values()[num];
     }
 
     public boolean movePandaWhenWeather(BotActionType lastAction, Bot bot, Position pos, TurnLog log) {

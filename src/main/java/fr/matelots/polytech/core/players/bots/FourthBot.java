@@ -8,12 +8,16 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
+import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.IAforBot;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
+import fr.matelots.polytech.engine.util.ParcelRouteFinder;
 import fr.matelots.polytech.engine.util.Position;
+import fr.matelots.polytech.engine.util.ShortestPathAlgorithm;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,140 +58,110 @@ import java.util.stream.Collectors;
  *                 - [ ] Sinon, on passe à l’objectif le plus simple à résoudre
  *
  * @author williamdandrea
+ * @author Alexandre Arcil
  */
 public class FourthBot extends Bot {
-    private final int NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START = 2;
-    private final int NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START = 2;
-    private boolean firstLaunch = true;
-    private CardObjectiveParcel currentParcelObjective;
-    private CardObjectiveGardener currentGardenerObjective;
-    private int numberOfResolveObjective = 0;
 
-    private TurnLog turnLogger;
+    private final int MAX_NUMBER_OF_PARCEL_OBJECTIVES = 2;
+    private final int MAX_NUMBER_OF_GARDENER_OBJECTIVES = 2;
+    CardObjectiveParcel currentParcelObjective;
+    CardObjectiveGardener currentGardenerObjective;
+    int numberOfResolveObjective;
+    private int trials = 0;
 
     public FourthBot(Game game) {
         super(game);
     }
-    public FourthBot(Game game, String name, TurnLog log) { super(game, name); }
+
+    public FourthBot(Game game, String name) {
+        super(game, name);
+    }
 
     @Override
-    public void playTurn(TurnLog log, Weather weatherCard) {
-        //action = BotActionType.NONE;
-
-
+    public void playTurn(TurnLog log, Weather weather) {
+        super.playTurn(log, weather);
+        this.trials++;
         // If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
         // (number in parameters). After this brackets, we will be not in the first launch, so we will try to analyse
         // directly the objectives.
-        if (firstLaunch) {
-            firstLaunchPickObjectives(log);
-            placeAnParcelAnywhere(log);
-            firstLaunch = false;
-        } else {
+        /*if (this.firstLaunch) {
+            this.pickObjectives(log);
+            this.placeAnParcelAnywhere(log);
+            this.firstLaunch = false;
+        } else {*/
+            // We pick cards in order to always have 2 objectives parcels and gardener objectives
+        this.fillObjectiveCards(log);
 
-            checkTheObjectives(log);
+        // Now we will analyse the parcels objectives and put the more easier to the currentParcelObjective variable
+        this.analyzeParcelsObjectives(log);
+        this.analyzeGardenerObjectives();
 
-            // If we have any parcels on the game board, we need to place parcels
+        // Now we need to compare the easiest objective to resolve
+        CardObjective easiestObjective = this.easiestObjectiveToResolve();
+       /* if(easiestObjective == null)
+            System.out.println("easiestObjective null");*/
 
+        //System.out.println(easiestObjective);
+        // Now we will resolve the easiest objectives
+        if (easiestObjective instanceof CardObjectiveParcel) {
+            /*System.out.println("Trying to do a parcel objective ("+this.currentParcelObjective.getPattern()+" - "+ Arrays.toString(this.currentParcelObjective.getColors()) +")");
+            System.out.println("completed: "+easiestObjective.isCompleted());*/
+            // We try to resolve the objective
+            if (!easiestObjective.isCompleted())
+                this.tryToResolveParcelObjective(log);
 
-            // Now we will analyse the parcels objectives and put the more easier to the currentParcelObjective variable
-            analyzeParcelsObjectives();
-            analyzeGardenerObjectives();
-
-
-
-            // Now we need to compare the easiest objective to resolve
-            CardObjective easiestObjective = easiestObjectiveToResolve();
-
-            // Now we will resolve the easiest objectives
-            if (easiestObjective instanceof CardObjectiveParcel) {
-                // We try to resolve the objective
-                tryToResolveParcelObjective(log);
-
-                // Now we check if the objective is completed
-                if (checkObjective(easiestObjective)) {
-                    // We select a new parcel objective
-                    var obj = pickParcelObjective(turnLogger);
-
-                    obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
-                }
-
+            // Now we check if the objective is completed
+            //System.out.println("completed: "+easiestObjective.isCompleted()+" - "+this.checkObjective(easiestObjective));
+            if (this.checkObjective(easiestObjective)) {
+                // We select a new parcel objective
+                /*Optional<CardObjective> cardObjective = */
+                this.pickParcelObjective(log);
+                /*if(cardObjective.isEmpty())
+                    System.out.println("NO PRESENT ?");*/
+                //obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
             }
-            if (easiestObjective instanceof CardObjectiveGardener) {
+        }
 
-                // We try to resolve the objective
-                tryToResolveGardenerObjective(log);
+        if (easiestObjective instanceof CardObjectiveGardener) {
+            //System.out.println("Trying to do a gardener objective ("+this.currentGardenerObjective.getColor()+" - "+this.currentGardenerObjective.getSize()+" - "+this.currentGardenerObjective.getCountMissing()+")");
+            // We try to resolve the objective
+            if (!easiestObjective.isCompleted())
+                this.tryToResolveGardenerObjective(log);
 
-                // Now we check if the objective is completed
-                if (checkObjective(easiestObjective)) {
-                    // We select a new parcel objective
-                    var obj = pickGardenerObjective(log);
-
-                    obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
-                }
-
+            //System.out.println("completed: "+easiestObjective.isCompleted()+" - "+this.checkObjective(easiestObjective));
+            // Now we check if the objective is completed
+            if (this.checkObjective(easiestObjective)) {
+                // We select a new parcel objective
+                this.pickGardenerObjective(log);
+                //obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
             }
 
         }
+
+        //}
         //log.addAction(action, actionParameter);
     }
 
-    public int getNumberOfParcelObjectivesAtTheStart() {
-        return NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START;
-    }
-
-    public int getNumberOfGardenerObjectivesAtTheStart() {
-        return NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START;
-    }
-
-    public boolean isFirstLaunch() {
-        return firstLaunch;
-    }
-
-    @Override
-    public boolean canPlay() {
-        return numberOfResolveObjective <= 9;
-    }
-
     /**
-     * This function pick an new Parcel objective and add this objective to the player deck
+     * This function will pick cards to always have {@link #MAX_NUMBER_OF_PARCEL_OBJECTIVES} parcel objectives and
+     * {@link #MAX_NUMBER_OF_GARDENER_OBJECTIVES} gardener objectives
      */
-    void pickAnParcelObjectiveAndAddToPlayerBoard(TurnLog log) {
-        var obj = pickParcelObjective(log);
-        obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
-    }
-
-    /**
-     * This function pick an new Gardener objective and add this objective to the player deck
-     */
-    void pickAnGardenerObjectiveAndAddToPlayerBoard(TurnLog log) {
-        var obj = pickGardenerObjective(log);
-        obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
-    }
-
-    /**
-     * This function will check if we have currents objectives to resolve
-     */
-    void checkTheObjectives(TurnLog log) {
+    private void fillObjectiveCards(TurnLog log) {
         int unfinishedParcelObjectives = getIndividualBoard().countUnfinishedParcelObjectives();
         int unfinishedGardenerObjectives = getIndividualBoard().countUnfinishedGardenerObjectives();
-
-        if (unfinishedParcelObjectives <= 0) {
-            pickAnParcelObjectiveAndAddToPlayerBoard(log);
-            pickAnParcelObjectiveAndAddToPlayerBoard(log);
+        for(int i = unfinishedParcelObjectives; i < MAX_NUMBER_OF_PARCEL_OBJECTIVES; i++) {
+            if(!this.hasAlreadyPickGoal())
+                this.pickParcelObjective(log);
         }
-        if (unfinishedGardenerObjectives <= 0) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
-            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
+        for(int i = unfinishedGardenerObjectives; i < MAX_NUMBER_OF_GARDENER_OBJECTIVES; i++) {
+            if(!this.hasAlreadyPickGoal())
+                this.pickGardenerObjective(log);
         }
-        if (unfinishedParcelObjectives == 1) {
-            pickAnParcelObjectiveAndAddToPlayerBoard(log);
+    }
 
-        }
-        if (unfinishedGardenerObjectives == 1) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
-
-        }
-
+    private boolean hasAlreadyPickGoal() {
+        return this.getLastAction() == BotActionType.PICK_GARDENER_GOAL || this.getLastAction() == BotActionType.PICK_PANDA_GOAL
+                || this.getLastAction() == BotActionType.PICK_PARCEL_GOAL;
     }
 
     /**
@@ -195,130 +169,164 @@ public class FourthBot extends Bot {
      * @return true if the currentObjective is in progress or false if there is any currentObjective or if
      * the currentObjective is finish
      */
-    boolean checkObjective(CardObjective objective) {
-
-        if (objective != null && !objective.verify()) {
-            numberOfResolveObjective += 1;
+    private boolean checkObjective(CardObjective objective) {
+        if(objective != null) {
+            if(objective.isCompleted()) {
+                this.numberOfResolveObjective++;
+                return true;
+            }
         }
-        // If the currentObjective == null, or if the current goal
-        // is finish (the function verify return true if an objective is completed)
-        return objective != null && !objective.verify();
-
-        // Else, we return true because the objective in progress
+        return false;
     }
 
     /**
-     * If it is the first game launch, we pick 2 (number in parameters) parcels objectives and 2 gardener objectives
-     * (number in parameters)
+     * This function will analyze all the parcels objectives and set the easier parcel objective
+     * to {@link #currentParcelObjective}
      */
-    void firstLaunchPickObjectives(TurnLog log) {
-        for (int i = 0; i < NUMBER_OF_PARCEL_OBJECTIVES_AT_THE_START ; i++) {
-            pickAnParcelObjectiveAndAddToPlayerBoard(log);
+    private void analyzeParcelsObjectives(TurnLog log) {
+        if(this.cantDoParcelObjectives()) {
+            this.currentParcelObjective = null;
+            return;
         }
-        for (int i = 0; i < NUMBER_OF_GARDENER_OBJECTIVES_AT_THE_START ; i++) {
-            pickAnGardenerObjectiveAndAddToPlayerBoard(log);
-        }
-    }
-
-    /**
-     * This function will analyze all the parcels objectives and put the easier parcel objective to the
-     * currentParcelObjective variable
-     */
-    void analyzeParcelsObjectives() {
-        // We put the unfinished parcels objectives into the variable unfinishedParcelsObjectives in order to
+        // We get the unfinished parcels objectives into the variable unfinishedParcelsObjectives in order to
         // choose the easiest objective
-
-        List<CardObjectiveParcel> unfinishedParcelsObjectives = getIndividualBoard().getUnfinishedParcelObjectives();
-
-
-        // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
-        // Less this number is, more easy the objective will be resolve
-
-        for (CardObjectiveParcel unfinishedParcelsObjective : unfinishedParcelsObjectives) {
-            unfinishedParcelsObjective.verify();
-        }
-
-
-        if (unfinishedParcelsObjectives.size() >= 2) {
-
-            if (unfinishedParcelsObjectives.get(0).getMissingPositionsToComplete().size() <=
-                    unfinishedParcelsObjectives.get(1).getMissingPositionsToComplete().size()) {
-                currentParcelObjective = unfinishedParcelsObjectives.get(0);
+        List<CardObjectiveParcel> unfinishedParcelsObjectives = this.getIndividualBoard().getUnfinishedParcelObjectives();
+        if(!unfinishedParcelsObjectives.isEmpty()) {
+            // We verify them
+            for (CardObjectiveParcel unfinishedParcelsObjective : unfinishedParcelsObjectives) {
+                unfinishedParcelsObjective.verify();
+                /*if(unfinishedParcelsObjective.isCompleted())
+                    System.out.println("Objective parcel completed ! +"+unfinishedParcelsObjective.getScore());*/
+            }
+            // We keep only the objectives we can do
+            List<CardObjectiveParcel> objectivesCompletable = unfinishedParcelsObjectives.stream().filter(this::canDoParcelObjective).collect(Collectors.toList());
+            if(objectivesCompletable.isEmpty()) {
+                for(int i = 0; i < Config.TOTAL_NUMBER_OF_ACTIONS; i++) {
+                    Optional<CardObjective> cardObjective = this.pickParcelObjective(log);
+                    if(cardObjective.isPresent()) {
+                        if(this.canDoParcelObjective((CardObjectiveParcel) cardObjective.get()))
+                            this.currentParcelObjective = (CardObjectiveParcel) cardObjective.get();
+                    } else
+                        this.currentParcelObjective = null;
+                }
             } else {
-                currentParcelObjective = unfinishedParcelsObjectives.get(1);
+                // To determine if a parcel objective is easy to resolve, we will count the number of parcels the objectives need
+                // Less this number is, more easy the objective will be resolve
+                objectivesCompletable.sort(Comparator.comparingInt(objective -> objective.getMissingPositionsToComplete().size()));
+                this.currentParcelObjective = objectivesCompletable.get(0);
             }
         }
+    }
 
+    private boolean cantDoParcelObjectives() {
+        return !this.canDoParcelObjectives() ||
+                (this.getIndividualBoard().getUnfinishedParcelObjectives().stream().noneMatch(this::canDoParcelObjective) &&
+                        !this.getBoard().getDeckParcelObjective().canPick());
+    }
+
+    private boolean canDoParcelObjective(CardObjectiveParcel card) {
+        if(card.getMissingPositionsToComplete() == null)
+            return true;
+        EnumMap<BambooColor, Integer> colorCount = new EnumMap<>(BambooColor.class);
+        card.getMissingPositionsToComplete().stream().map(PositionColored::getColor).forEach(color -> {
+            if(colorCount.containsKey(color))
+                colorCount.put(color, colorCount.get(color) + 1);
+            else
+                colorCount.put(color, 1);
+        });
+        return colorCount.entrySet().stream().noneMatch(entry -> this.board.getParcelLeftToPlace(entry.getKey()) < entry.getValue());
     }
 
     /**
-     * This function will analyze all the gardeners objectives and put the easier parcel objective to the
-     * currentParcelObjective variable
+     * This function will analyze all the gardeners objectives and set the easier gardener objective
+     * to {@link #currentGardenerObjective}
      */
-    void analyzeGardenerObjectives() {
-        List<CardObjectiveGardener> unfinishedGardenersObjectives = getIndividualBoard().getUnfinishedGardenerObjectives();
-
-
-
-
-        for (CardObjectiveGardener unfinishedGardenersObjective : unfinishedGardenersObjectives) {
-            unfinishedGardenersObjective.verify();
-        }
-
-
-
-        if (unfinishedGardenersObjectives.size() >= 2 ) {
-
-            if (unfinishedGardenersObjectives.get(0).getSize() <= unfinishedGardenersObjectives.get(0).getSize()) {
-                currentGardenerObjective = unfinishedGardenersObjectives.get(0);
+    private void analyzeGardenerObjectives() {
+        List<CardObjectiveGardener> unfinishedGardenersObjectives = this.getIndividualBoard().getUnfinishedGardenerObjectives();
+        if(!unfinishedGardenersObjectives.isEmpty()) {
+            // pas de parcelle de la bonne couleur
+            // parcelle bonne couleur mais pas irrigué
+            for (CardObjectiveGardener unfinishedGardenersObjective : unfinishedGardenersObjectives) {
+                unfinishedGardenersObjective.verify();
+                /*if(unfinishedGardenersObjective.isCompleted())
+                    System.out.println("Objective parcel completed ! +"+unfinishedGardenersObjective.getScore());*/
             }
-
+            //List<CardObjectiveGardener> objectivesCompletable = unfinishedGardenersObjectives.stream().filter(this::canDoGardenerObjective).collect(Collectors.toList());
+            unfinishedGardenersObjectives.sort(Comparator.comparingInt(CardObjectiveGardener::getCountMissing));
+            this.currentGardenerObjective = unfinishedGardenersObjectives.get(0);
         }
     }
 
-
-    static int value = 0;
     /**
-     * This function will compare the currentGardenerObjective and currentParcelObjective to determine witch is
-     * the easiest to resolve. The easier is the objective with the less score
-     *
+     * This function will compare {@link #currentParcelObjective} and {@link #currentGardenerObjective} to determine
+     * witch is the easiest to resolve. The easier is the objective with the lowest score.
      */
     CardObjective easiestObjectiveToResolve() {
-
-        //if (currentParcelObjective.getScore() <= currentGardenerObjective.getScore()) {
-        if (value == 0) {
-            value = 1;
+        if(this.currentParcelObjective == null || !this.canDoParcelObjectives())
+            return this.currentGardenerObjective;
+        else if(this.currentGardenerObjective == null)
+            return this.currentParcelObjective;
+        else if (currentParcelObjective.getScore() <= currentGardenerObjective.getScore())
             return currentParcelObjective;
-        }
-        value = 0;
-        return currentGardenerObjective;
-
+        else
+            return currentGardenerObjective;
     }
 
-
+    /**
+     * This function will try to resolve the parcel objective {@link #currentParcelObjective}. He will place a missing
+     * parcel to complete the patterns, or, if he's not in a valid place, will place a parcel to make it valid
+     */
     void tryToResolveParcelObjective(TurnLog log) {
 
 
+
         // We check if the game board is just composed of the pond (etang) or if we have more parcels
-        if (board.getParcelCount() == 1) {
+        /*if (board.getParcelCount() == 1) {
             // We need to place a parcel anywhere in the game board
-            placeAnParcelAnywhere(log);
-        } else {
+            this.placeAnParcelAnywhere(this.currentParcelObjective.getMissingPositionsToComplete().iterator().next().getColor(), log);
+        } else*//* if (this.currentParcelObjective != null)*/ //{ // We check the place where we can place a new parcel
+        Set<PositionColored> missingPositions = this.currentParcelObjective.getMissingPositionsToComplete();
+        ArrayList<PositionColored> positionsWeChoose = new ArrayList<>();
+        PositionColored position;
 
+        // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
+        missingPositions.stream()
+                .filter(posColor -> board.isPlaceValid(posColor.getPosition()))
+                .forEach(positionsWeChoose::add);
+        // We have an place to put the new parcel
 
-            // We check the place where we can place a new parcel
-            Set<Position> placeWhereWeCanPlaceAnParcel = null;
-            if (currentParcelObjective != null) {
-                placeWhereWeCanPlaceAnParcel = currentParcelObjective.getMissingPositionsToComplete()
-                        .stream().map(PositionColored::getPosition).collect(Collectors.toSet());
+        if (!positionsWeChoose.isEmpty()) {
+            // We choose a random parcel in the potential list
+            int index = random.nextInt(positionsWeChoose.size());
+            position = positionsWeChoose.get(index);
+
+            // We add the new parcel
+
+        } else { // il manque une ou plusieurs parcelles pour pouvoir poser celle du motif
+            position = IAforBot.findTheBestPlaceToPlaceAnParcel(this.currentParcelObjective, this.board);
+                /*if(missingPos != null)
+                    this.placeParcel(missingPos.getPosition(), missingPos.getColor(), log);
+                else
+                    System.out.println("MISSING POS NULL...");*/
+        }
+        if(position != null) //Arrive s'il ne peut plus poser de parcelles, ce qui n'arrivera jamais car cas déjà pris en compte
+            this.placeParcel(position.getPosition(), position.getColor(), log);
+        //} else {
+            /*// We put a parcel anywhere
+            this.placeAnParcelAnywhere(log);
+            //position.ifPresent(position1 -> log.addAction(BotActionType.PLACE_PARCEL, position1.toString()));
+        }*/
+            /*Set<PositionColored> missingPositions = null;
+            if (this.currentParcelObjective != null) {
+                missingPositions = this.currentParcelObjective.getMissingPositionsToComplete();
             }
-            ArrayList<Position> positionsWeChoose = new ArrayList<>();
+            ArrayList<PositionColored> positionsWeChoose = new ArrayList<>();
 
 
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
-            if (placeWhereWeCanPlaceAnParcel != null)
-                placeWhereWeCanPlaceAnParcel.stream()
-                        .filter(p -> board.isPlaceValid(p) && !p.equals(Config.POND_POSITION))
+            if (missingPositions != null)
+                missingPositions.stream()
+                        .filter(posColor -> board.isPlaceValid(posColor.getPosition()))
                         .forEach(positionsWeChoose::add);
 
             if(positionsWeChoose.size() != 0) {
@@ -327,9 +335,10 @@ public class FourthBot extends Bot {
                 // We choose a random parcel in the potential list
                 Random randomNumber = new Random();
                 int position = randomNumber.nextInt(positionsWeChoose.size());
+                PositionColored positionColored = positionsWeChoose.get(position);
 
                 // We add the new parcel
-                board.addParcel(positionsWeChoose.get(position), new BambooPlantation(BambooColor.GREEN));
+                board.addParcel(positionColored.getPosition(), new BambooPlantation(positionColored.getColor()));
 
                 log.addAction(BotActionType.PLACE_PARCEL, positionsWeChoose.get(position).toString());
             } else {
@@ -337,46 +346,184 @@ public class FourthBot extends Bot {
                 var position = placeAnParcelAnywhere(log);
 
                 position.ifPresent(position1 -> log.addAction(BotActionType.PLACE_PARCEL, position1.toString()));
-            }
-
-        }
+            }*/
     }
 
-    private <T> T getRandomIn(List<T> objs) {
-        Random rnd = new Random();
-        return objs.get(rnd.nextInt(objs.size()));
-    }
-    private void placeParcelSomewhere(Parcel parcel, TurnLog log) {
-        List<Position> positions = new ArrayList<>(board.getValidPlaces());
-        var position = getRandomIn(positions);
-        board.addParcel(position, parcel);
-
-        log.addAction(BotActionType.PLACE_PARCEL, position.toString());
-    }
-
+    /**
+     * This function will try to resolve the gardener objective {@link #currentGardenerObjective}.
+     */
     void tryToResolveGardenerObjective(TurnLog log) {
+        /*
+        pas parcelle avec bamboo couleur -> place une parcelle de la bonne couleur en faisant en sorte de l'irrigué
+        s'il trouve parcelle -> l'irrigué s'il besoin -> allez dessus pour augmenter de un la taille des bamboos
+        s'il trouve mais qu'il est dessus -> deplacez le jardinier à côté
+         */
+        var positions = board.getPositions().stream()
+                .filter(pos ->
+                        !board.getParcel(pos).isPond() &&
+                                board.getParcel(pos).getBambooColor().equals(currentGardenerObjective.getColor()) &&
+                                board.getParcel(pos).getBambooSize() != currentGardenerObjective.getSize() &&
+                                board.getParcel(pos).getBambooSize() >= 1)
+                .sorted(Comparator.comparingInt( (Position p) -> board.getParcel(p).getBambooSize() ))
+                .collect(Collectors.toList());
 
-
-        var position = board.getPositions().stream()
-                .filter(p ->
-                        !board.getParcel(p).isPond() &&
-                                board.getParcel(p).getBambooColor().equals(currentGardenerObjective.getColor()) &&
-                                board.getParcel(p).getBambooSize() < currentGardenerObjective.getSize())
-                .max(Comparator.comparingInt( (Position p) -> board.getParcel(p).getBambooSize() ));
-
-        if(position.isEmpty()) {
-            // Aucune parcel ne peut resoudre l'objectif : soit la hauteur de bamboo est trop grande soit elle n'est pas de la bonne couleur.
-            placeParcelSomewhere(new BambooPlantation(currentGardenerObjective.getColor()), log);
+        //System.out.println("position empty: "+positions.isEmpty());
+        //BoardDrawer drawer = new BoardDrawer(this.board);
+        //drawer.print();
+        if(positions.isEmpty()) {
+            //Cas: aucune parcelle avec la bonne couleur, ou une parcelle sans bamboo car pas irrigué
+            Position position = this.parcelWithNoBamboo(this.currentGardenerObjective.getColor());
+            if(position == null)
+                this.placeAnParcelAnywhere(currentGardenerObjective.getColor(), log);
+            else {//Une parcelle de la bonne couleur existe, mais elle n'a pas de bamboo car pas irrigué
+                var pathOpt = ParcelRouteFinder.getBestPathToIrrigate(this.board, position);
+                if(pathOpt.isPresent()) { //Quel cas pas présent ?
+                    Set<AbsolutePositionIrrigation> path = pathOpt.get();
+                    var next = ParcelRouteFinder.getNextParcelToIrrigate(path);
+                    while (next.isPresent()) {
+                        this.individualBoard.addIrrigation();
+                        boolean placed = this.irrigate(next.get(), log);
+                        if(placed)
+                            next = ParcelRouteFinder.getNextParcelToIrrigate(path);
+                        else
+                            return;
+                    }
+                    this.moveGardenerByStep(position, log); //Maintenant qu'elle est irrigué, déplaçons le jardinier
+                } else {
+                    //Il arrive pas à trouve de chemin car pas en ligne droite
+                }
+            }
+        } else if(this.canDoAction()) {
+            List<Position> tooSmall = positions.stream().filter(position -> board.getParcel(position).getBambooSize() < currentGardenerObjective.getSize()).collect(Collectors.toList());
+            List<Position> tooBig = positions.stream().filter(position -> board.getParcel(position).getBambooSize() > currentGardenerObjective.getSize()).collect(Collectors.toList());
+            if(!tooSmall.isEmpty()) {
+                Position pos = tooSmall.get(0); // La parcelle avec le bamboo le plus grand
+                if(this.getBoard().getGardener().getPosition().equals(pos)) { // Si le jardinier est déjà dessus
+                    if(tooSmall.size() >= 2)
+                        this.moveGardenerByStep(tooSmall.get(1), log); //on va au prochain
+                    else
+                        this.moveGardenerByStep(this.getNextPosition(pos), log);
+                } else
+                    this.moveGardenerByStep(pos, log);
+            }
+            if(!tooBig.isEmpty()) {
+                Position pos = tooBig.get(0); // La parcelle est trop grande
+                if(this.getBoard().getPanda().getPosition().equals(pos)) { // Si le panda est déjà dessus
+                    if(tooBig.size() >= 2)
+                        this.movePandaByStep(log, tooBig.get(1));
+                    else {
+                        List<Position> positionsToPond = ShortestPathAlgorithm.shortestPath(this.board.getPanda().getPosition(), Config.POND_POSITION, this.board);
+                        if(ShortestPathAlgorithm.isLine(positionsToPond))
+                            this.movePandaByStep(log, Config.POND_POSITION);
+                        else
+                            this.movePandaByStep(log, this.getNextPosition(pos));
+                    }
+                } else
+                    this.movePandaByStep(log, pos);
+            }
         }
+    }
+
+    public boolean moveGardenerByStep(Position position, TurnLog log) {
+        List<Position> movePositions = this.getMovePositions(this.board.getGardener().getPosition(), position);
+        for (Position movePosition : movePositions) {
+            boolean success = this.moveGardener(movePosition, log);
+            if(!success)
+                return false;
+        }
+        return true;
+/*
+
+        List<Position> positions = ShortestPathAlgorithm.shortestPath(this.board.getGardener().getPosition(), position, this.board);
+        if(positions.size() == 1)
+            return false; //Bouger au même endroit !?
         else {
-            // si cette parcelle existe alors on bouge le jardinier dessus.
-            board.getGardener().moveTo(position.get().getX(), position.get().getY(), position.get().getZ());
-            log.addAction(BotActionType.MOVE_GARDENER, position.get().toString());
+            Side side = Side.getTouchedSide(positions.get(0), positions.get(1));
+            for(int i = 2; i < positions.size(); i++) {
+                if(Side.getTouchedSide(positions.get(i - 1), positions.get(i)) != side)
+                    return super.moveGardener(positions.get(i - 1), log);
+            }
+            return super.moveGardener(position, log);
+        }*/
+    }
+
+    protected boolean movePandaByStep(TurnLog log, Position position) {
+        List<Position> movePositions = this.getMovePositions(this.board.getPanda().getPosition(), position);
+        for (Position movePosition : movePositions) {
+            boolean success = this.movePanda(log, movePosition);
+            if(!success)
+                return false;
         }
+        return true;
+    }
+
+    private List<Position> getMovePositions(Position start, Position goal) {
+        List<Position> path = ShortestPathAlgorithm.shortestPath(start, goal, this.board);
+        if(path.size() == 1 || path.size() == 2) {
+            if(path.size() == 2)
+                path.remove(start);
+            return path;
+        }
+        List<Position> points = new ArrayList<>();
+        Side sideDirection = Side.getTouchedSide(path.get(0), path.get(1));
+        for(int i = 2; i < path.size(); i++) {
+            Side side = Side.getTouchedSide(path.get(i - 1), path.get(i));
+            if(side != sideDirection) {
+                points.add(path.get(i - 1));
+                sideDirection = side;
+            }
+        }
+        points.add(goal);
+        return points;
+    }
+
+    private Position getNextPosition(Position position) {
+        Position posTmp;
+        for(Side side : Side.values()) {
+            posTmp = position.add(side.getDirection());
+            if(this.board.containTile(posTmp))
+                return posTmp;
+        }
+        return null;
+    }
+
+    private Position parcelWithNoBamboo(BambooColor color) {
+        Parcel parcel;
+        for(Position position : this.board.getPositions()) {
+            parcel = this.board.getParcel(position);
+            if(parcel.getBambooSize() == 0 && parcel.getBambooColor() == color)
+                return position;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean canPlay() {
+        return (this.canDoParcelObjectives() && this.canDoGardenerObjectives()) && this.trials <= 100;
+    }
+
+    private boolean canDoParcelObjectives() {
+        return this.board.getParcelLeftToPlace() != 0;
+    }
+
+    private boolean canDoGardenerObjectives() {
+        return true;
+    }
+
+    public int getNumberOfParcelObjectivesAtTheStart() {
+        return MAX_NUMBER_OF_PARCEL_OBJECTIVES;
+    }
+
+    public int getNumberOfGardenerObjectivesAtTheStart() {
+        return MAX_NUMBER_OF_GARDENER_OBJECTIVES;
     }
 
     @Override
     public String toString() {
         return "Bot 4";
+    }
+
+    public int getTrials() {
+        return trials;
     }
 }

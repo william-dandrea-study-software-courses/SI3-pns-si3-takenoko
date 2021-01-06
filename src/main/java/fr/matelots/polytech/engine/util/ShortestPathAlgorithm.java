@@ -20,8 +20,6 @@ public class ShortestPathAlgorithm {
      * @return Les positions à aller pour aller du point de départ à l'arrivé
      */
     public static List<Position> shortestPath(Position start, Position goal, Board board) {
-        if(start.equals(goal))
-            return new ArrayList<>(Collections.singletonList(start));
         Queue<Position> frontier = new LinkedList<>();
         frontier.add(start);
         Map<Position, Position> cameFrom = new HashMap<>();

@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -78,8 +79,10 @@ public class CardObjectiveParcel extends CardObjective {
     @Override
     public String toString() {
         return "CardObjectiveParcel{" +
-                "board=" + board +
+                "completed=" + completed +
+                //", board=" + board +
                 ", pattern=" + pattern +
+                ", colors=" + Arrays.toString(colors) +
                 ", missingPositions=" + missingPositions +
                 '}';
     }

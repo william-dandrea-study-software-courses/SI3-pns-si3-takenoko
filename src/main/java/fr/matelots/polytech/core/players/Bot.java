@@ -279,7 +279,6 @@ public abstract class Bot {
             lastAction = BotActionType.PLACE_PARCEL;
             currentNumberOfAction++;
         }
-
         return res;
     }
 
@@ -488,7 +487,8 @@ public abstract class Bot {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
 
-        if(!this.canDoAction()) return false;
+        return this.placeParcel(log, position, new BambooPlantation(color));
+        /*if(!this.canDoAction()) return false;
 
         if (board.getParcelLeftToPlace(color) != 0) {
             try {
@@ -505,7 +505,7 @@ public abstract class Bot {
                 return false;
             }
         }
-       return false;
+       return false;*/
     }
 
     /**
