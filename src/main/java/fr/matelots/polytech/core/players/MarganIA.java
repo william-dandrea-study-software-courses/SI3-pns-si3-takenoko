@@ -12,13 +12,15 @@ import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 
+import static java.lang.StrictMath.abs;
+
 
 /**
  * The best IA of the world
  *
  * @author williamdandrea
  */
-public class IAforBot {
+public class MarganIA {
 
     public static PositionColored findTheBestPlaceToPlaceAnParcel(CardObjectiveParcel objective, Board board) {
 
@@ -317,6 +319,39 @@ public class IAforBot {
         return positionsOfGoodParcels;
     }
 
+
+    /**
+     * Return the ideal position for move the gardener or the panda
+     * @param initialPosition
+     * @param finalPosition
+     * @param board
+     * @return
+     */
+    public static Position findTheBestPositionForMoovingTheGardenerInLine(Position initialPosition, Position finalPosition, Board board) {
+
+        int finalX = initialPosition.getX();
+        int finalY = initialPosition.getY();
+        int finalZ = initialPosition.getZ();
+
+
+        // Si la parcelle finale est a droite
+        if (finalPosition.getY() < initialPosition.getY()) {
+            // On bouge vers la droite jusqu'a ce qu'ils aient la même valeur de y
+            while (finalPosition.getY() != finalY) {
+                finalX+=1;
+                finalY-=1;
+            }
+            return new Position(finalX,finalY,finalZ);
+        } else if (finalPosition.getY() > initialPosition.getY()) {
+            while (finalPosition.getY() != finalY) {
+                finalX-=1;
+                finalY+=1;
+            }
+            return new Position(finalX,finalY,finalZ);
+        }
+
+        return finalPosition;
+    }
 
 
 }

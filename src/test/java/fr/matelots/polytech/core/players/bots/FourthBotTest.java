@@ -48,12 +48,12 @@ public class FourthBotTest {
         //assertTrue(bot.isFirstLaunch()); -> devenue inutile
 
         // Now we launch the bot
-        bot.playTurn2(log, null);
+        bot.playTurn(log, null);
 
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
 
-        bot.playTurn2(log, null);
+        bot.playTurn(log, null);
         assertEquals(individualBoard.countUnfinishedGardenerObjectives(), bot.getNumberOfGardenerObjectivesAtTheStart());
 
         // Now, we verify if the firstLaunch variable is False because we pick the good number of objectives
@@ -68,7 +68,7 @@ public class FourthBotTest {
         this.bot.getBoard().addParcel(0, 1, -1, new BambooPlantation(BambooColor.GREEN));
         this.bot.getBoard().addParcel(1, 0, -1, new BambooPlantation(BambooColor.PINK));
         this.bot.getBoard().addParcel(1, 1, -2, new BambooPlantation(BambooColor.PINK));
-        this.bot.playTurn2(log, null);
+        this.bot.playTurn(log, null);
         assertEquals(bot.currentParcelObjective, obj);
     }
 
@@ -92,7 +92,7 @@ public class FourthBotTest {
         plantation2.growBamboo();
         plantation2.growBamboo();
         plantation2.growBamboo();
-        this.bot.playTurn2(log, null);
+        this.bot.playTurn(log, null);
         assertEquals(bot.currentGardenerObjective, obj);
     }
 
@@ -186,7 +186,7 @@ public class FourthBotTest {
     public void testCheckObjectiveGardener() {
         this.bot.currentGardenerObjective = new CardObjectiveGardener(bot.getBoard(), 2, BambooColor.GREEN, 1, 1);
         this.bot.getBoard().addParcel(1, 0, -1, new BambooPlantation(BambooColor.GREEN));
-        this.bot.playTurn2(this.log, null);
+        this.bot.playTurn(this.log, null);
         assertEquals(1, bot.numberOfResolveObjective);
         assertEquals(1, this.bot.getIndividualBoard().countCompletedObjectives());
         assertTrue(this.bot.currentGardenerObjective.isCompleted());
@@ -202,7 +202,7 @@ public class FourthBotTest {
         this.bot.getBoard().addParcel(1, 0, -1, new BambooPlantation(BambooColor.GREEN));
         this.bot.getBoard().addParcel(2, -1, -1, new BambooPlantation(BambooColor.GREEN));
         this.bot.getBoard().addParcel(2, 0, -2, new BambooPlantation(BambooColor.GREEN));
-        this.bot.playTurn2(this.log, null);
+        this.bot.playTurn(this.log, null);
         assertEquals(1, bot.numberOfResolveObjective);
         assertEquals(1, this.bot.getIndividualBoard().countCompletedObjectives());
         assertTrue(this.bot.currentParcelObjective.isCompleted());
@@ -217,7 +217,7 @@ public class FourthBotTest {
         BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
         this.bot.getBoard().addParcel(1, -1, 0, plantation);
         plantation.growBamboo();
-        this.bot.playTurn2(this.log, null);
+        this.bot.playTurn(this.log, null);
         assertEquals(1, bot.numberOfResolveObjective);
         assertEquals(1, this.bot.getIndividualBoard().countCompletedObjectives());
         assertTrue(this.bot.currentGardenerObjective.isCompleted());
