@@ -40,7 +40,10 @@ public abstract class Bot {
     protected final Panda panda;
     protected final Gardener gardener;
 
+    // Weather
     private boolean playWithWeather;
+    private int maxNumberOfActions;
+    private boolean canDoSameActionInOneTour;
 
     public Bot(Game game, String name) {
         this(game);
@@ -55,7 +58,47 @@ public abstract class Bot {
         panda = board.getPanda();
         gardener = board.getGardener();
         playWithWeather = false;
+
     }
+
+
+    /**
+     * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
+     * @param log A logger to log action made
+     * @param weatherCard
+     */
+    public void playTurn (TurnLog log, Weather weatherCard) {
+        lastAction = null;
+        currentNumberOfAction = 0;
+        maxNumberOfActions = Config.TOTAL_NUMBER_OF_ACTIONS;    // SUN
+        canDoSameActionInOneTour = false;                       // WIND
+
+        whatWeCanDoWithWeather(weatherCard);
+    }
+
+    public void playTurn(Weather weatherCard) {
+        TurnLog log = new TurnLog(this);
+        playTurn(log, weatherCard);
+    }
+
+
+    private void whatWeCanDoWithWeather(Weather weather) {
+        if (weather!= null) {
+            switch (weather) {
+                case SUN: {
+                    maxNumberOfActions = 3;
+                }
+                case RAIN:
+                case WIND: {
+                    canDoSameActionInOneTour = true;
+                }
+                case CLOUD:
+                case THUNDERSTORM:
+                case INTERROGATION:
+            }
+        }
+    }
+
 
     protected BotActionType getLastAction () {
         return lastAction;
@@ -162,21 +205,7 @@ public abstract class Bot {
         getIndividualBoard().checkAllGoal();
     }
 
-    /**
-     * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
-     * @param log A logger to log action made
-     * @param weatherCard
-     */
-    public void playTurn (TurnLog log, Weather weatherCard) {
-        lastAction = null;
-        currentNumberOfAction = 0;
-    }
 
-    public void playTurn(Weather weatherCard) {
-        TurnLog log = new TurnLog(this);
-        playTurn(log, weatherCard);
-        currentNumberOfAction = 0;
-    }
 
     protected boolean movePanda(TurnLog log, Position pos) {
         if (BotActionType.MOVE_PANDA.equals(lastAction))
@@ -450,7 +479,7 @@ public abstract class Bot {
      * @return true if the bot can do action, like placing a parcel, or false otherwise
      */
     public boolean canDoAction() {
-        return currentNumberOfAction < Config.TOTAL_NUMBER_OF_ACTIONS;
+        return currentNumberOfAction < maxNumberOfActions;
     }
 
     public IndividualBoard getIndividualBoard() {

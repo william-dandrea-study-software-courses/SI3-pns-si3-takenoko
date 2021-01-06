@@ -38,6 +38,7 @@ public class Game {
 
     private void setDemoBots() {
         addBot(new QuintusBot(this, "Jojo (Rush Panda)"));
+        //addBot(new QuintusBot(this, "Jojol (Rush Panda)"));
         //bots.add(new QuintusBot(this));
         //bots.add(new RushParcelBot(this, "RushParcel"));
         addBot(new RushParcelBot(this, "RushParcel2"));
@@ -310,19 +311,10 @@ public class Game {
     }
 
     public Weather diceRandomWeather() {
-        int num = Config.RANDOM.nextInt(Weather.class.getEnumConstants().length);
+        int num = Config.RANDOM.nextInt(Weather.values().length);
         return Weather.class.getEnumConstants()[num];
     }
 
-    public void whatWeCanDoWithWeather(Weather weather) {
-        switch (weather) {
-            case SUN:
-            case RAIN:
-            case WIND:
-            case CLOUD:
-            case THUNDERSTORM:
-            case INTERROGATION:
-        }
-    }
+
 
 }

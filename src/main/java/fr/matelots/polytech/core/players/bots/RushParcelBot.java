@@ -121,7 +121,8 @@ public class RushParcelBot extends Bot {
         }
 
         if (weDontArrive) {
-            cardWeActuallyTryToResolve = (CardObjectiveParcel) individualBoard.getUnfinishedParcelObjectives().get(0);
+            pickParcelObjective(turnLogger);
+            //cardWeActuallyTryToResolve = (CardObjectiveParcel) individualBoard.getUnfinishedParcelObjectives().get(0);
         }
     }
 
