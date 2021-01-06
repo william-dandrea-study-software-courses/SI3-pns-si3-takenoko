@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players.bots;
 
+import fr.matelots.polytech.core.IllegalActionRepetitionException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
@@ -65,30 +66,37 @@ public class ThirdBotTest {
                 || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL
                 || opt.get().getType() == BotActionType.PLACE_PARCEL )) {
             bot.DecideAction(log);
-            opt = log.getLastAction();
+            try {
+                opt = log.getLastAction();
+            } catch (IllegalActionRepetitionException e) {
+                System.out.println(log.toString());
+                throw e;
+            }
             bot.setCurrentNumberOfAction(0);
             log = new TurnLog(bot);
         }
         var action = opt.get();
-        assertTrue(action.getType() == BotActionType.MOVE_GARDENER || action.getType() == BotActionType.PLACE_IRRIGATION);
-    }
-
-    @Test
-    void testStepoverPossible() {
-        bot.getPossibleStopover(new Position(5, 3, 1), new Position(0, 0, 0)).forEach(stepover -> {
-
-        });
+        //assertTrue(action.getType() == BotActionType.MOVE_GARDENER || action.getType() == BotActionType.PLACE_IRRIGATION);
     }
 
     @Disabled
     @Test
     void testStability() {
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 500; i++) {
             init();
+            int n = 0;
             while (bot.canPlay()) {
-                bot.DecideAction(log);
-                bot.setCurrentNumberOfAction(0);
+                log = new TurnLog(bot);
+                try {
+                    bot.playTurn(log, null);
+                } catch (RuntimeException e) {
+                    var board = new BoardDrawer(bot.getBoard());
+                    board.print();
+                    throw e;
+                }
+                n++;
             }
+            System.out.println("Game end in " + n);
         }
     }
 
@@ -99,17 +107,18 @@ public class ThirdBotTest {
          var opt = log.getLastAction();
          BoardDrawer drawer = new BoardDrawer(board);
 
-         while(opt.isEmpty()
+         while(bot.canPlay() && (opt.isEmpty()
                  || opt.get().getType() == BotActionType.PICK_PARCEL_GOAL
-                 || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL) {
+                 || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL)) {
              bot.DecideAction(log);
              opt = log.getLastAction();
              bot.setCurrentNumberOfAction(0);
+             log = new TurnLog(bot);
          }
-         while(opt.isEmpty() ||
+         while(bot.canPlay() && (opt.isEmpty() ||
                  opt.get().getType() == BotActionType.PLACE_PARCEL ||
                     opt.get().getType() == BotActionType.MOVE_GARDENER ||
-                opt.get().getType() == BotActionType.PLACE_IRRIGATION) {
+                opt.get().getType() == BotActionType.PLACE_IRRIGATION)) {
              try {
                  bot.DecideAction(log);
              } catch (RuntimeException e) {
@@ -118,6 +127,7 @@ public class ThirdBotTest {
              }
              opt = log.getLastAction();
              bot.setCurrentNumberOfAction(0);
+             log = new TurnLog(bot);
          }
          var action = opt.get();
          assertTrue(action.getType() == BotActionType.PICK_GARDENER_GOAL || action.getType() == BotActionType.PICK_PARCEL_GOAL);

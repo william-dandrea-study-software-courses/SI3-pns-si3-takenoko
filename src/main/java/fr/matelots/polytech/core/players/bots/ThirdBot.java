@@ -7,7 +7,10 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
+import fr.matelots.polytech.core.players.bots.logger.BotAction;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
@@ -19,6 +22,7 @@ import java.util.function.Predicate;
 
 import static fr.matelots.polytech.engine.util.LineDrawer.lineOverVoid;
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.getBestPathToIrrigate;
+import static fr.matelots.polytech.engine.util.ParcelRouteFinder.getNextParcelToIrrigate;
 
 public class ThirdBot extends Bot {
 
@@ -51,8 +55,13 @@ public class ThirdBot extends Bot {
                 .ifPresent(card -> objectiveGardener = card);
     }
 
+    private boolean lastActionIsPlaceParcel() {
+        return Arrays.stream(turnLog.getActions()).anyMatch(ba -> ba.getType() == BotActionType.PLACE_PARCEL);
+    }
+
     private boolean parcelObjectiveCanBeSolved(CardObjectiveParcel objectiveParcel) {
         if(objectiveParcel.verify()) return false;
+        if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
 
         var missingTiles = objectiveParcel.getMissingPositionsToComplete();
 
@@ -78,6 +87,20 @@ public class ThirdBot extends Bot {
         return getBestPathToIrrigate(board, parcelPosition).isPresent();
     }
 
+    private boolean canPerformAction(BotActionType type) {
+        if(turnLog == null) return true;
+        if(Config.isPickAction(type)) {
+            return !alreadyPickGoal();
+        } else {
+            return Arrays.stream(turnLog.getActions()).noneMatch(a -> a.getType() == type);
+        }
+    }
+
+    private boolean alreadyPickGoal() {
+        if(turnLog == null) return false;
+        return Arrays.stream(turnLog.getActions()).map(BotAction::getType).anyMatch(Config::isPickAction);
+    }
+
     private boolean gardenerObjectiveCanBeSolved(CardObjectiveGardener objectiveGardener) {
         if(objectiveGardener.verify()) return false;
 
@@ -92,22 +115,26 @@ public class ThirdBot extends Bot {
         var bambooColor = objectiveGardener.getColor();
 
         //      1 - there is no tile of the good color, but can pose tile of the color
-        boolean canPlaceParcel = board.getParcelLeftToPlace(bambooColor) > 0;
+        boolean canPlaceParcel = board.getParcelLeftToPlace(bambooColor) > 0 && canPerformAction(BotActionType.PLACE_PARCEL);
         if(canPlaceParcel)
             return true;
 
         //      2 - there is no tile of the good color irrigated
         //              a - reachable by Irrigations
-        boolean goodColorAndReachableByIrrigation = board.getPositions().stream().anyMatch(position ->
+        boolean goodColorAndReachableByIrrigation = canPerformAction(BotActionType.PLACE_IRRIGATION) &&
+                (getIndividualBoard().canPlaceIrrigation() || board.canPickIrrigation()) &&
+                board.getPositions().stream().anyMatch(position ->
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 !board.getParcel(position).isIrrigate() &&
-                isIrrigable(position));
+                isIrrigable(position) &&
+                (board.canPickIrrigation() || getIndividualBoard().canPlaceIrrigation())
+        );
         if(goodColorAndReachableByIrrigation)
             return true;
 
         //      3 - there is no tile a tile of the good color and is irrigated
         //              a - reachable by the gardenner
-        boolean irrigatedAndReachableByGardenner = board.getPositions().stream().anyMatch(position ->
+        boolean irrigatedAndReachableByGardenner = canPerformAction(BotActionType.MOVE_GARDENER) && board.getPositions().stream().anyMatch(position ->
                 board.getParcel(position).isIrrigate() &&
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 board.getParcel(position).getBambooSize() < bambooSize &&
@@ -129,16 +156,24 @@ public class ThirdBot extends Bot {
         return solvable;
     }
     private boolean haveParcelObjectiveSolvable() {
+        if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
+        if(!board.getDeckParcel().canPick()) return false;
+
         return getIndividualBoard().getUnfinishedParcelObjectives().stream()
                 .anyMatch(this::parcelObjectiveCanBeSolved);
     }
 
     private boolean canPickObjective() {
-        return getIndividualBoard().countUnfinishedObjectives() < Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND
-                && (board.getDeckGardenerObjective().canPick() || board.getDeckParcelObjective().canPick());
+        var already = alreadyPickGoal();
+        var canPickSomewhere = board.getDeckGardenerObjective().canPick() || board.getDeckParcelObjective().canPick();
+        var havePlace = getIndividualBoard().countUnfinishedObjectives() < Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND;
+        return havePlace
+                && canPickSomewhere
+                && !already;
     }
+
     private void pickObjective() {
-        //if(!canPickObjective()) return;
+        if(!canPickObjective()) return;
 
         var nParcel = getIndividualBoard().countUnfinishedParcelObjectives();
         var nGardener = getIndividualBoard().countUnfinishedGardenerObjectives();
@@ -147,36 +182,26 @@ public class ThirdBot extends Bot {
         if(tot >= 5)
             filling = false;
         else {
-            if(nParcel < 2 && board.getDeckParcelObjective().canPick()) {
+            if(nParcel < 2 && board.getDeckParcelObjective().canPick() && canPerformAction(BotActionType.PICK_PARCEL_GOAL)) {
                 var res = pickParcelObjective(turnLog);
                 if(res.isPresent() && tot + 1 >= 5) filling = false;
-            } else if(nGardener < 3 && board.getDeckGardenerObjective().canPick()) {
+            } else if(nGardener < 3 && board.getDeckGardenerObjective().canPick() && canPerformAction(BotActionType.PICK_GARDENER_GOAL)) {
                 var res = pickGardenerObjective(turnLog);
                 if(res.isPresent() && tot + 1 >= 5) filling = false;
             } else {
-                if(board.getDeckGardenerObjective().canPick()) {
+                if(board.getDeckGardenerObjective().canPick() && canPerformAction(BotActionType.PICK_GARDENER_GOAL)) {
                     pickGardenerObjective(turnLog);
-                } else if(board.getDeckParcelObjective().canPick()) {
+                } else if(board.getDeckParcelObjective().canPick() && canPerformAction(BotActionType.PICK_PARCEL_GOAL)) {
                     pickParcelObjective(turnLog);
                 } else filling = false;
             }
         }
     }
 
-    private boolean onSameLine(Position a, Position b) {
-        return a.getY() == b.getY() || a.getX() == b.getX() || a.getZ() == b.getZ();
-    }
-
-    private boolean reachableUsing(Position start, Position stopover, Position end) {
-        return !lineOverVoid(start, stopover,board) && !lineOverVoid(stopover, end, board);
-    }
-    private boolean isReachableInOneStepByGardener(Position position) {
-        var gardenerPosition = board.getGardener().getPosition();
-        return onSameLine(gardenerPosition, position) && !lineOverVoid(gardenerPosition, position, board);
-    }
     private boolean isReachableByGardener(Position destination) {
         return getGardenerRoute(destination).isPresent();
     }
+
     private Optional<Position> getGardenerRoute(Position destination) {
         var gardenerPosition = board.getGardener().getPosition();
 
@@ -187,30 +212,19 @@ public class ThirdBot extends Bot {
         return reachableFromStart.stream().filter(reachableFromEnd::contains).findAny();
     }
 
-    /*private List<Position> getStopoverAlong(Position start, Position end) {
-        if(direction.getX() != 0) {
-            return new Position(start.getX(), end.getY(), -end.getY() -);
-        } else if(direction.getY() != 0) {
-            return new Position(end.getX(), start.getY(), end.getZ());
-        } else if(direction.getZ() != 0) {
-            return new Position(end.getX(), end.getY(), start.getZ());
-        }
-        throw new RuntimeException("Unexpected direction");
-    }*/
-
-    List<Position> getPossibleStopover(Position start, Position end) {
-        return Arrays.asList(
-                new Position(start.getX(),                   -start.getX() -end.getZ(),         end.getZ()), // following x, varying z
-                new Position(start.getX(),                      end.getY(),                     -start.getX() -end.getY()), // following x, varying y
-                new Position(-end.getY() -start.getZ(),      start.getY(),                      end.getZ()), // following y, varying z
-                new Position(end.getX(),                        start.getY(),                   -end.getX() -start.getY()), // following y, varying x
-                new Position(end.getX(),                     -end.getX() -start.getZ(),         start.getZ()), // following z, varying x
-                new Position(-end.getY() -start.getZ(),      end.getY(),                        start.getZ())  // following z, varying y
-        );
+    private Parcel ChooseParcel(BambooColor preferedColor) {
+        var choice = board.pickParcels();
+        var goodColor = choice.stream().filter(p -> p.getBambooColor() == preferedColor).findAny();
+        return goodColor.orElseGet(() -> choice.get(Config.RANDOM.nextInt(choice.size())));
+    }
+    private Parcel ChooseParcelRandom() {
+        var choice = board.pickParcels();
+        return choice.get(Config.RANDOM.nextInt(choice.size()));
     }
 
     /// Core methods
     private void attemptSolveParcel() {
+        if(!canPerformAction(BotActionType.PLACE_PARCEL)) return;
         // Supprime l'objectif si il est complété
         if(objectiveParcel != null && objectiveParcel.verify())
             objectiveParcel = null;
@@ -236,10 +250,19 @@ public class ThirdBot extends Bot {
             var coloredPosition = opt.get();
             var tileColor = coloredPosition.getColor();
             var tilePosition = coloredPosition.getPosition();
+            var parcelChoosen = ChooseParcel(tileColor);
 
-            placeParcel(tilePosition, tileColor, turnLog);
+            if(parcelChoosen.getBambooColor() == tileColor) {
+                placeParcel(turnLog, tilePosition, parcelChoosen);
+            } else {
+                var validPlaceOpt = board.getValidPlaces().stream().findAny();
+                validPlaceOpt.ifPresent(position -> placeParcel(turnLog, position, parcelChoosen));
+            }
+            //placeParcel(tilePosition, tileColor, turnLog);
+
         } else {
-            placeAnParcelAnywhere(turnLog);
+            //placeAnParcelAnywhere(turnLog);
+            placeAnParcelAnywhere(turnLog, ChooseParcelRandom());
         }
 
 
@@ -281,32 +304,35 @@ public class ThirdBot extends Bot {
                 board.getParcel(p).getBambooSize() < objectiveGardener.getSize() &&
                 isReachableByGardener(p)).findAny();
 
-        if(tileIrrigatedReachableByGardener.isPresent()) {
-            boolean reachableOneStep = isReachableInOneStepByGardener(tileIrrigatedReachableByGardener.get());
+        if(tileIrrigatedReachableByGardener.isPresent() && canPerformAction(BotActionType.MOVE_GARDENER)) {
             var nextPosition = getGardenerRoute(tileIrrigatedReachableByGardener.get()).get();
-            board.getGardener().moveTo(nextPosition.getX(), nextPosition.getY(), nextPosition.getZ());
+            moveGardener(turnLog, nextPosition);
             return;
         }
 
 
-        //      2 - there is no tile of the good color irrigated
-        //              a - reachable by Irrigations
-        var notIrrigatedTile = board.getPositions().stream()
-                .filter(p ->
-                    board.getParcel(p).getBambooColor() == objectiveGardener.getColor() &&
-                    !board.getParcel(p).isIrrigate() &&
-                    isIrrigable(p)).findAny();
+        if(getIndividualBoard().canPlaceIrrigation()) {
+            //      2 - there is no tile of the good color irrigated
+            //              a - reachable by Irrigations
+            var notIrrigatedTile = board.getPositions().stream()
+                    .filter(p ->
+                            board.getParcel(p).getBambooColor() == objectiveGardener.getColor() &&
+                                    !board.getParcel(p).isIrrigate() &&
+                                    isIrrigable(p)).findAny();
 
-        if(notIrrigatedTile.isPresent()) {
-            // Irrigate parcel
-            var path = getBestPathToIrrigate(board, notIrrigatedTile.get()).get();
-
-            boolean canDo = canDoAction();
-            while(canDo && path.stream().anyMatch(Predicate.not(AbsolutePositionIrrigation::isIrrigate))) {
-                var opt = path.stream().filter(api -> !api.isIrrigate() && api.canBeIrrigated()).findAny().get();
-                irrigate(opt, turnLog);
-                canDo = canDoAction();
+            if (notIrrigatedTile.isPresent() && canPerformAction(BotActionType.PLACE_IRRIGATION)) {
+                // Irrigate parcel
+                var path = getBestPathToIrrigate(board, notIrrigatedTile.get()).get();
+                var opt = getNextParcelToIrrigate(path);
+                /*AbsolutePositionIrrigation nextIrrigation = opt.orElseThrow(() -> {
+                    //throw new RuntimeException("Error in path finding algorithm");
+                });*/
+                opt.ifPresent(api -> irrigate(api, turnLog));
+                //irrigate(nextIrrigation, turnLog);
+                return;
             }
+        } else if(board.canPickIrrigation()) {
+            pickIrrigation(turnLog);
             return;
         }
 
@@ -314,7 +340,10 @@ public class ThirdBot extends Bot {
         placeAnParcelAnywhere(objectiveGardener.getColor(), turnLog);
     }
 
+    private int nothingDoneDuring = 30;
     void DecideAction(TurnLog log) {
+
+        nothingDoneDuring = 30;
         checkAllObjectives();
         this.turnLog = log;
 
@@ -345,16 +374,31 @@ public class ThirdBot extends Bot {
     /// interface
     @Override
     public void playTurn(TurnLog log, Weather weatherCard) {
-        DecideAction(log);
+        super.playTurn(log, weatherCard);
+        setCurrentNumberOfAction(0);
+
+        turnLog = log;
+        while(canDoAction() && canPlayThisTurn())
+            DecideAction(log);
+
+        if(log.getActions().length == 0) {
+            nothingDoneDuring--;
+        }
+        turnLog = null;
     }
 
 
-
-    @Override
-    public boolean canPlay() {
+    private boolean canPlayThisTurn() {
+        checkAllObjectives();
         boolean canPick = canPickObjective();
         boolean haveObjectiveSolvable = haveObjectiveSolvable();
         return canPick || haveObjectiveSolvable;
+    }
+
+    @Override
+    public boolean canPlay() {
+        if(canPlayThisTurn()) return true;
+        return !(turnLog == null || turnLog.getActions().length == 0); //nothingDoneDuring > 0;
     }
 
 }
