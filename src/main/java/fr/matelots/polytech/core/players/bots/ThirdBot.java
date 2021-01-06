@@ -93,14 +93,17 @@ public class ThirdBot extends Bot {
 
         //      1 - there is no tile of the good color, but can pose tile of the color
         boolean canPlaceParcel = board.getParcelLeftToPlace(bambooColor) > 0;
-        if(canPlaceParcel) return true;
+        if(canPlaceParcel)
+            return true;
 
         //      2 - there is no tile of the good color irrigated
         //              a - reachable by Irrigations
         boolean goodColorAndReachableByIrrigation = board.getPositions().stream().anyMatch(position ->
-                board.getParcel(position).getBambooColor().equals(bambooColor) &&
+                board.getParcel(position).getBambooColor() == bambooColor &&
+                !board.getParcel(position).isIrrigate() &&
                 isIrrigable(position));
-        if(goodColorAndReachableByIrrigation) return true;
+        if(goodColorAndReachableByIrrigation)
+            return true;
 
         //      3 - there is no tile a tile of the good color and is irrigated
         //              a - reachable by the gardenner
@@ -109,7 +112,8 @@ public class ThirdBot extends Bot {
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 board.getParcel(position).getBambooSize() < bambooSize &&
                 isReachableByGardener(position));
-        if(irrigatedAndReachableByGardenner) return true;
+        if(irrigatedAndReachableByGardenner)
+            return true;
 
         return false;
     }
@@ -150,11 +154,11 @@ public class ThirdBot extends Bot {
                 var res = pickGardenerObjective(turnLog);
                 if(res.isPresent() && tot + 1 >= 5) filling = false;
             } else {
-                /*if(board.getDeckGardenerObjective().canPick()) {
+                if(board.getDeckGardenerObjective().canPick()) {
                     pickGardenerObjective(turnLog);
                 } else if(board.getDeckParcelObjective().canPick()) {
                     pickParcelObjective(turnLog);
-                } else filling = false;*/
+                } else filling = false;
             }
         }
     }
@@ -171,18 +175,16 @@ public class ThirdBot extends Bot {
         return onSameLine(gardenerPosition, position) && !lineOverVoid(gardenerPosition, position, board);
     }
     private boolean isReachableByGardener(Position destination) {
-        if(isReachableInOneStepByGardener(destination)) return true;
-        var gardenerPosition = board.getGardener().getPosition();
-        var possibleStopover = getPossibleStopover(gardenerPosition, destination);
-        return possibleStopover.stream().anyMatch(so -> reachableUsing(gardenerPosition, so, destination));
+        return getGardenerRoute(destination).isPresent();
     }
     private Optional<Position> getGardenerRoute(Position destination) {
-        if(isReachableInOneStepByGardener(destination)) return Optional.of(destination);
-
         var gardenerPosition = board.getGardener().getPosition();
-        var possibleStopover = getPossibleStopover(gardenerPosition, destination);
 
-        return possibleStopover.stream().filter(so -> reachableUsing(gardenerPosition, so, destination)).findAny();
+        var reachableFromEnd = board.getReachablePositionFrom(destination);
+        if(reachableFromEnd.contains(gardenerPosition)) return Optional.of(destination);
+
+        var reachableFromStart = board.getReachablePositionFrom(gardenerPosition);
+        return reachableFromStart.stream().filter(reachableFromEnd::contains).findAny();
     }
 
     /*private List<Position> getStopoverAlong(Position start, Position end) {
@@ -196,14 +198,14 @@ public class ThirdBot extends Bot {
         throw new RuntimeException("Unexpected direction");
     }*/
 
-    private List<Position> getPossibleStopover(Position start, Position end) {
+    List<Position> getPossibleStopover(Position start, Position end) {
         return Arrays.asList(
-                new Position(start.getX(), -start.getX() -end.getZ(), end.getZ()), // following x, varying z
-                new Position(start.getX(), end.getY(), -start.getX() -end.getY()), // following x, varying y
-                new Position(-end.getY() -start.getZ(), start.getY(), end.getZ()), // following y, varying z
-                new Position(end.getX(), start.getY(), -end.getX() -start.getY()), // following y, varying x
-                new Position(end.getX(), -end.getX() -start.getZ(), start.getZ()), // following z, varying x
-                new Position(-end.getY() -start.getZ(), end.getY(), start.getZ())  // following z, varying y
+                new Position(start.getX(),                   -start.getX() -end.getZ(),         end.getZ()), // following x, varying z
+                new Position(start.getX(),                      end.getY(),                     -start.getX() -end.getY()), // following x, varying y
+                new Position(-end.getY() -start.getZ(),      start.getY(),                      end.getZ()), // following y, varying z
+                new Position(end.getX(),                        start.getY(),                   -end.getX() -start.getY()), // following y, varying x
+                new Position(end.getX(),                     -end.getX() -start.getZ(),         start.getZ()), // following z, varying x
+                new Position(-end.getY() -start.getZ(),      end.getY(),                        start.getZ())  // following z, varying y
         );
     }
 
@@ -217,6 +219,10 @@ public class ThirdBot extends Bot {
         if(objectiveParcel == null)
             getNextParcelGoal();
         if(objectiveParcel == null) return; /// il n'y a plus d'objectifs resolvables, on piochera donc d'autres objectifs parcels plus tard
+
+        if(!parcelObjectiveCanBeSolved(objectiveParcel)) {
+            getNextParcelGoal();
+        }
 
         // On résout l'objectif
         var missingTiles = objectiveParcel.getMissingPositionsToComplete();
@@ -276,6 +282,7 @@ public class ThirdBot extends Bot {
                 isReachableByGardener(p)).findAny();
 
         if(tileIrrigatedReachableByGardener.isPresent()) {
+            boolean reachableOneStep = isReachableInOneStepByGardener(tileIrrigatedReachableByGardener.get());
             var nextPosition = getGardenerRoute(tileIrrigatedReachableByGardener.get()).get();
             board.getGardener().moveTo(nextPosition.getX(), nextPosition.getY(), nextPosition.getZ());
             return;
@@ -287,7 +294,7 @@ public class ThirdBot extends Bot {
         var notIrrigatedTile = board.getPositions().stream()
                 .filter(p ->
                     board.getParcel(p).getBambooColor() == objectiveGardener.getColor() &&
-                    board.getParcel(p).getBambooSize() < objectiveGardener.getSize() &&
+                    !board.getParcel(p).isIrrigate() &&
                     isIrrigable(p)).findAny();
 
         if(notIrrigatedTile.isPresent()) {

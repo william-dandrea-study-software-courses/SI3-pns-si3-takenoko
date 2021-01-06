@@ -5,7 +5,9 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
@@ -19,7 +21,7 @@ public class ThirdBotTest {
     private Board board;
 
     @BeforeEach
-    void Init() {
+    void init() {
         game = new Game();
         board = game.getBoard();
         bot = new ThirdBot(game);
@@ -69,6 +71,25 @@ public class ThirdBotTest {
         }
         var action = opt.get();
         assertTrue(action.getType() == BotActionType.MOVE_GARDENER || action.getType() == BotActionType.PLACE_IRRIGATION);
+    }
+
+    @Test
+    void testStepoverPossible() {
+        bot.getPossibleStopover(new Position(5, 3, 1), new Position(0, 0, 0)).forEach(stepover -> {
+
+        });
+    }
+
+    @Disabled
+    @Test
+    void testStability() {
+        for(int i = 0; i < 50; i++) {
+            init();
+            while (bot.canPlay()) {
+                bot.DecideAction(log);
+                bot.setCurrentNumberOfAction(0);
+            }
+        }
     }
 
      @Test
