@@ -38,7 +38,7 @@ public class IAforBot {
         Map<PositionColored, Integer> candidateParcels = new HashMap<PositionColored, Integer>();
         Set<PositionColored> missingPositions = objective.getMissingPositionsToComplete();
 
-        System.out.println("missingPosition : " + missingPositions);
+        //System.out.println("missingPosition : " + missingPositions);
         for (PositionColored pos : missingPositions) {
             int numberOfPlaceValidAroundThePosition = 0;
 
@@ -51,8 +51,8 @@ public class IAforBot {
                 }
             }
 
-            System.out.println("Position : " + pos);
-            System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
+            //System.out.println("Position : " + pos);
+            //System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
 
 
             if (numberOfPlaceValidAroundThePosition >= 2) {
@@ -65,7 +65,7 @@ public class IAforBot {
                 if (numberOfPlaceValidAroundThePosition != 0) {
                     for (int i = 1; i <= 6; i++) {
                         Position internalPosition = nextPositionIncrement(i, pos.getPosition());
-                        System.out.println(internalPosition);
+                        //System.out.println(internalPosition);
 
                         if (board.containTile(internalPosition)) {
 
@@ -108,11 +108,15 @@ public class IAforBot {
         PositionColored positionFinalWithOneParcelAround = null;
         Map<PositionColored, Integer> candidateParcels = new HashMap<PositionColored, Integer>();
         Set<PositionColored> missingPositions = objective.getMissingPositionsToComplete();
-        System.out.println("missingPosition : " + missingPositions);
+        //System.out.println("missingPosition : " + missingPositions);
 
 
         for (PositionColored pos : missingPositions) {
             int numberOfPlaceValidAroundThePosition = 0;
+
+            if (board.isPlaceValid(pos.getPosition()))
+                return pos;
+
 
             // We turn around the position
             for (int i = 1; i <= 6; i++) {
@@ -122,8 +126,8 @@ public class IAforBot {
                 }
             }
 
-            System.out.println("Position : " + pos);
-            System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
+            //System.out.println("Position : " + pos);
+            //System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
 
 
 
@@ -132,7 +136,7 @@ public class IAforBot {
             if (numberOfPlaceValidAroundThePosition != 0) {
                 for (int i = 1; i <= 6; i++) {
                     Position internalPosition = nextPositionIncrement(i, pos.getPosition());
-                    System.out.println(internalPosition);
+                    //System.out.println(internalPosition);
 
                     if (board.containTile(internalPosition)) {
 

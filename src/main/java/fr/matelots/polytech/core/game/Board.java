@@ -219,7 +219,7 @@ public class Board {
             builder.append("(");
             builder.append(pos);
             builder.append(",");
-            builder.append(grid.get(pos));
+            builder.append(grid.get(pos).getBambooColor());
             builder.append(")\n");
         });
         return "Plateau: \n" + builder.toString();
