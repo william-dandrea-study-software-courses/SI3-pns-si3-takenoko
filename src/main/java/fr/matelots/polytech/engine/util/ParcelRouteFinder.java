@@ -118,7 +118,6 @@ public class ParcelRouteFinder {
 
         return Optional.of(positions);
     }
-
     public static Optional<Set<AbsolutePositionIrrigation>> getBestPathToIrrigate(Board board, Position positionToIrrigate) {
         var shortest = board.getPositions().stream()
                 .filter(p -> board.getParcel(p).isIrrigate()) // on recupere les cases irrigué
@@ -127,5 +126,9 @@ public class ParcelRouteFinder {
                 .map(Optional::get)                 // on recupere les valeur des optionnels
                 .min(Comparator.comparing(Set::size)); // on recupere le chemin le moins couteux
         return shortest;
+    }
+
+    public static Optional<AbsolutePositionIrrigation> getNextParcelToIrrigate(Set<AbsolutePositionIrrigation> path) {
+        return path.stream().filter(api -> !api.isIrrigate() && api.canBeIrrigated()).findAny();
     }
 }
