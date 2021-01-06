@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
@@ -140,8 +141,16 @@ public class QuintusBot extends Bot {
     }
 
     private void pickNextStepObjective (TurnLog log) {
-        pickGardenerObjective(log);
-        neededColors = getNeededColorsNextStep();
+        int dice = random.nextInt(2);
+        if (dice >= 1) {
+            pickGardenerObjective(log);
+            neededColors = getNeededColorsNextStep();
+        }
+        else {
+            pickParcelObjective(log);
+            neededColors = new ArrayList<>(List.of(BambooColor.values()));
+            Collections.shuffle(neededColors);
+        }
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
     }
@@ -329,7 +338,8 @@ public class QuintusBot extends Bot {
     boolean isThereAPlantationWhereYouCanEat () {
         Set<Position> positions = board.getPositions();
 
-        if (neededColors == null)
+        if (neededColors == null
+            || getIndividualBoard().countUnfinishedParcelObjectives() > 0)
             return false;
 
         List<BambooColor> required = new ArrayList<>(neededColors);
@@ -381,6 +391,7 @@ public class QuintusBot extends Bot {
     private void checkObjectives () {
         getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
         getIndividualBoard().getUnfinishedGardenerObjectives().forEach(CardObjectiveGardener::verify);
+        getIndividualBoard().getUnfinishedParcelObjectives().forEach(CardObjectiveParcel::verify);
     }
 
     /**
