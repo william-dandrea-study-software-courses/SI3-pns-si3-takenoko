@@ -9,8 +9,6 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 import fr.matelots.polytech.core.game.parcels.*;
-import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.IndividualBoard;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -104,7 +102,7 @@ public class Board {
             for(Side side : Side.values()) { //Les parcels à côté de l'étang sont irrigués
                 Position posAdjacent = position.add(side.getDirection());
                 Parcel parcel = this.getParcel(posAdjacent);
-                if(parcel != null && parcel.isIrrigate(side.oppositeSide())) {
+                if(parcel instanceof Pond) {
                     p.setIrrigate(side);
                 }
             }

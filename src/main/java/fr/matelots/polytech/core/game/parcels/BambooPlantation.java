@@ -67,9 +67,11 @@ public class BambooPlantation extends Parcel {
     @Override
     public void setIrrigate(Side side) {
         //un bamboo est automatiquement placé quand la parcelle s'irrigue
-        if(!this.isIrrigate())
+        if(!this.isIrrigate()) {
+            super.setIrrigate(side);
             this.growBamboo();
-        super.setIrrigate(side);
+        } else
+            super.setIrrigate(side);
     }
 
     @Override
