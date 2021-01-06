@@ -38,10 +38,10 @@ public class Game {
     }
 
     private void setDemoBots() {
-        bots.add(new QuintusBot(this, "Jojo (Rush Panda)"));
+        addBot(new QuintusBot(this, "Jojo (Rush Panda)"));
         //bots.add(new QuintusBot(this));
         //bots.add(new RushParcelBot(this, "RushParcel"));
-        bots.add(new RushParcelBot(this, "RushParcel2"));
+        addBot(new RushParcelBot(this, "RushParcel2"));
     }
 
     public void addBot(Bot bot) {
@@ -286,4 +286,7 @@ public class Game {
         return board;
     }
 
+    public List<Bot> getBots() {
+        return new ArrayList<>(bots);
+    }
 }
