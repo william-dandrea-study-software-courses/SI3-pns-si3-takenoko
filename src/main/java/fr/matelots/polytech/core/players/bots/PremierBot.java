@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
@@ -43,7 +44,7 @@ public class PremierBot extends Bot {
      * Emulate the turn of the bot
      */
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         //if(board.getParcelCount() > 1) getIndividualBoard().checkAllParcelGoal();
         if(!canPlay())
             return; // le bot ne peut pas jouer alors il passe son tour

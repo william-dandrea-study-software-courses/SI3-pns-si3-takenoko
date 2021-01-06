@@ -37,14 +37,14 @@ public class PremierBotTest {
 
 
         for(int i = 1; i <= 5; i++) {
-            bot.playTurn(log);
+            bot.playTurn(log, null);
             assertEquals(indBoard.getUnfinishedParcelObjectives().size(), i);
         }
 
         // test complete phase
         int oldSize = indBoard.getUnfinishedParcelObjectives().size();
         while(oldSize > 0) {
-            bot.playTurn(log);
+            bot.playTurn(log, null);
             int currentSize = indBoard.getUnfinishedParcelObjectives().size();
             assertTrue(currentSize <= oldSize);
             oldSize = currentSize;
