@@ -58,8 +58,7 @@ public class QuintusBot extends Bot {
             neededColors = getNeededColor();
 
             if (turnLeftToPick > 0 &&
-                !(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
-                        BotActionType.PICK_PARCEL_GOAL).contains(getLastAction()))) {
+                !(Config.isPickAction(getLastAction()))) {
                 pickObjectif(log);
             }
             else if (!isThereAPlantationWhereYouCanEat() &&

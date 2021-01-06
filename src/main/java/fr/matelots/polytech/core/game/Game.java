@@ -11,7 +11,9 @@ import fr.matelots.polytech.core.players.bots.*;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,6 +28,7 @@ public class Game {
     private final Board board;
     private final BoardDrawer drawer;
     private boolean lastTurn;
+    private boolean canceledGame = false;
 
     // Constructors
     public Game () {
@@ -44,7 +47,7 @@ public class Game {
         bots.add(bot);
     }
 
-    private List<List<Bot>> getRanks()
+    public List<List<Bot>> getRanks()
     {
 
         List<List<Bot>> ranked = new ArrayList<>(); // une liste de (liste de bot ayant le meme score) classé par score
@@ -72,7 +75,7 @@ public class Game {
         return ranked;
     }
 
-    private List<Bot> separate (List<Bot> winners) {
+    public List<Bot> separate (List<Bot> winners) {
         List<Bot> trueWinners = new ArrayList<>();
 
         if (winners != null && !winners.isEmpty()) {
@@ -192,7 +195,21 @@ public class Game {
 
     }
 
+    public boolean isCanceledGame () {
+        return canceledGame;
+    }
 
+    public void run (boolean draw) {
+        setDemoBots();
+
+        if(bots.size() < 2 || bots.size() > 4) {
+            if (draw)
+                ACTIONLOGGER.info("Pas le bon nombre de joueurs");
+            return;
+        }
+
+        launchTurnLoop(draw);
+    }
 
     public void launchTurnLoop() {
         launchTurnLoop(false);
@@ -224,49 +241,14 @@ public class Game {
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
-                ACTIONLOGGER.info("aucun bot ne peux jouer la partie, on la fini");
+                if (draw)
+                    ACTIONLOGGER.info("aucun bot ne peux jouer la partie, on la fini");
+                canceledGame = true;
                 break;
             }
 
         }
     }
-
-
-
-
-
-    public void runHundredParties () {
-        setDemoBots();
-
-        String winner ="";
-        String loser = "";
-        if(bots.size() < 2 || bots.size() > 4) {
-            //System.out.println("No players !");
-            ACTIONLOGGER.info("Pas le bon nombre de joueurs");
-            return;
-        }
-
-
-        launchTurnLoop(false);
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * This return the hidden top card of the parcel objective deck

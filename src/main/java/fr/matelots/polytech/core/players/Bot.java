@@ -62,8 +62,7 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
-        if (List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
-                BotActionType.PICK_PARCEL_GOAL).contains(lastAction))
+        if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
         if(this.canDoAction()) {
@@ -87,8 +86,7 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
-        if (List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
-                BotActionType.PICK_PARCEL_GOAL).contains(lastAction))
+        if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
         if(this.canDoAction()) {
@@ -112,8 +110,7 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickPandaObjective(TurnLog log) {
-        if (List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
-                BotActionType.PICK_PARCEL_GOAL).contains(lastAction))
+        if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
         if (this.canDoAction()) {
