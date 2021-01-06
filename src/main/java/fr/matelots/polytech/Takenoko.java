@@ -23,8 +23,8 @@ public class Takenoko {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.addHandler(new LogHandler());
 
-        final int NB_GAMES = 1000;
-        final boolean LOG_DETAIL = false;
+        final int NB_GAMES = 1;
+        final boolean LOG_DETAIL = true;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
         int nbDraw = 0;

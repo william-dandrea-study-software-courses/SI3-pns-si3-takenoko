@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -331,5 +332,11 @@ public class BotTest {
         AbsolutePositionIrrigation api2 = new AbsolutePositionIrrigation(new Position(0, 1, -1), Side.LEFT, game.getBoard());
 
         assertFalse(bot.irrigate(api2, turnLog));
+    }
+
+    @Test
+    public void testWhatWeCanDoWithWeather() {
+        
+        bot.whatWeCanDoWithWeather(Weather.INTERROGATION, turnLog);
     }
 }

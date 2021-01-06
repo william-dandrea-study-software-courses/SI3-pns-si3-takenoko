@@ -79,8 +79,6 @@ public abstract class Bot {
         canMovePandaSomewhere = false;                          // THUNDERSTORM
         canAddAmenagement = false;                              // CLOUD
         whatWeCanDoWithWeather(weatherCard, log);
-
-
     }
 
     public void playTurn(Weather weatherCard) {
@@ -93,26 +91,33 @@ public abstract class Bot {
     }
 
 
-    private void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
+    void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
+        System.out.println(weather);
         if (weather!= null) {
             switch (weather) {
                 case SUN: {
                     maxNumberOfActions = 3;
+                    break;
                 }
                 case RAIN: {
                     canPlaceOneMoreBamboo = true;
+                    break;
                 }
                 case WIND: {
                     canDoSameActionInOneTour = true;
+                    break;
                 }
                 case CLOUD: {
                     canAddAmenagement = true;
+                    break;
                 }
                 case THUNDERSTORM: {
                     canMovePandaSomewhere = true;
+                    break;
                 }
                 case INTERROGATION: {
-                    //this.playTurn(log, weather);
+                    playTurn(log, game.diceRandomWeather());
+                    break;
                 }
             }
         }
@@ -135,7 +140,7 @@ public abstract class Bot {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
-        if(this.canDoAction()) {
+        if(canDoAction()) {
             CardObjectiveParcel obj = game.getNextParcelObjective();
             if (obj == null) {
                 return Optional.empty();

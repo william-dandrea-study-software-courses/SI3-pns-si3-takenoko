@@ -38,10 +38,12 @@ public class RushParcelBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log, Weather weatherCard) {
-        //super.playTurn();
+        super.playTurn(log, weatherCard);
         inc++;
+
+        setCurrentNumberOfAction(0);
+
         turnLogger = log;
-        currentNumberOfAction = 0;
         // En premier lieu, on vérifie / initialise / met a jour la liste d'objectifs si celle-ci n'est pas rempli
         if (listOfCurrentsObjectives.size() != 5) {
             inilializeOrUpdateListOfCurrentsObjective2();
