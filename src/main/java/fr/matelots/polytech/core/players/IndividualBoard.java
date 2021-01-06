@@ -3,6 +3,8 @@ package fr.matelots.polytech.core.players;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.*;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.Layout;
+import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,7 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
     private final List<CardObjectivePanda> objectivePandas;
+    private List<Layout> layouts;
     private int irrigations;
     private CardObjectiveEmperor emperor;
 
@@ -34,6 +37,7 @@ public class IndividualBoard {
         objectiveParcels = new ArrayList<>();
         objectiveGardeners = new ArrayList<>();
         objectivePandas = new ArrayList<>();
+        layouts = new ArrayList<>();
         emperor = null;
         irrigations = 0;
 
@@ -226,5 +230,20 @@ public class IndividualBoard {
             bamboos[BambooColor.PINK.ordinal()] -= objectivePanda.getCountForColor(BambooColor.PINK);
             bamboos[BambooColor.YELLOW.ordinal()] -= objectivePanda.getCountForColor(BambooColor.YELLOW);
         }
+    }
+
+    // ======LAYOUT
+
+
+    public List<Layout> getLayouts() {
+        return layouts;
+    }
+
+    public void addLayouts(Layout layout) {
+        layouts.add(layout);
+    }
+
+    public boolean placeLayout(Layout lay) {
+        return layouts.remove(lay);
     }
 }

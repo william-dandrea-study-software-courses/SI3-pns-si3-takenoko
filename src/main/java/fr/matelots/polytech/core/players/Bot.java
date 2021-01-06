@@ -101,6 +101,7 @@ public abstract class Bot {
                 }
                 case RAIN: {
                     canPlaceOneMoreBamboo = true;
+                    weatherCaseRainInitial();
                     break;
                 }
                 case WIND: {
@@ -122,6 +123,17 @@ public abstract class Bot {
             }
         }
     }
+
+    void weatherCaseRainInitial() {
+        Optional<Position> place = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate() && !board.getParcel(p).equals(Config.POND_POSITION)).findAny();
+        getBoard().getParcel(place.get()).growBamboo();
+    }
+
+    void weatherCaseCloudInitial() {
+        getIndividualBoard().addLayouts(Layout.BASIN);
+    }
+
+
 
 
     protected BotActionType getLastAction () {

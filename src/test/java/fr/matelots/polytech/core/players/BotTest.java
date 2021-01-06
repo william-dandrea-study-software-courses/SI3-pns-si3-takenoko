@@ -336,7 +336,16 @@ public class BotTest {
 
     @Test
     public void testWhatWeCanDoWithWeather() {
-        
         bot.whatWeCanDoWithWeather(Weather.INTERROGATION, turnLog);
+    }
+
+    @Test
+    public void testWeatherCaseRainInitial() {
+
+        bot.getBoard().addParcel(1,-1,0, new BambooPlantation(BambooColor.GREEN));
+        bot.weatherCaseRainInitial();
+        assertEquals(2, bot.getBoard().getParcel(new Position(1,-1,0)).getBambooSize());
+
+
     }
 }
