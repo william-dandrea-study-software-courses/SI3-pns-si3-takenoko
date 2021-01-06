@@ -92,7 +92,7 @@ public abstract class Bot {
 
 
     void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
-        System.out.println(weather);
+        //System.out.println(weather);
         if (weather!= null) {
             switch (weather) {
                 case SUN: {
@@ -110,14 +110,16 @@ public abstract class Bot {
                 }
                 case CLOUD: {
                     canAddAmenagement = true;
+                    weatherCaseCloudInitial();
                     break;
                 }
                 case THUNDERSTORM: {
                     canMovePandaSomewhere = true;
+                    weatherCaseThunderstormInitial(log);
                     break;
                 }
                 case INTERROGATION: {
-                    playTurn(log, game.diceRandomWeather());
+                    weatherCaseInterrogationInitial(log);
                     break;
                 }
             }
@@ -131,6 +133,14 @@ public abstract class Bot {
 
     void weatherCaseCloudInitial() {
         getIndividualBoard().addLayouts(Layout.BASIN);
+    }
+
+    void weatherCaseThunderstormInitial(TurnLog log) {
+        Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
+        game.movePandaWhenWeather(lastAction, this,place.get(),log);
+    }
+    void weatherCaseInterrogationInitial(TurnLog log) {
+        playTurn(log, game.diceRandomWeather());
     }
 
 
@@ -585,5 +595,7 @@ public abstract class Bot {
         return currentNumberOfAction;
     }
 
-
+    public boolean isCanMovePandaSomewhere() {
+        return canMovePandaSomewhere;
+    }
 }

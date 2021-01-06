@@ -31,6 +31,12 @@ public abstract class Pawn {
             throw new UnreachableParcelException();
         }
 
+        return moveToAbsolute(x,y,z);
+    }
+
+    public boolean moveToAbsolute (int x, int y, int z) {
+        Position tmp = new Position(x, y, z);
+
         if (getBoard().placePawn(this, tmp)) {
             setPosition(tmp);
             makeAction();
