@@ -29,9 +29,5 @@ public enum Weather {
     };
 
 
-    public Weather getRandomWither() {
-        int x = Config.RANDOM.nextInt(Weather.class.getEnumConstants().length);
-        return Weather.class.getEnumConstants()[x];
 
-    }
 }

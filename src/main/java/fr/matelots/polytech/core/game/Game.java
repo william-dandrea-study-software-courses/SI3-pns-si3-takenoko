@@ -217,8 +217,20 @@ public class Game {
         launchTurnLoop(false);
     }
     public void launchTurnLoop(boolean draw) {
+
+        int numberOfGlobalTour = 0;
+
         while (!lastTurn) {
+
+            numberOfGlobalTour++;
+            if (numberOfGlobalTour == 2) {
+                bots.forEach(bot -> {
+                    bot.setPlayWithWeather(true);
+                });
+            }
+
             bots.forEach(bot -> {
+
                 TurnLog log = new TurnLog(bot);
                 try {
                     bot.playTurn(log);
@@ -289,4 +301,10 @@ public class Game {
     public List<Bot> getBots() {
         return new ArrayList<>(bots);
     }
+
+    public Weather diceRandomWeather() {
+        int num = Config.RANDOM.nextInt(Weather.class.getEnumConstants().length);
+        return Weather.class.getEnumConstants()[num];
+    }
+
 }
