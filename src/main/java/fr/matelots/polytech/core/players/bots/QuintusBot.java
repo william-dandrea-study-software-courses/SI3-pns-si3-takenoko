@@ -4,6 +4,7 @@ import fr.matelots.polytech.core.PickDeckEmptyException;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.Weather;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
@@ -31,11 +32,16 @@ public class QuintusBot extends Bot {
 
     private static final Random random = Config.RANDOM;
 
-    private int[] lastState = new int[3];
+    private final int[] lastState = new int[3];
     private int turnWithUnchangedState = 0;
+
+    private final Game game;
+
+    private boolean nextStep = false;
 
     public QuintusBot(Game game, String name) {
         super(game, name);
+        this.game = game;
         turnLeftToPick = 2;
         Arrays.fill(lastState, 0);
     }
@@ -54,6 +60,28 @@ public class QuintusBot extends Bot {
         for ( ; action < Config.TOTAL_NUMBER_OF_ACTIONS; action++){
             if (!canPlay())
                 return;
+
+            if (nextStep) {
+                // There is no more panda objective to resolve
+                // So I'm resolving gardener objective instead
+                if (turnLeftToPick > 0 &&
+                        !(Config.isPickAction(getLastAction()))) {
+                    pickNextStepObjective(log);
+                }
+                else if (!isThereAPlantationWhereYouCanEat() &&
+                        !BotActionType.PLACE_PARCEL.equals(getLastAction())) {
+                    placeAParcel(log);
+                }
+                else if (!isThereAnythingInterestingToEat() &&
+                        !BotActionType.MOVE_GARDENER.equals(getLastAction()))
+                    moveGardener(log);
+                else {
+                    turnDoingNothing++;
+                    log.addAction(BotActionType.NONE, "");
+                }
+                checkObjectives();
+                continue;
+            }
 
             // Do an action
             if (getIndividualBoard().countUnfinishedPandaObjectives() < 1) {
@@ -98,9 +126,24 @@ public class QuintusBot extends Bot {
             turnDoingNothing = 0;
             turnPastMovingGardener = 0;
         } catch (PickDeckEmptyException e) {
+            if (getIndividualBoard().countCompletedObjectives() -
+                    Config.getNbObjectivesToCompleteForLastTurn(game.getBots().size()) > 0) {
+                nextStep = true;
+                turnWithUnchangedState = 0;
+                pickNextStepObjective(log);
+                return;
+            }
+
             log.addAction(BotActionType.NONE, "");
             turnDoingNothing++;
         }
+    }
+
+    private void pickNextStepObjective (TurnLog log) {
+        pickGardenerObjective(log);
+        neededColors = getNeededColorsNextStep();
+        turnDoingNothing = 0;
+        turnPastMovingGardener = 0;
     }
 
     /**
@@ -239,7 +282,7 @@ public class QuintusBot extends Bot {
     }
 
     /**
-     * @return Return a list of all color needed to complete all objectives
+     * @return Return a list of all color needed to complete all panda objectives
      */
     List<BambooColor> getNeededColor () {
         final int[] count = new int[BambooColor.values().length];
@@ -257,6 +300,19 @@ public class QuintusBot extends Bot {
         for (BambooColor color : BambooColor.values())
             if (count[color.ordinal()] > 0)
                 colors.add(color);
+        return colors;
+    }
+
+    /**
+     * @return Return a list of all color needed to complete all gardener objectives
+     */
+    List<BambooColor> getNeededColorsNextStep () {
+        List<BambooColor> colors = new ArrayList<>();
+        for (var obj : getIndividualBoard().getUnfinishedGardenerObjectives()) {
+            if (!colors.contains(obj.getColor())) {
+                colors.add(obj.getColor());
+            }
+        }
         return colors;
     }
 
@@ -324,6 +380,7 @@ public class QuintusBot extends Bot {
      */
     private void checkObjectives () {
         getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
+        getIndividualBoard().getUnfinishedGardenerObjectives().forEach(CardObjectiveGardener::verify);
     }
 
     /**
