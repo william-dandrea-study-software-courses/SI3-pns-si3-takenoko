@@ -263,6 +263,36 @@ public abstract class Bot {
         return Optional.empty();
     }
 
+
+    /**
+     * List<Parcel> availableParcels = board.pickParcels();
+     *                 if (!availableParcels.isEmpty() && availableParcels != null) {
+     *                     placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
+     *                 }
+     * @param log
+     * @param parcel
+     * @return
+     */
+    public Optional<Position> placeAnParcelAnywhere(TurnLog log, Parcel parcel) {
+
+        if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
+            // We get where we can put an parcel
+            ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
+            // Now, we have an ArrayList of the potentials places where we can add a parcel
+
+            // We choose a random parcel in the potential list
+            int position = random.nextInt(validPositions.size());
+
+
+            // We finally add to the board the new parcel
+            Position pos = validPositions.get(position);
+
+            placeParcel(pos, parcel.getBambooColor(), log);
+
+        }
+        return Optional.empty();
+    }
+
     /**
      * @return A random bamboo color that can be place on the board, null otherwise
      */

@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
@@ -24,6 +25,8 @@ public class RushParcelBot extends Bot {
     private int canPutMoreParcel = 0;
     private int inc = 0;
 
+    private Random random = new Random();
+
     public RushParcelBot(Game game, String name) {
         super(game, name);
         cardWeActuallyTryToResolve = null;
@@ -40,6 +43,7 @@ public class RushParcelBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
+        //super.playTurn();
         inc++;
         turnLogger = log;
         currentNumberOfAction = 0;
@@ -128,12 +132,28 @@ public class RushParcelBot extends Bot {
 
     void inilializeOrUpdateListOfCurrentsObjective2() {
 
+        BotActionType lastAction = getLastAction();
+        if (lastAction != null)
+        {
+            if (lastAction.equals(BotActionType.PICK_PARCEL_GOAL)) {
+                // We pick a new parcel
+                List<Parcel> availableParcels = board.pickParcels();
+                if (!availableParcels.isEmpty() && availableParcels != null) {
+                    placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
+                }
+            } else {
+                pickParcelObjective(turnLogger);
+            }
+        } else {
+            pickParcelObjective(turnLogger);
+        }
+
+
         for (int i = 0; i < 5; i++) {
             if (individualBoard.getUnfinishedParcelObjectives().size() < 5) {
                 pickParcelObjective(turnLogger);
             }
         }
-
     }
 
 
