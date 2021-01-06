@@ -187,6 +187,12 @@ public class QuintusBot extends Bot {
 
         List<Parcel> placeable = board.pickParcels();
 
+        if (placeable.isEmpty()) {
+            log.addAction(BotActionType.NONE, "");
+            turnDoingNothing++;
+            return;
+        }
+
         for (Parcel p : placeable) {
             if (colors.get(0).equals(p.getBambooColor())) {
                 chosenParcel = p;
