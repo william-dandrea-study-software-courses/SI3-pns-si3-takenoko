@@ -35,15 +35,6 @@ public class Game {
     }
 
     private void setDemoBots() {
-        //bots.add(new PremierBot(this));
-        //bots.add(new PremierBot(this));
-        //bots.add(new SecondBotTemporaire(this, "BadBot"));
-
-
-        //bots.add(new ThirdBot(this));
-        //bots.add(new FourthBot(this));
-        //bots.add(new FifthBot(this, "GentleBot"));
-        //bots.add(new QuintusBot(this));
         bots.add(new QuintusBot(this, "Jojo"));
         bots.add(new RushParcelBot(this, "RushParcel"));
     }
@@ -55,13 +46,6 @@ public class Game {
 
     private List<List<Bot>> getRanks()
     {
-        /* Pas utile en fait
-        bots.sort(new Comparator<Bot>() {
-            @Override
-            public int compare(Bot o1, Bot o2) {
-                return o1.getIndividualBoard().getPlayerScore() - o2.getIndividualBoard().getPlayerScore();
-            }
-        });*/
 
         List<List<Bot>> ranked = new ArrayList<>(); // une liste de (liste de bot ayant le meme score) classé par score
 
@@ -198,32 +182,17 @@ public class Game {
         setDemoBots();
 
         if(bots.size() < 2 || bots.size() > 4) {
-            //System.out.println("No players !");
             ACTIONLOGGER.info("Pas le bon nombre de joueurs");
             return;
         }
 
-        /*System.out.print("Joueurs: ");
-        bots.forEach(System.out::println);
-        System.out.println();*/
-        drawer.print();
 
-        launchTurnLoop(true);
-
-        // this is the winner ! ;)
-        //var winner = getWinner();
-        /*System.out.println("Winner is : " + winner.toString());
-        System.out.println("Winner score : " + winner.getIndividualBoard().getPlayerScore());*/
-
-        /*for(Bot bot : bots) {
-            if(winner == bot) continue;
-            /*System.out.println("Loser is : " + bot.toString());
-            System.out.println("Loser score : " + bot.getIndividualBoard().getPlayerScore());*/
-        //}
-
+        launchTurnLoop(false);
         drawRanks();
 
     }
+
+
 
     public void launchTurnLoop() {
         launchTurnLoop(false);
@@ -252,17 +221,52 @@ public class Game {
                     drawer.print();
                 }
 
-                //System.out.println(bot.canPlay());
-                //System.out.println( bot.toString() + " " + bot.getIndividualBoard().countCompletedObjectives());
             });
 
             if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
-                System.out.println("aucun bot ne peux jouer la partie, on l'annule");
+                ACTIONLOGGER.info("aucun bot ne peux jouer la partie, on la fini");
                 break;
             }
 
         }
     }
+
+
+
+
+
+    public void runHundredParties () {
+        setDemoBots();
+
+        String winner ="";
+        String loser = "";
+        if(bots.size() < 2 || bots.size() > 4) {
+            //System.out.println("No players !");
+            ACTIONLOGGER.info("Pas le bon nombre de joueurs");
+            return;
+        }
+
+
+        launchTurnLoop(false);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * This return the hidden top card of the parcel objective deck
