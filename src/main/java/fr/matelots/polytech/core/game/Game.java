@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.IllegalActionRepetitionException;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveEmperor;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -7,6 +8,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
 import java.util.ArrayList;
@@ -41,9 +43,9 @@ public class Game {
         //bots.add(new ThirdBot(this));
         //bots.add(new FourthBot(this));
         //bots.add(new FifthBot(this, "GentleBot"));
-        bots.add(new QuintusBot(this));
+        //bots.add(new QuintusBot(this));
         bots.add(new QuintusBot(this, "Jojo"));
-        //bots.add(new RushParcelBot(this, "RushParcel"));
+        bots.add(new RushParcelBot(this, "RushParcel"));
     }
 
     public void addBot(Bot bot) {
@@ -230,7 +232,11 @@ public class Game {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 TurnLog log = new TurnLog(bot);
-                bot.playTurn(log);
+                try {
+                    bot.playTurn(log);
+                } catch (IllegalActionRepetitionException e) {
+                    log.addAction(BotActionType.NONE, "");
+                }
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size())) {
                     if (!lastTurn) {
                         if (draw)
