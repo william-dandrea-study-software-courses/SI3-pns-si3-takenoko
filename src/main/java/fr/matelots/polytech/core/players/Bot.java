@@ -261,18 +261,6 @@ public abstract class Bot {
         return res;
     }
 
-    protected final void placeIrrigation (TurnLog log, Parcel parcel1, Parcel parcel2, Side side) {
-        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
-            throw new IllegalActionRepetitionException();
-
-        parcel1.setIrrigate(side);
-        parcel2.setIrrigate(side);
-        log.addAction(BotActionType.PLACE_IRRIGATION, parcel1.toString() + " on " + side.toString());
-        log.addAction(BotActionType.PLACE_IRRIGATION, parcel2.toString() + " on " + side.toString());
-        lastAction = BotActionType.PLACE_IRRIGATION;
-        currentNumberOfAction++;
-    }
-
     protected final void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
         if (BotActionType.PLACE_LAYOUT.equals(lastAction))
             throw new IllegalActionRepetitionException();
@@ -297,6 +285,9 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
             // We get where we can put an parcel
             ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
@@ -312,6 +303,7 @@ public abstract class Bot {
                 board.addParcel(pos, new BambooPlantation(color));
                 log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
                 currentNumberOfAction++;
+                lastAction = BotActionType.PLACE_PARCEL;
                 return Optional.of(pos);
             }
         }
@@ -329,7 +321,6 @@ public abstract class Bot {
      * @return
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log, Parcel parcel) {
-
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
             // We get where we can put an parcel
             ArrayList<Position> validPositions = new ArrayList<>(board.getValidPlaces());
@@ -397,6 +388,9 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
 
             ArrayList<Position> placeWhereWeCanPlaceAnParcel = new ArrayList<>(board.getValidPlaces());
@@ -408,6 +402,7 @@ public abstract class Bot {
                 if (this.board.addParcel(pos, new BambooPlantation(color))) {
                     this.currentNumberOfAction++;
                     log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
+                    lastAction = BotActionType.PLACE_PARCEL;
                 }
                 return Optional.of(pos);
             }
@@ -468,6 +463,9 @@ public abstract class Bot {
      * @return true if the parcel is placed else return false
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!this.canDoAction()) return false;
 
         if (board.getParcelLeftToPlace(color) != 0) {
@@ -477,6 +475,7 @@ public abstract class Bot {
                 if (success) {
                     log.addAction(BotActionType.PLACE_PARCEL, position.toString());
                     currentNumberOfAction++;
+                    lastAction = BotActionType.PLACE_PARCEL;
                 }
                 return success;
 
@@ -523,6 +522,7 @@ public abstract class Bot {
             if(success) {
                 currentNumberOfAction++;
                 log.addAction(BotActionType.MOVE_GARDENER, position.toString());
+                lastAction = BotActionType.MOVE_GARDENER;
             }
             return success;
         } catch (UnreachableParcelException e) {
@@ -536,6 +536,9 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
+        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(!canDoAction()) return false;
         if(!individualBoard.canPlaceIrrigation()) return false;
 
@@ -544,6 +547,7 @@ public abstract class Bot {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
             individualBoard.placeIrrigation();
             currentNumberOfAction++;
+            lastAction = BotActionType.PLACE_IRRIGATION;
         }
         return success;
     }
