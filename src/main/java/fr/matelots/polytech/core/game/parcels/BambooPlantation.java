@@ -54,11 +54,14 @@ public class BambooPlantation extends Parcel {
     }
 
     @Override
-    public void destroyUnitOfBamboo() {
+    public boolean destroyUnitOfBamboo() {
         if(this.layout != Layout.ENCLOSURE) {
-            if (bambooSize > Config.MIN_SIZE_BAMBOO)
+            if (bambooSize > Config.MIN_SIZE_BAMBOO) {
                 bambooSize--;
+                return true;
+            }
         }
+        return false;
     }
 
     @Override
