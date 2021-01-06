@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
@@ -69,7 +70,7 @@ public class FifthBot extends Bot {
     }
 
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         /*actionParameter = "null";
         action = BotActionType.NONE;*/
         turnLogger = log;

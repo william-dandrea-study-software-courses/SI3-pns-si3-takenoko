@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
@@ -70,7 +71,7 @@ public class FourthBot extends Bot {
     public FourthBot(Game game, String name, TurnLog log) { super(game, name); }
 
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         //action = BotActionType.NONE;
 
 

@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -39,6 +40,8 @@ public abstract class Bot {
     protected final Panda panda;
     protected final Gardener gardener;
 
+    private boolean playWithWeather;
+
     public Bot(Game game, String name) {
         this(game);
         this.name = name;
@@ -51,10 +54,15 @@ public abstract class Bot {
         this.individualBoard = new IndividualBoard();
         panda = board.getPanda();
         gardener = board.getGardener();
+        playWithWeather = false;
     }
 
     protected BotActionType getLastAction () {
         return lastAction;
+    }
+
+    public void setPlayWithWeather(boolean playWithWeather) {
+        this.playWithWeather = playWithWeather;
     }
 
     /**
@@ -157,14 +165,16 @@ public abstract class Bot {
     /**
      * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
      * @param log A logger to log action made
+     * @param weatherCard
      */
-    public void playTurn (TurnLog log) {
+    public void playTurn (TurnLog log, Weather weatherCard) {
         lastAction = null;
+        currentNumberOfAction = 0;
     }
 
-    public void playTurn() {
+    public void playTurn(Weather weatherCard) {
         TurnLog log = new TurnLog(this);
-        playTurn(log);
+        playTurn(log, weatherCard);
         currentNumberOfAction = 0;
     }
 
@@ -177,6 +187,7 @@ public abstract class Bot {
         if (res) {
             log.addAction(BotActionType.MOVE_PANDA, pos.toString());
             lastAction = BotActionType.MOVE_PANDA;
+            currentNumberOfAction++;
         }
 
         return res;
@@ -190,6 +201,7 @@ public abstract class Bot {
         if (res) {
             log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
             lastAction = BotActionType.MOVE_GARDENER;
+            currentNumberOfAction++;
         }
 
         return res;
@@ -204,6 +216,7 @@ public abstract class Bot {
         if (res) {
             log.addAction(BotActionType.PLACE_PARCEL, parcel.toString() + " in" + pos.toString());
             lastAction = BotActionType.PLACE_PARCEL;
+            currentNumberOfAction++;
         }
 
         return res;
@@ -216,6 +229,7 @@ public abstract class Bot {
         parcel.setIrrigate(side);
         log.addAction(BotActionType.PLACE_IRRIGATION, parcel.toString() + " on " + side.toString());
         lastAction = BotActionType.PLACE_IRRIGATION;
+        currentNumberOfAction++;
     }
 
     protected void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
@@ -510,4 +524,6 @@ public abstract class Bot {
     public int getCurrentNumberOfAction() {
         return currentNumberOfAction;
     }
+
+
 }

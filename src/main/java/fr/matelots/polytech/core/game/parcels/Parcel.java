@@ -30,7 +30,7 @@ public abstract class Parcel {
 
     public abstract void growBamboo ();
 
-    public abstract void destroyUnitOfBamboo ();
+    public abstract boolean destroyUnitOfBamboo ();
 
     public abstract BambooColor getBambooColor();
 

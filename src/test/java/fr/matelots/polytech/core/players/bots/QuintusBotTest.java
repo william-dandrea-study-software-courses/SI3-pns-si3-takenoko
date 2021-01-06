@@ -32,14 +32,14 @@ public class QuintusBotTest {
 
     @Test
     void numberOfAction () {
-        bot.playTurn(log);
+        bot.playTurn(log, null);
         assertEquals(Config.TOTAL_NUMBER_OF_ACTIONS, log.getActions().length);
     }
 
     @Test
     void testFirstTwoTurn() {
-        bot .playTurn(log);
-        bot.playTurn(log);
+        bot .playTurn(log, null);
+        bot.playTurn(log, null);
 
         assertEquals(2, bot.getIndividualBoard().countUnfinishedPandaObjectives());
         assertEquals(0, bot.getIndividualBoard().countUnfinishedParcelObjectives());
@@ -73,9 +73,9 @@ public class QuintusBotTest {
         when(game.getBoard()).thenReturn(board);
         bot = new QuintusBot(game);
         when(game.getNextPandaObjective()).thenReturn(card);
-        bot.playTurn(log);
-        bot.playTurn(log);
-        bot.playTurn(log);
+        bot.playTurn(log, null);
+        bot.playTurn(log, null);
+        bot.playTurn(log, null);
 
         List<Position> positions = new ArrayList<>(board.getPositions());
         positions.remove(Config.POND_POSITION);

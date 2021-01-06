@@ -58,6 +58,22 @@ public enum Side {
         throw new RuntimeException("Le ridge '"+this.toString()+"' n'a pas de ridge à sa gauche");
     }
 
+    /**
+     * Donne le côté touché par pos2 sur pos1.
+     * Equivalent à {@code pos2 = pos1.add(side.getDirection());}
+     * @param pos1 La position initiale
+     * @param pos2 La position qui touche la position initiale
+     * @return Le côté de pos1 où pos2 le touche. Null s'ils ne sont pas voisins.
+     */
+    public static Side getTouchedSide(Position pos1, Position pos2) {
+        Position diff = pos2.remove(pos1);
+        for (Side side : values()) {
+            if(side.direction.equals(diff))
+                return side;
+        }
+        return null;
+    }
+
     public Position getConsoleDelta() {
         switch (this) {
             case LEFT: return new Position(-2, 0, 0);

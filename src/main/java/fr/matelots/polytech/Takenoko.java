@@ -23,7 +23,8 @@ public class Takenoko {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.addHandler(new LogHandler());
 
-        final int NB_GAMES = 1000;
+        final int NB_GAMES = 100;
+        final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
         int nbDraw = 0;
@@ -38,7 +39,13 @@ public class Takenoko {
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             game = new Game();
 
-            game.run(false);
+            game.run(LOG_DETAIL);
+
+            game.getBots().forEach(bot -> {
+                if (!results.containsKey(bot.getName())) {
+                    results.put(bot.getName(), 0);
+                }
+            });
 
             if (game.isCanceledGame()) {
                 nbCanceledGame++;

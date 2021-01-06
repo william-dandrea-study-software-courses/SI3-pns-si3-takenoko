@@ -39,7 +39,7 @@ public class FourthBotTest {
         assertTrue(bot.isFirstLaunch());
 
         // Now we launch the bot
-        bot.playTurn(log);
+        bot.playTurn(log, null);
 
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
@@ -57,15 +57,15 @@ public class FourthBotTest {
     public void gameTest(){
 
         // We launch the bot one time
-        bot.playTurn(log);
+        bot.playTurn(log, null);
         // Now we verify if we pick the good number of objectives into the individualBoard
         assertEquals(individualBoard.countUnfinishedParcelObjectives(), bot.getNumberOfParcelObjectivesAtTheStart());
         assertEquals(individualBoard.countUnfinishedGardenerObjectives(), bot.getNumberOfGardenerObjectivesAtTheStart());
 
         // Now we relauch a turn
-        bot.playTurn(log);
+        bot.playTurn(log, null);
         for (int i = 0; i< 20 ; i++) {
-            bot.playTurn(log);
+            bot.playTurn(log, null);
         }
 
     }

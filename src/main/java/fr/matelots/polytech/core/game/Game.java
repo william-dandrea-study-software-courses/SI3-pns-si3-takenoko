@@ -11,9 +11,7 @@ import fr.matelots.polytech.core.players.bots.*;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,6 +27,7 @@ public class Game {
     private final BoardDrawer drawer;
     private boolean lastTurn;
     private boolean canceledGame = false;
+    private boolean canPlayWeather = false;
 
     // Constructors
     public Game () {
@@ -38,10 +37,10 @@ public class Game {
     }
 
     private void setDemoBots() {
-        bots.add(new QuintusBot(this, "Jojo (Rush Panda)"));
+        addBot(new QuintusBot(this, "Jojo (Rush Panda)"));
         //bots.add(new QuintusBot(this));
         //bots.add(new RushParcelBot(this, "RushParcel"));
-        bots.add(new RushParcelBot(this, "RushParcel2"));
+        addBot(new RushParcelBot(this, "RushParcel2"));
     }
 
     public void addBot(Bot bot) {
@@ -217,11 +216,31 @@ public class Game {
         launchTurnLoop(false);
     }
     public void launchTurnLoop(boolean draw) {
+
+        int numberOfGlobalTour = 0;
+
         while (!lastTurn) {
+
+            numberOfGlobalTour++;
+            if (numberOfGlobalTour == 2) {
+                bots.forEach(bot -> {
+                    bot.setPlayWithWeather(true);
+                    canPlayWeather = true;
+                });
+            }
+
             bots.forEach(bot -> {
+
                 TurnLog log = new TurnLog(bot);
                 try {
-                    bot.playTurn(log);
+                    if (canPlayWeather) {
+                        // We are in the second tour or more
+                        bot.playTurn(log, diceRandomWeather());
+                    } else {
+                        //We are in the first tour, so, any weather
+                        bot.playTurn(log, null);
+                    }
+
                 } catch (IllegalActionRepetitionException e) {
                     log.addAction(BotActionType.NONE, "");
                 }
@@ -284,6 +303,26 @@ public class Game {
 
     public Board getBoard() {
         return board;
+    }
+
+    public List<Bot> getBots() {
+        return new ArrayList<>(bots);
+    }
+
+    public Weather diceRandomWeather() {
+        int num = Config.RANDOM.nextInt(Weather.class.getEnumConstants().length);
+        return Weather.class.getEnumConstants()[num];
+    }
+
+    public void whatWeCanDoWithWeather(Weather weather) {
+        switch (weather) {
+            case SUN:
+            case RAIN:
+            case WIND:
+            case CLOUD:
+            case THUNDERSTORM:
+            case INTERROGATION:
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
@@ -14,7 +15,6 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -36,7 +36,7 @@ public class SecondBot extends Bot {
     }
 
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         turnLogger = log;
         // State represent the state of the objective, if an objective is in progress, he is true, else he is false
         boolean state = checkCurrentObjective();

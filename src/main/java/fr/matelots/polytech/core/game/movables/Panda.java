@@ -37,11 +37,12 @@ public class Panda extends Pawn {
                     "made this panda action");
         }
 
-        getBoard().getParcel(getPosition()).destroyUnitOfBamboo();
-        currentPlayer.getIndividualBoard()
-                .addAnEatenUnitOfBamboo(getBoard()
-                                        .getParcel(getPosition())
-                                        .getBambooColor());
+        if (getBoard().getParcel(getPosition()).destroyUnitOfBamboo()) {
+            currentPlayer.getIndividualBoard()
+                    .addAnEatenUnitOfBamboo(getBoard()
+                            .getParcel(getPosition())
+                            .getBambooColor());
+        }
 
         currentPlayer = null;
     }
