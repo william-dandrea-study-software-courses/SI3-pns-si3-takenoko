@@ -31,9 +31,13 @@ public class QuintusBot extends Bot {
 
     private static final Random random = Config.RANDOM;
 
+    private int[] lastState = new int[3];
+    private int turnWithUnchangedState = 0;
+
     public QuintusBot(Game game, String name) {
         super(game, name);
         turnLeftToPick = 2;
+        Arrays.fill(lastState, 0);
     }
 
     public QuintusBot(Game game) {
@@ -125,11 +129,36 @@ public class QuintusBot extends Bot {
         turnPastMovingGardener = 0;
         checkObjectives();
 
+        checkState();
+
         final int MAX_EATEN_BEFORE_ERROR = 100;
         if (getIndividualBoard().getGreenEatenBamboo() > MAX_EATEN_BEFORE_ERROR
             || getIndividualBoard().getPinkEatenBamboo() > MAX_EATEN_BEFORE_ERROR
             || getIndividualBoard().getYellowEatenBamboo() > MAX_EATEN_BEFORE_ERROR)
             turnDoingNothing = 3;
+    }
+
+    private void checkState () {
+        boolean changed = false;
+        if (lastState[BambooColor.GREEN.ordinal()] != getIndividualBoard().getGreenEatenBamboo()) {
+            changed = true;
+        }
+        else if (lastState[BambooColor.PINK.ordinal()] != getIndividualBoard().getPinkEatenBamboo()) {
+            changed = true;
+        }
+        else if (lastState[BambooColor.YELLOW.ordinal()] != getIndividualBoard().getYellowEatenBamboo()) {
+            changed = true;
+        }
+
+        if (changed) {
+            turnWithUnchangedState = 0;
+            lastState[BambooColor.GREEN.ordinal()] = getIndividualBoard().getGreenEatenBamboo();
+            lastState[BambooColor.PINK.ordinal()] = getIndividualBoard().getPinkEatenBamboo();
+            lastState[BambooColor.YELLOW.ordinal()] = getIndividualBoard().getYellowEatenBamboo();
+        }
+        else {
+            turnWithUnchangedState++;
+        }
     }
 
     /**
@@ -284,7 +313,10 @@ public class QuintusBot extends Bot {
     public boolean canPlay() {
         final int MAX_TURN_DOING_NOTHING = 3;
         final int MAX_TURN_MOVING_GARDENNER = 6;
-        return turnDoingNothing < MAX_TURN_DOING_NOTHING && turnPastMovingGardener < MAX_TURN_MOVING_GARDENNER;
+        final int MAX_TURN_STATE_UNCHANGING = 9;
+        return turnDoingNothing < MAX_TURN_DOING_NOTHING
+                && turnPastMovingGardener < MAX_TURN_MOVING_GARDENNER
+                && turnWithUnchangedState < MAX_TURN_STATE_UNCHANGING;
     }
 
     /**
