@@ -2,7 +2,7 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
@@ -344,7 +344,7 @@ public class ThirdBot extends Bot {
 
     /// interface
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         DecideAction(log);
     }
 

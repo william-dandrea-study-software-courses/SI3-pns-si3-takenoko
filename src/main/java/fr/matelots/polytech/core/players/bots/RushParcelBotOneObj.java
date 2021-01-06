@@ -2,15 +2,13 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
-import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
 
@@ -82,7 +80,7 @@ public class RushParcelBotOneObj extends Bot {
     public RushParcelBotOneObj(Game game, String name) { super(game, name); }
 
     @Override
-    public void playTurn(TurnLog log) {
+    public void playTurn(TurnLog log, Weather weatherCard) {
         currentNumberOfAction = 0;
         turnLogger = log;
         inc++;

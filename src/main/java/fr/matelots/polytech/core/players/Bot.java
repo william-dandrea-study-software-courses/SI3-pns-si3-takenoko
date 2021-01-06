@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -164,14 +165,16 @@ public abstract class Bot {
     /**
      * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
      * @param log A logger to log action made
+     * @param weatherCard
      */
-    public void playTurn (TurnLog log) {
+    public void playTurn (TurnLog log, Weather weatherCard) {
         lastAction = null;
+        currentNumberOfAction = 0;
     }
 
-    public void playTurn() {
+    public void playTurn(Weather weatherCard) {
         TurnLog log = new TurnLog(this);
-        playTurn(log);
+        playTurn(log, weatherCard);
         currentNumberOfAction = 0;
     }
 

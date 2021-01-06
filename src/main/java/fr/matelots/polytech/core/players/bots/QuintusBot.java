@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.PickDeckEmptyException;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
@@ -40,8 +41,8 @@ public class QuintusBot extends Bot {
     }
 
     @Override
-    public void playTurn(TurnLog log) {
-        super.playTurn(log);
+    public void playTurn(TurnLog log, Weather weatherCard) {
+        super.playTurn(log, weatherCard);
 
         setCurrentNumberOfAction(0);
         int action = 0;

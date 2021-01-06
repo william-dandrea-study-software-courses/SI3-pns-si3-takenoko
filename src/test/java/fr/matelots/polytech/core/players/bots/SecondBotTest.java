@@ -1,18 +1,12 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.players.IndividualBoard;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
-import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -41,14 +35,14 @@ public class SecondBotTest {
 
         // Tant que l'on a pas réaliser un objectif, la liste d'objectifs comprends un seul objectif
         for(int i = 1; i <= 5; i++) {
-            bot.playTurn();
+            bot.playTurn(null);
             assertEquals(individualBoard.getUnfinishedParcelObjectives().size(), 1);
         }
 
         // test complete phase
         int oldSize = individualBoard.getUnfinishedParcelObjectives().size();
         while(oldSize > 0) {
-            bot.playTurn();
+            bot.playTurn(null);
             int currentSize = individualBoard.getUnfinishedParcelObjectives().size();
             assertTrue(currentSize <= oldSize);
             oldSize = currentSize;
