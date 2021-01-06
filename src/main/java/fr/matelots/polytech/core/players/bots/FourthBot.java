@@ -11,7 +11,7 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.IAforBot;
+import fr.matelots.polytech.core.players.MarganIA;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
@@ -303,7 +303,7 @@ public class FourthBot extends Bot {
             // We add the new parcel
 
         } else { // il manque une ou plusieurs parcelles pour pouvoir poser celle du motif
-            position = IAforBot.findTheBestPlaceToPlaceAnParcel(this.currentParcelObjective, this.board);
+            position = MarganIA.findTheBestPlaceToPlaceAnParcel(this.currentParcelObjective, this.board);
                 /*if(missingPos != null)
                     this.placeParcel(missingPos.getPosition(), missingPos.getColor(), log);
                 else
