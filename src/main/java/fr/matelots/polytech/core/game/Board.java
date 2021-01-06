@@ -345,7 +345,7 @@ public class Board {
     public List<Parcel> pickParcels () {
         List<Parcel> res = new ArrayList<>();
 
-        if (greenParcelLeftToPlace + pinkParcelLeftToPlace + yellowParcelLeftToPlace < 0)
+        if (greenParcelLeftToPlace + pinkParcelLeftToPlace + yellowParcelLeftToPlace <= 0)
             return res;
 
         int dice;
