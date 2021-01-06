@@ -24,13 +24,11 @@ import java.util.logging.Logger;
  * @author Gabriel Cogne
  */
 public class QuintusBot extends Bot {
-    private final Panda panda;
-    private final Gardener gardener;
     private int turnLeftToPick;
     private int turnDoingNothing = 0;
     private int turnPastMovingGardener = 0;
 
-    private BotActionType lastAction;
+    //private BotActionType lastAction;
 
     private List<BambooColor> neededColors;
 
@@ -38,8 +36,6 @@ public class QuintusBot extends Bot {
 
     public QuintusBot(Game game, String name) {
         super(game, name);
-        panda = board.getPanda();
-        gardener = board.getGardener();
         turnLeftToPick = 2;
     }
 
@@ -49,9 +45,11 @@ public class QuintusBot extends Bot {
 
     @Override
     public void playTurn(TurnLog log) {
+        super.playTurn(log);
+
         setCurrentNumberOfAction(0);
         int action = 0;
-        lastAction = null;
+        //lastAction = null;
 
         for ( ; action < Config.TOTAL_NUMBER_OF_ACTIONS; action++){
             if (!canPlay())
@@ -100,7 +98,7 @@ public class QuintusBot extends Bot {
             neededColors = getNeededColor();
             turnDoingNothing = 0;
             turnPastMovingGardener = 0;
-            lastAction = BotActionType.PICK_PANDA_GOAL;
+            //lastAction = BotActionType.PICK_PANDA_GOAL;
         } catch (PickDeckEmptyException e) {
             log.addAction(BotActionType.NONE, "");
             turnDoingNothing++;
@@ -128,14 +126,17 @@ public class QuintusBot extends Bot {
         if (chosen == null)
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
+        super.movePanda(log, chosen);
+        /*
         panda.setCurrentPlayer(this);
         panda.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
 
-        checkObjectives();
         log.addAction(BotActionType.MOVE_PANDA, chosen.toString());
+        */
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
-        lastAction = BotActionType.MOVE_PANDA;
+        checkObjectives();
+        //lastAction = BotActionType.MOVE_PANDA;
 
         final int MAX_EATEN_BEFORE_ERROR = 100;
         if (getIndividualBoard().getGreenEatenBamboo() > MAX_EATEN_BEFORE_ERROR
@@ -165,11 +166,13 @@ public class QuintusBot extends Bot {
         if (chosen == null)
             chosen = accessibles.get(random.nextInt(accessibles.size()));
 
-        gardener.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
-        log.addAction(BotActionType.MOVE_GARDENER, chosen.toString());
+        super.moveGardener(log, chosen);
+
+        //gardener.moveTo(chosen.getX(), chosen.getY(), chosen.getZ());
+        //log.addAction(BotActionType.MOVE_GARDENER, chosen.toString());
         turnDoingNothing = 0;
         turnPastMovingGardener++;
-        lastAction = BotActionType.MOVE_GARDENER;
+        //lastAction = BotActionType.MOVE_GARDENER;
     }
 
     /**
@@ -212,11 +215,13 @@ public class QuintusBot extends Bot {
             chosenParcel = placeable.get(random.nextInt(placeable.size()));
         }
 
-        board.addParcel(chosen, chosenParcel);
-        log.addAction(BotActionType.PLACE_PARCEL, chosen.toString());
+        super.placeParcel(log, chosen, chosenParcel);
+
+        //board.addParcel(chosen, chosenParcel);
+        //log.addAction(BotActionType.PLACE_PARCEL, chosen.toString());
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
-        lastAction = BotActionType.PLACE_PARCEL;
+        //lastAction = BotActionType.PLACE_PARCEL;
     }
 
     /**

@@ -13,7 +13,8 @@ public enum BotActionType {
     MOVE_GARDENER,
     MOVE_PANDA,
 
-    PLACE_IRRIGATION;
+    PLACE_IRRIGATION,
+    PLACE_LAYOUT;
 
 
     public String getMessage(Bot bot, Object param) {
@@ -34,6 +35,8 @@ public enum BotActionType {
                 return bot.getName() + " move panda : " + param;
             case PLACE_IRRIGATION:
                 return bot.getName() + " place an irrigation on the edge " + param;
+            case PLACE_LAYOUT:
+                return bot.getName() + " place a layout " + param;
         }
 
         return "";

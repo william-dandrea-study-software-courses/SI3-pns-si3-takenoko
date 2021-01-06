@@ -41,9 +41,9 @@ public class Game {
         //bots.add(new ThirdBot(this));
         //bots.add(new FourthBot(this));
         //bots.add(new FifthBot(this, "GentleBot"));
-        //bots.add(new QuintusBot(this));
+        bots.add(new QuintusBot(this));
         bots.add(new QuintusBot(this, "Jojo"));
-        bots.add(new RushParcelBot(this, "RushParcel"));
+        //bots.add(new RushParcelBot(this, "RushParcel"));
     }
 
     public void addBot(Bot bot) {
@@ -145,6 +145,7 @@ public class Game {
                                 .append(") : ");
                         for (Bot bot : trueWinners)
                             result.append(bot.getName()).append(", ");
+                        result.append("\n");
                     }
                 }
                 else {
@@ -161,8 +162,9 @@ public class Game {
                 winners.removeAll(trueWinners);
                 rank++;
             }
-
+            ranked.get(0).removeAll(winners);
         }
+
 
         for(var bot : ranked.get(0)) {
             result.append(bot.getName()).append(", ");
