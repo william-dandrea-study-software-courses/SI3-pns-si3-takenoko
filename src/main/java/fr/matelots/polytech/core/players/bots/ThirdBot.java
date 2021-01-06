@@ -306,7 +306,7 @@ public class ThirdBot extends Bot {
 
         if(tileIrrigatedReachableByGardener.isPresent() && canPerformAction(BotActionType.MOVE_GARDENER)) {
             var nextPosition = getGardenerRoute(tileIrrigatedReachableByGardener.get()).get();
-            moveGardener(turnLog, nextPosition);
+            moveGardener(nextPosition, turnLog);
             return;
         }
 
