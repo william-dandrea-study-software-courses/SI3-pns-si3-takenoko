@@ -14,7 +14,7 @@ public class BambooPlantation extends Parcel {
 
     private int bambooSize;
     private final BambooColor bambooColor;
-    private final Layout layout;
+    private Layout layout;
 
     public BambooPlantation (BambooColor color) {
         this(color, null);
@@ -95,6 +95,14 @@ public class BambooPlantation extends Parcel {
      */
     public boolean hasLayout() {
         return this.layout != null;
+    }
+
+    public boolean setLayout (Layout layout) {
+        if (!hasLayout()) {
+            this.layout = layout;
+        }
+
+        return hasLayout();
     }
 
     @Override

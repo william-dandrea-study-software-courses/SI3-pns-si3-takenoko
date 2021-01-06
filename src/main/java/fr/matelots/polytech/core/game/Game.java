@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.IllegalActionRepetitionException;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveEmperor;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -7,6 +8,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
 import java.util.ArrayList;
@@ -145,6 +147,7 @@ public class Game {
                                 .append(") : ");
                         for (Bot bot : trueWinners)
                             result.append(bot.getName()).append(", ");
+                        result.append("\n");
                     }
                 }
                 else {
@@ -161,8 +164,9 @@ public class Game {
                 winners.removeAll(trueWinners);
                 rank++;
             }
-
+            ranked.get(0).removeAll(winners);
         }
+
 
         for(var bot : ranked.get(0)) {
             result.append(bot.getName()).append(", ");
@@ -228,7 +232,11 @@ public class Game {
         while (!lastTurn) {
             bots.forEach(bot -> {
                 TurnLog log = new TurnLog(bot);
-                bot.playTurn(log);
+                try {
+                    bot.playTurn(log);
+                } catch (IllegalActionRepetitionException e) {
+                    log.addAction(BotActionType.NONE, "");
+                }
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size())) {
                     if (!lastTurn) {
                         if (draw)

@@ -1,5 +1,7 @@
 package fr.matelots.polytech.engine.util;
 
+import fr.matelots.polytech.core.game.Board;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,5 +53,11 @@ public class LineDrawer {
         }
 
         return result;
+    }
+
+    public static boolean lineOverVoid(Position a, Position b, Board board) {
+        var positions = getLine(a, b);
+        // si l'une des positions constituants le chemin est nulle alors la ligne est sur du vide
+        return positions.stream().anyMatch(p -> board.getParcel(p) == null);
     }
 }
