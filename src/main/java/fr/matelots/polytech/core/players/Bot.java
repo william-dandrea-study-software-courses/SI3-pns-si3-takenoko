@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.IllegalActionRepetitionException;
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
@@ -10,8 +11,9 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.movables.Gardener;
+import fr.matelots.polytech.core.game.movables.Panda;
+import fr.matelots.polytech.core.game.parcels.*;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
@@ -29,9 +31,13 @@ public abstract class Bot {
     private final Game game;
     protected final Board board;
     protected final IndividualBoard individualBoard;
-    protected static final Random random = new Random();
+    protected static final Random random = Config.RANDOM;
     private String name;
     protected int currentNumberOfAction;
+
+    private BotActionType lastAction;
+    protected final Panda panda;
+    protected final Gardener gardener;
 
     public Bot(Game game, String name) {
         this(game);
@@ -43,6 +49,12 @@ public abstract class Bot {
         this.board = game.getBoard();
         this.name = toString();
         this.individualBoard = new IndividualBoard();
+        panda = board.getPanda();
+        gardener = board.getGardener();
+    }
+
+    protected BotActionType getLastAction () {
+        return lastAction;
     }
 
     /**
@@ -50,6 +62,10 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickParcelObjective(TurnLog log) {
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(this.canDoAction()) {
             CardObjectiveParcel obj = game.getNextParcelObjective();
             if (obj == null) {
@@ -59,6 +75,7 @@ public abstract class Bot {
                 return Optional.empty();
             }
             log.addAction(BotActionType.PICK_PARCEL_GOAL, obj.toString());
+            lastAction = BotActionType.PICK_PARCEL_GOAL;
             currentNumberOfAction++;
             return Optional.of(obj);
         }
@@ -70,6 +87,10 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickGardenerObjective(TurnLog log) {
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if(this.canDoAction()) {
             CardObjectiveGardener obj = game.getNextGardenerObjective();
             if (obj == null) {
@@ -79,6 +100,7 @@ public abstract class Bot {
                 return Optional.empty();
             }
             log.addAction(BotActionType.PICK_GARDENER_GOAL, obj.toString());
+            lastAction = BotActionType.PICK_GARDENER_GOAL;
             currentNumberOfAction++;
             return Optional.of(obj);
         }
@@ -90,6 +112,10 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public Optional<CardObjective> pickPandaObjective(TurnLog log) {
+        if (!(new ArrayList<>(List.of(BotActionType.PICK_GARDENER_GOAL, BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL))).contains(lastAction))
+            throw new IllegalActionRepetitionException();
+
         if (this.canDoAction()) {
             CardObjectivePanda obj = game.getNextPandaObjective();
             if (obj == null) {
@@ -101,7 +127,7 @@ public abstract class Bot {
 
             log.addAction(BotActionType.PICK_PANDA_GOAL, obj.toString());
             currentNumberOfAction++;
-
+            lastAction = BotActionType.PICK_PANDA_GOAL;
             return Optional.of(obj);
         }
         return Optional.empty();
@@ -135,12 +161,63 @@ public abstract class Bot {
      * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
      * @param log A logger to log action made
      */
-    public abstract void playTurn (TurnLog log);
+    public void playTurn (TurnLog log) {
+        lastAction = null;
+    }
 
     public void playTurn() {
         TurnLog log = new TurnLog(this);
         playTurn(log);
         currentNumberOfAction = 0;
+    }
+
+    protected void movePanda(TurnLog log, Position pos) {
+        if (BotActionType.MOVE_PANDA.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
+        panda.setCurrentPlayer(this);
+        panda.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        log.addAction(BotActionType.MOVE_PANDA, pos.toString());
+        lastAction = BotActionType.MOVE_PANDA;
+    }
+
+    protected void moveGardener(TurnLog log, Position pos) {
+        if (BotActionType.MOVE_GARDENER.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
+        gardener.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        log.addAction(BotActionType.MOVE_GARDENER, pos.toString());
+        lastAction = BotActionType.MOVE_GARDENER;
+    }
+
+    protected void placeParcel (TurnLog log, Position pos, Parcel parcel) {
+        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
+        board.addParcel(pos, parcel);
+        log.addAction(BotActionType.PLACE_PARCEL, parcel.toString() + " in" + pos.toString());
+        lastAction = null;
+    }
+
+    protected void placeIrrigation (TurnLog log, Parcel parcel, Side side) {
+        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
+        parcel.setIrrigate(side);
+        log.addAction(BotActionType.PLACE_IRRIGATION, parcel.toString() + " on " + side.toString());
+        lastAction = BotActionType.PLACE_IRRIGATION;
+    }
+
+    protected void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
+        if (BotActionType.PLACE_LAYOUT.equals(lastAction))
+            throw new IllegalActionRepetitionException();
+
+        if (parcel.setLayout(layout)) {
+            log.addAction(BotActionType.PLACE_LAYOUT, layout.name() + " on " + parcel.toString());
+            lastAction = BotActionType.PLACE_LAYOUT;
+        } else {
+            log.addAction(BotActionType.NONE, "");
+        }
     }
 
     /**
