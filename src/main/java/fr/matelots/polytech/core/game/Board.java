@@ -350,6 +350,10 @@ public class Board {
     
     public List<Parcel> pickParcels () {
         List<Parcel> res = new ArrayList<>();
+
+        if (greenParcelLeftToPlace + pinkParcelLeftToPlace + yellowParcelLeftToPlace < 0)
+            return res;
+
         int dice;
         for (int i = 0; i < Config.NB_PARCEL_PICKED; i++) {
             dice = Config.RANDOM.nextInt(greenParcelLeftToPlace + pinkParcelLeftToPlace + yellowParcelLeftToPlace);

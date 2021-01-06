@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game;
 
+import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.Arrays;
@@ -78,5 +79,14 @@ public class Config {
             default:
                 return -1;
         }
+    }
+
+    public static boolean isPickAction (BotActionType action) {
+        if (action == null)
+            return false;
+
+        return List.of(BotActionType.PICK_GARDENER_GOAL,
+                BotActionType.PICK_PANDA_GOAL,
+                BotActionType.PICK_PARCEL_GOAL).contains(action);
     }
 }
