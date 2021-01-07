@@ -60,9 +60,9 @@ public class GardenerTest {
 
         assertTrue(gardener.moveTo(1, -1, 0));
 
-        assertEquals(1, p1.getBambooSize());
-        assertEquals(1, p2.getBambooSize());
-        assertEquals(0, p3.getBambooSize());
+        assertEquals(2, p1.getBambooSize());
+        assertEquals(2, p2.getBambooSize());
+        assertEquals(1, p3.getBambooSize());
         assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 
@@ -79,9 +79,9 @@ public class GardenerTest {
 
         assertTrue(gardener.moveTo(1, -1, 0));
 
-        assertEquals(1, p1.getBambooSize());
-        assertEquals(0, p2.getBambooSize());
-        assertEquals(0, p3.getBambooSize());
+        assertEquals(2, p1.getBambooSize());
+        assertEquals(1, p2.getBambooSize());
+        assertEquals(1, p3.getBambooSize());
         assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 

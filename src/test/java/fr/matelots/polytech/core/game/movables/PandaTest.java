@@ -71,9 +71,9 @@ public class PandaTest {
         panda.setCurrentPlayer(bot);
         assertTrue(panda.moveTo(1, -1, 0));
 
-        assertEquals(1, p1.getBambooSize());
-        assertEquals(2, p2.getBambooSize());
-        assertEquals(2, p3.getBambooSize());
+        assertEquals(2, p1.getBambooSize());
+        assertEquals(3, p2.getBambooSize());
+        assertEquals(3, p3.getBambooSize());
         assertEquals(0, board.getParcel(Config.POND_POSITION).getBambooSize());
     }
 

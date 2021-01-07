@@ -103,15 +103,16 @@ public class BambooPlantationTest {
     @Test
     public void testGrowBambooByOneUnit () {
         parcel.setIrrigate(Side.RIGHT);
+        int nbBefore = parcel.getBambooSize();
         parcel.growBamboo();
-        assertEquals(1, parcel.getBambooSize());
+        assertEquals(2, parcel.getBambooSize());
     }
 
     @Test
     public void testGrowBambooByOneUnitParcelFertilizer () {
-        this.parcelFertilizer.setIrrigate(Side.RIGHT);
-        this.parcelFertilizer.growBamboo();
-        assertEquals(2, this.parcelFertilizer.getBambooSize());
+        this.parcelFertilizer.setIrrigate(Side.RIGHT); // BambooSize +2
+        this.parcelFertilizer.growBamboo(); // BambooSize +2
+        assertEquals(4, this.parcelFertilizer.getBambooSize());
     }
 
     @Test
@@ -142,8 +143,7 @@ public class BambooPlantationTest {
     public void testCantDestroyBambooParcelEnclosure() {
         this.parcelEnclosure.setIrrigate(Side.RIGHT);
         this.parcelEnclosure.growBamboo();
-        this.parcelEnclosure.destroyUnitOfBamboo();
-        assertEquals(1, this.parcelEnclosure.getBambooSize());
+        assertFalse(this.parcelEnclosure.destroyUnitOfBamboo());
     }
 
 }
