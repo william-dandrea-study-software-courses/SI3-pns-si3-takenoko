@@ -17,8 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fr.matelots.polytech.core.players.MarganIA.findTheBestPlaceToMoveTheGardener;
-import static fr.matelots.polytech.core.players.MarganIA.searchTheParcelsAroundAnIrrigateParcel;
+import static fr.matelots.polytech.core.players.MarganIA.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -310,8 +309,18 @@ public class MarganIATest {
 
 
     @Test
-    public void testCountNumberResolvePatternLine() {
+    public void testCountNumberActionsResolvePatternLine() {
 
+        game.getBoard().addParcel(0,1,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,0,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,1,-2, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(2,-1,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(2,1,-1, new BambooPlantation(BambooColor.GREEN));
+
+        CardObjectiveParcel cardObjectiveParcelLine = new CardObjectiveParcel(game.getBoard(), 2, Patterns.LINE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
+        cardObjectiveParcelLine.verify();
+
+        assertEquals(1,countNumberActionsResolvePatternLine(cardObjectiveParcelLine, board) );
 
 
     }

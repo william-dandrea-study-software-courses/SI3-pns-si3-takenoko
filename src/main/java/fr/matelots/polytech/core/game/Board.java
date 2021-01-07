@@ -1,10 +1,7 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
-import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
-import fr.matelots.polytech.core.game.deck.DeckPandaObjective;
-import fr.matelots.polytech.core.game.deck.DeckParcel;
-import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
+import fr.matelots.polytech.core.game.deck.*;
 import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
@@ -25,6 +22,8 @@ public class Board {
     private final DeckPandaObjective deckPandaObjective;
     private final DeckParcel deckParcel;
 
+    private final DeckLayout deckLayout;
+
     private int parcelLeftToPlace;
     private int yellowParcelLeftToPlace;
     private int pinkParcelLeftToPlace;
@@ -42,6 +41,7 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         this.deckPandaObjective = new DeckPandaObjective(this);
         this.deckParcel = new DeckParcel(this);
+        this.deckLayout = new DeckLayout(this);
         // On ajoute l'étang
         grid.put(Config.POND_POSITION, new Pond());
         gardener = new Gardener(this, Config.POND_POSITION);
@@ -387,4 +387,6 @@ public class Board {
         irrigationLeft--;
         return true;
     }
+
+
 }

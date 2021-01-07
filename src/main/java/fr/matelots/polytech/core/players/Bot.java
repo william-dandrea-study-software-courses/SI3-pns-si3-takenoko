@@ -348,9 +348,9 @@ public abstract class Bot {
 
     /**
      * List<Parcel> availableParcels = board.pickParcels();
-     *                 if (!availableParcels.isEmpty() && availableParcels != null) {
-     *                     placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
-     *                 }
+     * if (!availableParcels.isEmpty() && availableParcels != null) {
+     *      placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
+     * }
      * @param log
      * @param parcel
      * @return
@@ -443,33 +443,6 @@ public abstract class Bot {
                 }
                 return Optional.of(pos);
             }
-
-            /*switch (color) {
-                case PINK: {
-
-                }
-
-                case YELLOW: {
-                    if (verifyIfWeCanPlaceAColoredParcel(color)) {
-                        if (board.addParcel(pos, new BambooPlantation(color))) {
-                            currentNumberOfAction++;
-                            log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
-                        }
-                        return Optional.of(pos);
-                    }
-                }
-
-
-                case GREEN: {
-                    if (verifyIfWeCanPlaceAColoredParcel(color)) {
-                        if (board.addParcel(pos, new BambooPlantation(color))) {
-                            currentNumberOfAction++;
-                            log.addAction(BotActionType.PLACE_PARCEL, pos.toString());
-                        }
-                        return Optional.of(pos);
-                    }
-                }
-            }*/
         }
 
         return Optional.empty();
@@ -583,7 +556,6 @@ public abstract class Bot {
         else return false;
     }
 
-
     public String getName() {
         return name;
     }
@@ -595,4 +567,5 @@ public abstract class Bot {
     public boolean isCanMovePandaSomewhere() {
         return canMovePandaSomewhere;
     }
+
 }

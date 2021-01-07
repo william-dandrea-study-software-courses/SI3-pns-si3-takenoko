@@ -29,6 +29,7 @@ public abstract class Parcel {
      * @return true si la parcelle a un aménagement
      */
     public boolean hasLayout() {
+
         return this.layout != null;
     }
 
@@ -107,11 +108,6 @@ public abstract class Parcel {
     }
 
     public void draw(ParcelDrawer drawer) {
-        //System.out.println("irrigate : ");
-        /*if(isIrrigate()) {
-            Arrays.stream(Side.values()).forEach(drawer::setIrrigate);
-            return;
-        }*/
 
         // Si elle n'est pas irrigué, elle peut partager des bordures qui le sont
         irrigate.forEach((side, isIrrigated) -> {
@@ -123,7 +119,6 @@ public abstract class Parcel {
             }
         });
     }
-
 
 
     // Methods

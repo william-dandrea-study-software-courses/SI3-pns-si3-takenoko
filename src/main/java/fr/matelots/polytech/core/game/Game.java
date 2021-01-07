@@ -29,6 +29,7 @@ public class Game {
     private boolean lastTurn;
     private boolean canceledGame = false;
     private boolean canPlayWeather = false;
+    private boolean canMovePandaSomewhere = false;       // For the THUNDERSTORM weather => The panda can move somewhere
 
     // Constructors
     public Game () {
@@ -314,13 +315,30 @@ public class Game {
         return new ArrayList<>(bots);
     }
 
+    /**
+     * @return a random Weather (like the weather dice)
+     */
     public Weather diceRandomWeather() {
+        canMovePandaSomewhere = false;
         int num = Config.RANDOM.nextInt(Weather.values().length);
-        return Weather.values()[num];
+        Weather weather = Weather.values()[num];
+
+        if (weather.equals(Weather.THUNDERSTORM)) {
+            canMovePandaSomewhere = true;
+        }
+        return weather;
     }
 
+    /**
+     * This method will move the panda at a certain position (somewhere)
+     * @param lastAction The last action from the bot
+     * @param bot
+     * @param pos the position where we want to move the panda
+     * @param log
+     * @return true if we arrived to move, false otherwise
+     */
     public boolean movePandaWhenWeather(BotActionType lastAction, Bot bot, Position pos, TurnLog log) {
-        if (bot.isCanMovePandaSomewhere()) {
+        if (canMovePandaSomewhere) {
             if (BotActionType.MOVE_PANDA.equals(lastAction))
                 throw new IllegalActionRepetitionException();
 
