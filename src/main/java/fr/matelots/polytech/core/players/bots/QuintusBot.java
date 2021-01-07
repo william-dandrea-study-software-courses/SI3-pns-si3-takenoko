@@ -88,7 +88,7 @@ public class QuintusBot extends Bot {
 
             // Do an action
             if (getIndividualBoard().countUnfinishedPandaObjectives() < 1) {
-                turnLeftToPick = Math.max(3, turnLeftToPick);
+                turnLeftToPick = Math.max(2, turnLeftToPick);
             }
 
             neededColors = getNeededColor();

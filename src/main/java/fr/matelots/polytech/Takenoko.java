@@ -21,8 +21,8 @@ public class Takenoko {
         rootLogger.addHandler(new LogHandler());
         long time = System.currentTimeMillis();
         List<Double> percents = new ArrayList<>();
-        for (double i = 0; i < 10; i++)
-            percents.add(i / 10.);
+        for (double i = 0; i < 20; i++)
+            percents.add(i / 20.);
 
         final int NB_GAMES = 1000;
         final boolean LOG_DETAIL = false;
@@ -73,7 +73,7 @@ public class Takenoko {
             }
         }
 
-        System.out.println("" + NB_GAMES +".");
+        System.out.println("" + NB_GAMES + "!");
 
         StringBuilder builder = new StringBuilder("Résultats :\n");
         results.keySet().forEach(bot ->
