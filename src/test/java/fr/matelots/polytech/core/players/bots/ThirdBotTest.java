@@ -82,7 +82,7 @@ public class ThirdBotTest {
     @Disabled
     @Test
     void testStability() {
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 500; i++) {
             init();
             int n = 0;
             while (bot.canPlay()) {
