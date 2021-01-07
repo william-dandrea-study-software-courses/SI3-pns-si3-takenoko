@@ -9,6 +9,7 @@ import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.PremierBot;
+import fr.matelots.polytech.core.players.bots.QuintusBot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -26,7 +27,7 @@ public class PandaTest {
     public void init () {
         board = new Board();
         panda = board.getPanda();
-        bot = new PremierBot(new Game());
+        bot = new QuintusBot(new Game());
     }
 
     @Test
