@@ -267,7 +267,7 @@ public class MarganIA {
 
 
 
-        Map finalHmap = new HashMap();
+        Map<Position, Set<Position>> finalHmap = new HashMap<>();
         finalHmap.put(finalPosition, idealPositionWhereWeCanMoveTheGardener);
 
         return finalHmap;
