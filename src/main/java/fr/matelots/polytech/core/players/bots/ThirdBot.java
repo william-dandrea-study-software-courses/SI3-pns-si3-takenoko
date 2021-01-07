@@ -128,8 +128,9 @@ public class ThirdBot extends Bot {
                     board.getParcel(position).getBambooColor() == bambooColor &&            // Good color
                     !board.getParcel(position).isIrrigate() &&                              // Position irrigate
                     (                                                                       // Check layouts
-                            objectiveGardener.getLayout() == null &&                                 // Check objectiveCard has no layout
-                            (board.getParcel(position).getLayout() == null || board.getParcel(position).getLayout() == objectiveGardener.getLayout())
+                            objectiveGardener.getLayout() == null ||                                 // Check objectiveCard has no layout
+                            board.getParcel(position).getLayout() == null ||
+                            board.getParcel(position).getLayout() == objectiveGardener.getLayout()
                     ) &&
                     isIrrigable(position) &&
                     (board.canPickIrrigation() || getIndividualBoard().canPlaceIrrigation())
@@ -145,6 +146,11 @@ public class ThirdBot extends Bot {
                 board.getParcel(position).isIrrigate() &&
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 board.getParcel(position).getBambooSize() < bambooSize &&
+                (                                                                       // Check layouts
+                        objectiveGardener.getLayout() == null ||                                 // Check objectiveCard has no layout
+                                board.getParcel(position).getLayout() == null ||
+                                board.getParcel(position).getLayout() == objectiveGardener.getLayout()
+                ) &&
                 isReachableByGardener(position));
         if(irrigatedAndReachableByGardenner)
             return true;
