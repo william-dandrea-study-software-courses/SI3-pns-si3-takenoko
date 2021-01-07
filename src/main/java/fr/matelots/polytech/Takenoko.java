@@ -26,7 +26,7 @@ public class Takenoko {
         rootLogger.addHandler(new LogHandler());
         long time = System.currentTimeMillis();
 
-        final int NB_GAMES = 500;
+        final int NB_GAMES = 100;
         final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
@@ -41,7 +41,7 @@ public class Takenoko {
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             if(nbGame % 25 == 0)
-                System.out.println(nbGame);
+                System.out.print("" + nbGame + "... ");
             game = new Game();
 
             game.run(LOG_DETAIL);
@@ -75,6 +75,8 @@ public class Takenoko {
             }
         }
 
+        System.out.println("" + NB_GAMES +".");
+
         StringBuilder builder = new StringBuilder("Résultats :\n");
         results.keySet().forEach(bot ->
                 builder.append(bot).append(" : ").append(results.get(bot))
@@ -86,7 +88,7 @@ public class Takenoko {
 
         Logger.getGlobal().info(builder.toString());
         long duration = System.currentTimeMillis() - time;
-        System.out.println((new SimpleDateFormat("mm:ss:SSS")).format(new Date(duration)));
+        System.out.println("Temps " + (new SimpleDateFormat("mm:ss:SSS")).format(new Date(duration)));
     }
 
 }
