@@ -14,7 +14,6 @@ public class BambooPlantation extends Parcel {
 
     private int bambooSize;
     private final BambooColor bambooColor;
-    private Layout layout;
 
     public BambooPlantation (BambooColor color) {
         this(color, null);
@@ -23,7 +22,7 @@ public class BambooPlantation extends Parcel {
     public BambooPlantation (BambooColor color, Layout layout) {
         this.bambooSize = layout == Layout.BASIN ? 1 : 0;
         this.bambooColor = color;
-        this.layout = layout;
+        setLayout(layout);
     }
 
     /**
@@ -48,14 +47,14 @@ public class BambooPlantation extends Parcel {
 
         if (bambooSize < Config.MAX_SIZE_BAMBOO) {
             bambooSize++;
-            if(layout == Layout.FERTILIZER && bambooSize < Config.MAX_SIZE_BAMBOO)
+            if(getLayout() == Layout.FERTILIZER && bambooSize < Config.MAX_SIZE_BAMBOO)
                 bambooSize++;
         }
     }
 
     @Override
     public boolean destroyUnitOfBamboo() {
-        if(this.layout != Layout.ENCLOSURE) {
+        if(this.getLayout() != Layout.ENCLOSURE) {
             if (bambooSize > Config.MIN_SIZE_BAMBOO) {
                 bambooSize--;
                 return true;
@@ -76,7 +75,7 @@ public class BambooPlantation extends Parcel {
 
     @Override
     public boolean isIrrigate() {
-        return this.layout == Layout.BASIN || super.isIrrigate();
+        return this.getLayout() == Layout.BASIN || super.isIrrigate();
     }
 
     @Override
@@ -91,39 +90,21 @@ public class BambooPlantation extends Parcel {
                 ConsoleColor.getFromBambooColor(getBambooColor()),
                 String.valueOf(getBambooSize()).charAt(0));
 
-        drawer.setLayout(layout);
-    }
-
-    /**
-     *
-     * @return true si la parcelle a un aménagement
-     */
-    public boolean hasLayout() {
-        return this.layout != null;
-    }
-
-    public Layout getLayout() {
-        return layout;
+        drawer.setLayout(getLayout());
     }
 
 
-    public boolean setLayout (Layout layout) {
-        if (!hasLayout()) {
-            this.layout = layout;
-        }
-        return hasLayout();
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BambooPlantation that = (BambooPlantation) o;
-        return bambooSize == that.bambooSize && bambooColor == that.bambooColor && layout == that.layout;
+        return bambooSize == that.bambooSize && bambooColor == that.bambooColor && getLayout() == that.getLayout();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bambooSize, bambooColor, layout);
+        return Objects.hash(bambooSize, bambooColor, getLayout());
     }
 }

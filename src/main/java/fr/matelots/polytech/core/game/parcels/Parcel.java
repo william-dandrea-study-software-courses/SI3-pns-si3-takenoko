@@ -24,9 +24,26 @@ public abstract class Parcel {
             this.irrigate.put(side, false);
     }
 
+    /**
+     *
+     * @return true si la parcelle a un aménagement
+     */
+    public boolean hasLayout() {
+        return this.layout != null;
+    }
+
+    public Layout getLayout() {
+        return layout;
+    }
 
 
-    // Constructors
+    public boolean setLayout (Layout layout) {
+        if (!hasLayout()) {
+            this.layout = layout;
+        }
+        return hasLayout();
+    }
+
     public abstract boolean isPond();
 
     public abstract int getBambooSize();
