@@ -366,13 +366,27 @@ public class MarganIA {
 
         Board boardTemp = new Board();
         boardTemp = board;
-
+        boolean stop = false;
 
 
         Set<PositionColored> placeWhereWeNeedToPlace = objective.getMissingPositionsToComplete();
 
-        PositionColored idealPosition = resolvePatternLine(objective, boardTemp);
-        boardTemp.addParcel(idealPosition.getPosition(), new BambooPlantation(idealPosition.getColor(), null));
+        while (!stop) {
+            PositionColored idealPosition = resolvePatternLine(objective, boardTemp);
+            boardTemp.addParcel(idealPosition.getPosition(), new BambooPlantation(idealPosition.getColor(), null));
+
+            int numberOfParcelsInObj = objective.getColors().length;
+            for (PositionColored positionColored : placeWhereWeNeedToPlace) {
+                if (boardTemp.containTile(positionColored.getPosition())) {
+
+
+
+                }
+            }
+
+        }
+
+        return null;
 
 
 
