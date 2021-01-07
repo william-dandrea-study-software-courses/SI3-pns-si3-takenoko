@@ -47,7 +47,7 @@ public class CardObjectiveGardener extends CardObjective {
             Parcel parcel = this.board.getParcel(pos);
             if(parcel instanceof BambooPlantation) {
                 BambooPlantation plantation = (BambooPlantation) parcel;
-                if(plantation.getBambooSize() == this.size && plantation.getBambooColor() == this.color && plantation.getLayout().equals(this.layout))
+                if(plantation.getBambooSize() == this.size && plantation.getBambooColor() == this.color && this.layout == plantation.getLayout())
                     count++;
             }
         }
