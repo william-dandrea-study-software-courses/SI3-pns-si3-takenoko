@@ -159,7 +159,7 @@ public abstract class Bot {
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public final Optional<CardObjective> pickParcelObjective(TurnLog log) {
+    public final Optional<CardObjectiveParcel> pickParcelObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -183,7 +183,7 @@ public abstract class Bot {
      * This method pick a new Gardener objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public final Optional<CardObjective> pickGardenerObjective(TurnLog log) {
+    public final Optional<CardObjectiveGardener> pickGardenerObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
@@ -207,7 +207,7 @@ public abstract class Bot {
      * This method pick a new Panda objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
      */
-    public final Optional<CardObjective> pickPandaObjective(TurnLog log) {
+    public final Optional<CardObjectivePanda> pickPandaObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
             throw new IllegalActionRepetitionException();
 
