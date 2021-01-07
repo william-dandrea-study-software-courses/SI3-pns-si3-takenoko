@@ -111,7 +111,6 @@ public class BambooPlantation extends Parcel {
         if (!hasLayout()) {
             this.layout = layout;
         }
-
         return hasLayout();
     }
 

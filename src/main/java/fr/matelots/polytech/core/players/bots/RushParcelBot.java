@@ -69,33 +69,7 @@ public class RushParcelBot extends Bot {
      * This method affect at cardWeActuallyTryToResolve the card from the 5 objectives we have. This method select
      * this objective who have the less missing position to complete
      */
-    void easiestObjectiveToResolve() {
-        boolean weDontArrive = true;
-        int min = 10;
-        for (Optional<CardObjective> cardOp: listOfCurrentsObjectives) {
-            if (cardOp.isPresent()) {
-                CardObjectiveParcel card = (CardObjectiveParcel) cardOp.get();
-                if (card.getMissingPositionsToComplete().size() <= min) {
-                    min = card.getMissingPositionsToComplete().size();
-                }
-            }
-        }
 
-        for (Optional<CardObjective> cardOp: listOfCurrentsObjectives) {
-            if (cardOp.isPresent()) {
-                CardObjectiveParcel card = (CardObjectiveParcel) cardOp.get();
-                if (card.getMissingPositionsToComplete().size() == min) {
-                    cardWeActuallyTryToResolve = card;
-                } else {
-                    weDontArrive = false;
-                }
-            }
-        }
-
-        if (weDontArrive) {
-            cardWeActuallyTryToResolve = (CardObjectiveParcel) listOfCurrentsObjectives.get(0).get();
-        }
-    }
 
 
     void easiestObjectiveToResolve2() {
