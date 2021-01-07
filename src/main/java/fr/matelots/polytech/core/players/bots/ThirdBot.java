@@ -7,6 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
+import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.BotAction;
@@ -100,6 +101,8 @@ public class ThirdBot extends Bot {
     private boolean gardenerObjectiveCanBeSolved(CardObjectiveGardener objectiveGardener) {
         if(objectiveGardener.verify()) return false;
 
+
+
         // 3 Case :
         //      1 - there is no tile of the good color, but can pose tile of the color
         //      2 - there is no tile of the good color irrigated
@@ -125,7 +128,8 @@ public class ThirdBot extends Bot {
                     board.getParcel(position).getBambooColor() == bambooColor &&            // Good color
                     !board.getParcel(position).isIrrigate() &&                              // Position irrigate
                     (                                                                       // Check layouts
-                            objectiveGardener.getLayout() == null                                   // Check objectiveCard has no layout
+                            objectiveGardener.getLayout() == null &&                                 // Check objectiveCard has no layout
+                            (board.getParcel(position).getLayout() == null || board.getParcel(position).getLayout() == objectiveGardener.getLayout())
                     ) &&
                     isIrrigable(position) &&
                     (board.canPickIrrigation() || getIndividualBoard().canPlaceIrrigation())
@@ -301,15 +305,27 @@ public class ThirdBot extends Bot {
 
         //      3 - there is a tile of the good color and is irrigated
         //              a - reachable by the gardenner
+        //              b - Good layout
         var tileIrrigatedReachableByGardener = board.getPositions().stream().filter(p ->
                 board.getParcel(p).isIrrigate() &&
                 board.getParcel(p).getBambooColor() == objectiveGardener.getColor() &&
                 board.getParcel(p).getBambooSize() < objectiveGardener.getSize() &&
-                isReachableByGardener(p)).findAny();
+                (
+                        objectiveGardener.getLayout() == null ||
+                        board.getParcel(p).getLayout() == null ||
+                        board.getParcel(p).getLayout() == objectiveGardener.getLayout()
+                ) &&
+                isReachableByGardener(p)
+        ).findAny();
 
         if(tileIrrigatedReachableByGardener.isPresent() && canPerformAction(BotActionType.MOVE_GARDENER)) {
             var nextPosition = getGardenerRoute(tileIrrigatedReachableByGardener.get()).get();
             moveGardener(nextPosition, turnLog);
+            if(canPerformAction(BotActionType.PLACE_LAYOUT) && objectiveGardener.getLayout() != null && board.getParcel(nextPosition).getLayout() != objectiveGardener.getLayout()) {
+                getIndividualBoard().addLayouts(objectiveGardener.getLayout());
+                if(!(board.getParcel(nextPosition) instanceof BambooPlantation)) return;
+                placeLayout(turnLog, (BambooPlantation)board.getParcel(nextPosition), objectiveGardener.getLayout());
+            }
             return;
         }
 
