@@ -2,6 +2,7 @@ package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.IllegalActionRepetitionException;
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -65,6 +66,7 @@ public class ThirdBotTest {
                 || opt.get().getType() == BotActionType.PICK_PARCEL_GOAL
                 || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL
                 || opt.get().getType() == BotActionType.PLACE_PARCEL )) {
+            bot.moveGardener(Config.POND_POSITION, log);
             bot.DecideAction(log);
             try {
                 opt = log.getLastAction();
