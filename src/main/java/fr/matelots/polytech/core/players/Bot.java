@@ -1,7 +1,6 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.IllegalActionRepetitionException;
-import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
@@ -264,8 +263,6 @@ public abstract class Bot {
         getIndividualBoard().checkAllGoal();
     }
 
-
-
     protected final boolean movePanda(TurnLog log, Position pos) {
         if (BotActionType.MOVE_PANDA.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
@@ -372,6 +369,8 @@ public abstract class Bot {
             Position pos = validPositions.get(position);
 
             placeParcel(pos, parcel.getBambooColor(), log);
+
+            return Optional.of(pos);
 
         }
         return Optional.empty();
@@ -556,8 +555,8 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
-        if (BotActionType.PLACE_IRRIGATION.equals(lastAction)  && !canDoSameActionInOneTour)
-            throw new IllegalActionRepetitionException();
+        /*if (BotActionType.PLACE_IRRIGATION.equals(lastAction)  && !canDoSameActionInOneTour)
+            throw new IllegalActionRepetitionException();*/
 
         if(!canDoAction()) return false;
         if(!individualBoard.canPlaceIrrigation()) return false;
@@ -566,7 +565,7 @@ public abstract class Bot {
         if(success) {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
             individualBoard.placeIrrigation();
-            currentNumberOfAction++;
+            //currentNumberOfAction++;
             lastAction = BotActionType.PLACE_IRRIGATION;
         }
         return success;

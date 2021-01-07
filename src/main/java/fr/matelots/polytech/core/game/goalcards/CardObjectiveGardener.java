@@ -72,7 +72,9 @@ public class CardObjectiveGardener extends CardObjective {
 
     public Layout getLayout() { return layout; }
 
-
+    public int getCount() {
+        return count;
+    }
 
     @Override
     public boolean equals(Object o) {
