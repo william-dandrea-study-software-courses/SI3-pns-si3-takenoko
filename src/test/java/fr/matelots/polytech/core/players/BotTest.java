@@ -15,6 +15,7 @@ import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.QuintusBot;
+import fr.matelots.polytech.core.players.bots.ThirdBot;
 import fr.matelots.polytech.core.players.bots.logger.BotAction;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
@@ -41,7 +42,7 @@ public class BotTest {
     @BeforeEach
     public void init () {
         game = new Game();
-        bot = new QuintusBot(game);
+        bot = new ThirdBot(game);
         turnLog = new TurnLog(bot);
     }
 
