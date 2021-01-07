@@ -34,69 +34,54 @@ public class RushParcelBotTest {
 
     }
 
+
+
+
     @Test
-    public void testInilializeOrUpdateListOfCurrentsObjectiveWithAnyPreviousObjectivesInTheList() {
+    public void testInilializeOrUpdateListOfCurrentsObjective2() {
 
-        List<Optional<CardObjective>> currentList = bot.getListOfCurrentsObjectives();
-        assertEquals(0, currentList.size());
 
-        bot.inilializeOrUpdateListOfCurrentsObjective();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
 
-        assertTrue(currentList.get(0).isPresent());
-        assertTrue(currentList.get(1).isPresent());
 
+        assertEquals(3, bot.getIndividualBoard().getUnfinishedParcelObjectives().size());
+        assertEquals(3, bot.getBoard().getPositions().size());
     }
 
     @Test
-    public void testInilializeOrUpdateListOfCurrentsObjectiveWith2PreviousObjectivesInTheList() {
-        // On tente de rajouter des objectifs
-        List<Optional<CardObjective>> currentList = bot.getListOfCurrentsObjectives();
+    public void testEasiestObjectiveToResolve2() {
 
 
-        // Pick 2 objectives
-        bot.inilializeOrUpdateListOfCurrentsObjective();
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
         bot.setCurrentNumberOfAction(0);
-        bot.inilializeOrUpdateListOfCurrentsObjective();
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
         bot.setCurrentNumberOfAction(0);
-        bot.inilializeOrUpdateListOfCurrentsObjective();
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
         bot.setCurrentNumberOfAction(0);
-        bot.inilializeOrUpdateListOfCurrentsObjective();
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
+        bot.inilializeOrUpdateListOfCurrentsObjective2();
+        bot.setCurrentNumberOfAction(0);
 
-
-        assertTrue(currentList.get(0).isPresent());
-        assertTrue(currentList.get(1).isPresent());
-        assertTrue(currentList.get(2).isPresent());
-        assertTrue(currentList.get(3).isPresent());
-        assertTrue(currentList.get(4).isPresent());
-
-    }
-
-    @Test
-    public void testEasiestObjectiveToResolve() {
-        RushParcelBot mockBot = mock(RushParcelBot.class);
-        List<Optional<CardObjective>> cardList = mock(List.class);
-        TurnLog mockLog = mock(TurnLog.class);
-        Board mockBoard = mock(Board.class);
-
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 3, Patterns.TRIANGLE, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.YELLOW)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 4, Patterns.LINE, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 5, Patterns.RHOMBUS, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
-        cardList.add(Optional.of(new CardObjectiveParcel(mockBoard, 4, Patterns.C, BambooColor.PINK, BambooColor.PINK, BambooColor.PINK)));
-
-        //verify(cardList).add(Optional.of(new CardObjectiveParcel(mockBot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN)));
-
-
-        //mockBot.placeParcel(new Position(1,1,1), BambooColor.GREEN, mockLog);
-
-        //Whitebox.setInternalState(mockBot, "listOfCurrentsObjectives", cardList);
-
-
-        //mockBot.easiestObjectiveToResolve();
-
-        //System.out.println(mockBot.getListOfCurrentsObjectives());
-
-        //assertTrue(Whitebox.getInternalState(mockBot, "cardWeActuallyTryToResolve") != null);
+        bot.easiestObjectiveToResolve2();
+        assertTrue(bot.getCardWeActuallyTryToResolve() != null);
 
     }
 
