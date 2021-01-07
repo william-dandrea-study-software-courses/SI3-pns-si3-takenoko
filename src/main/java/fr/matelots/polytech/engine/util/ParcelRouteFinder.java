@@ -9,91 +9,117 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ParcelRouteFinder {
-    private static List<Side> getPathInParcel(Side input, Side output) {
-        if(input == null || output == null) throw new RuntimeException("Error");
-        List<Side> toIrrigate = new ArrayList<>();
-        // Evalute distance by left
-        int distanceRight = 0;
-        Side temp = input;
-        while(temp != output) {
-            temp = temp.rightSide();
-            distanceRight++;
-        }
+    private static Optional<List<Side>> getPathInParcel(Side output, Predicate<Side> isGoodInput, Predicate<Side> isPraticable) {
+        if(output == null) throw new RuntimeException("Error");
+        if(!Arrays.stream(Side.values()).anyMatch(isGoodInput))
+            return Optional.empty();
 
-        // Evalute distance by left
-        temp = output;
-        int distanceLeft = 0;
-        while(temp != output) {
-            temp = temp.leftSide();
-            distanceLeft++;
-        }
-
-        // return the nearest
-        if(distanceLeft < distanceRight) {
-            temp = input;
-            while(temp != output) {
-                temp = temp.leftSide();
-                toIrrigate.add(temp);
-            }
-        } else {
-            temp = input;
-            while(temp != output) {
-                temp = temp.rightSide();
-                toIrrigate.add(temp);
-            }
-        }
-        toIrrigate.add(output);
-
-        return toIrrigate;
-    }
-    private static List<Side> getPathInParcel(Parcel currentParcel, Side output) {
-        if(currentParcel == null || output == null) throw new RuntimeException("Error");
         List<Side> toIrrigate = new ArrayList<>();
         // Evalute distance by left
         int distanceRight = 0;
         Side temp = output;
-        while(!currentParcel.isIrrigate(temp)) {
-            temp = temp.rightSide();
+        boolean canUseLeft = true;
+        while(canUseLeft && !isGoodInput.test(temp)) {
+            temp = temp.leftSide();
             distanceRight++;
+            if(!isPraticable.test(temp)) canUseLeft = false;
         }
 
         // Evalute distance by left
         temp = output;
         int distanceLeft = 0;
-        while(!currentParcel.isIrrigate(temp)) {
-            temp = temp.leftSide();
+        boolean canUseRight = true;
+        while(canUseRight && !isGoodInput.test(temp)) {
+            temp = temp.rightSide();
             distanceLeft++;
+            if(!isPraticable.test(temp)) canUseRight = false;
         }
 
-        // return the nearest
-        if(distanceLeft < distanceRight) {
-            temp = output;
-            while(!currentParcel.isIrrigate(temp)) {
+        if(canUseLeft && canUseRight) {
+            // return the nearest
+            if (distanceLeft < distanceRight) {
+                temp = output;
+                while (!isGoodInput.test(temp)) {
+                    toIrrigate.add(temp);
+                    temp = temp.leftSide();
+                }
+            } else {
+                temp = output;
+                while (!isGoodInput.test(temp)) {
+                    toIrrigate.add(temp);
+                    temp = temp.rightSide();
+                }
+            }
+        } else if(canUseLeft) {
+            temp = output.leftSide();
+            toIrrigate.add(output);
+            while (!isGoodInput.test(temp) && temp != output) {
                 toIrrigate.add(temp);
                 temp = temp.leftSide();
             }
-        } else {
-            temp = output;
-            while(!currentParcel.isIrrigate(temp)) {
+
+            if(temp == output)
+                return Optional.empty();
+        } else if(canUseRight) {
+            temp = output.rightSide();
+            toIrrigate.add(output);
+            while (!isGoodInput.test(temp) && temp != output) {
                 toIrrigate.add(temp);
                 temp = temp.rightSide();
             }
-        }
 
-        return toIrrigate;
+            if(temp == output)
+                return Optional.empty();
+        } else
+            return Optional.empty();
+
+        return Optional.of(toIrrigate);
     }
 
-    private static List<AbsolutePositionIrrigation> getPathInAParcelWithIrrigation(Board board, Position currentPosition, Side output, Side input) {
+    private static Optional<List<AbsolutePositionIrrigation>> getPathInAParcelWithIrrigation(Board board, Position currentPosition, Side output, Side input) {
         var parcel = board.getParcel(currentPosition);
         List<AbsolutePositionIrrigation> list = new ArrayList<>();
         List<Side> result;
         if(input == null) {
-            result = getPathInParcel(parcel, output);
+            var opt = getPathInParcel(output, new Predicate<Side>() {
+                @Override
+                public boolean test(Side side) {
+                    return board.canPlaceIrrigation(currentPosition, side);
+                }
+            }, new Predicate<Side>() {
+                @Override
+                public boolean test(Side side) {
+                    return board.isInterstice(currentPosition, side);
+                }
+            });
+
+            if(opt.isPresent())
+                result = opt.get();
+            else
+                return Optional.empty();
         } else {
-            result = getPathInParcel(input, output);
+            if(currentPosition.equals(new Position(1, -2, 1)))
+                System.out.println("Truc bizz");
+
+            var opt = getPathInParcel(output, new Predicate<Side>() {
+                @Override
+                public boolean test(Side side) {
+                    return side == input;
+                }
+            }, new Predicate<Side>() {
+                @Override
+                public boolean test(Side side) {
+                    return board.isInterstice(currentPosition, side);
+                }
+            });
+
+            if(opt.isPresent())
+                result = opt.get();
+            else
+                return Optional.empty();
         }
         result.stream().forEach(s -> list.add(new AbsolutePositionIrrigation(currentPosition, s, board)));
-        return list;
+        return Optional.of(list);
     }
 
     public static Optional<Set<AbsolutePositionIrrigation>> getRequiredIrrigation(Board board, Position start, Position end) {
@@ -108,7 +134,9 @@ public class ParcelRouteFinder {
             if(output == null) throw new RuntimeException("Tiles are not neighbour");
 
             var pathInThisParcel = getPathInAParcelWithIrrigation(board, positions.get(i), output, oldSide);
-            result.addAll(pathInThisParcel);
+            if(pathInThisParcel.isEmpty()) return Optional.empty();
+
+            result.addAll(pathInThisParcel.get());
             oldSide = output.oppositeSide();
         }
 
