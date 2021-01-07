@@ -129,7 +129,7 @@ public abstract class Bot {
 
     void weatherCaseRainInitial() {
         Optional<Position> place = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate() && !board.getParcel(p).equals(Config.POND_POSITION)).findAny();
-        getBoard().getParcel(place.get()).growBamboo();
+        place.ifPresent(position -> getBoard().getParcel(position).growBamboo());
     }
 
     void weatherCaseCloudInitial() {
@@ -138,7 +138,7 @@ public abstract class Bot {
 
     void weatherCaseThunderstormInitial(TurnLog log) {
         Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
-        game.movePandaWhenWeather(lastAction, this,place.get(),log);
+        place.ifPresent(position -> game.movePandaWhenWeather(lastAction, this, position, log));
     }
     void weatherCaseInterrogationInitial(TurnLog log) {
         playTurn(log, game.diceRandomWeather());
@@ -272,6 +272,10 @@ public abstract class Bot {
     protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
+
+        if (!canPlay() || currentNumberOfAction >= maxNumberOfActions) {
+            return false;
+        }
 
         boolean res = board.addParcel(pos, parcel);
 
@@ -489,24 +493,6 @@ public abstract class Bot {
             throw new IllegalActionRepetitionException();
 
         return this.placeParcel(log, position, new BambooPlantation(color));
-        /*if(!this.canDoAction()) return false;
-
-        if (board.getParcelLeftToPlace(color) != 0) {
-            try {
-
-                var success = board.addParcel(position, new BambooPlantation(color));
-                if (success) {
-                    log.addAction(BotActionType.PLACE_PARCEL, position.toString());
-                    currentNumberOfAction++;
-                    lastAction = BotActionType.PLACE_PARCEL;
-                }
-                return success;
-
-            } catch (NoParcelLeftToPlaceException e) {
-                return false;
-            }
-        }
-       return false;*/
     }
 
     /**

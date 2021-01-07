@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.players;
 
+import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.Weather;
@@ -13,6 +14,8 @@ import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.bots.PremierBot;
+import fr.matelots.polytech.core.players.bots.QuintusBot;
+import fr.matelots.polytech.core.players.bots.logger.BotAction;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
@@ -38,7 +41,7 @@ public class BotTest {
     @BeforeEach
     public void init () {
         game = new Game();
-        bot = new PremierBot(game);
+        bot = new QuintusBot(game);
         turnLog = new TurnLog(bot);
     }
 
@@ -74,8 +77,12 @@ public class BotTest {
         // We verify if we can't place more than 27 parcels
         for (int i = 0; i < Config.NB_PLACEABLE_PARCEL - 1; i++) {
             bot.setCurrentNumberOfAction(0);
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             assertNotEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
         }
+        if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+            bot.movePanda(turnLog, Config.POND_POSITION);
         assertEquals(Config.MAX_PARCEL_ON_BOARD, bot.getBoard().getParcelCount());
         assertEquals(Optional.empty(), bot.placeAnParcelAnywhere(turnLog));
     }
@@ -83,20 +90,25 @@ public class BotTest {
     /**
      * In total, we have at the maximum 11 GREEN PARCELS ; 7 PINK PARCELS ; 9 YELLOW PARCELS
      */
-
     @Test
     public void testPlaceAnParcelAnywhereChosenColor() {
         bot.setCurrentNumberOfAction(0);
         // We verify if we can't place more than 27 parcels
         for (int i = 0; i < 50 ; i++) {
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
             bot.setCurrentNumberOfAction(0);
         }
         for (int i = 0; i < 50 ; i++) {
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
             bot.setCurrentNumberOfAction(0);
         }
         for (int i = 0; i < 50 ; i++) {
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             bot.setCurrentNumberOfAction(0);
             bot.placeAnParcelAnywhere(BambooColor.PINK, turnLog);
         }
@@ -131,8 +143,6 @@ public class BotTest {
         int numberOfObjectiveAtStart = bot.getIndividualBoard().countUnfinishedObjectives() + bot.getIndividualBoard().countCompletedObjectives();
         assertEquals(0, numberOfObjectiveAtStart);
 
-
-
         // We test with just one objective and the number of actions we do
         int numberOfActions = bot.getCurrentNumberOfAction();
         Optional<CardObjective> cardObjective = bot.pickParcelObjective(turnLog);
@@ -146,6 +156,8 @@ public class BotTest {
 
         // We can't have more than 5 objectives into the individualBoard
         for (int i = 0; i < 6; i++) {
+            if (Config.isPickAction(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             cardObjective = bot.pickParcelObjective(turnLog);
         }
         assertEquals(Optional.empty(), cardObjective);
@@ -172,6 +184,8 @@ public class BotTest {
 
         // We can't have more than 5 objectives into the individualBoard
         for (int i = 0; i < 6; i++) {
+            if (Config.isPickAction(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             cardObjective = bot.pickGardenerObjective(turnLog);
         }
         assertEquals(Optional.empty(), cardObjective);
@@ -199,6 +213,8 @@ public class BotTest {
 
         // We can't have more than 5 objectives into the individualBoard
         for (int i = 0; i < 6; i++) {
+            if (Config.isPickAction(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
             cardObjective = bot.pickPandaObjective(turnLog);
         }
         assertEquals(Optional.empty(), cardObjective);
@@ -223,20 +239,22 @@ public class BotTest {
     public void testRecoverTheMissingsPositionsToCompleteForParcelObjective() {
         CardObjectiveParcel cardObjective = new CardObjectiveParcel(bot.getBoard(), 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
 
-
-        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
-        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
-        bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+        for (int i = 0; i < 3; i++) {
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
+            bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
+        }
 
         Set<PositionColored> missingPositionsToComplete = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective);
         assertTrue(missingPositionsToComplete.size() > 0);
 
         CardObjectiveParcel cardObjective2 = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
 
-        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
-        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
-        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
-        bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+        for (int i = 0; i < 4; i++) {
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
+            bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
+        }
 
         Set<PositionColored> missingPositionsToComplete2 = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective2);
         assertTrue(missingPositionsToComplete2.size() > 0);
@@ -250,11 +268,12 @@ public class BotTest {
             assertTrue(bot.getBoard().addParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), new BambooPlantation(BambooColor.GREEN)));
         }
 
-        assertFalse(bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
+        assertThrows(NoParcelLeftToPlaceException.class, () -> bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
     }
 
     @Test
     void placeParcelTestInvalidPlace() {
+        bot.moveGardener(Config.POND_POSITION, turnLog);
         assertFalse(bot.placeParcel(new Position(50, 50, 50), BambooColor.GREEN, turnLog));
     }
 
@@ -262,6 +281,8 @@ public class BotTest {
     void placeParcelNumberOfActions() {
         for(int i = 0; i < Config.TOTAL_NUMBER_OF_ACTIONS; i++) {
             bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog);
+            if (BotActionType.PLACE_PARCEL.equals(bot.getLastAction()))
+                bot.movePanda(turnLog, Config.POND_POSITION);
         }
         assertFalse(bot.placeParcel(bot.getBoard().getValidPlaces().stream().findAny().get(), BambooColor.GREEN, turnLog));
     }
