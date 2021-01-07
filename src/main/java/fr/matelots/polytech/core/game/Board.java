@@ -57,6 +57,10 @@ public class Board {
         pinkParcelLeftToPlace = Config.NB_MAX_PINK_PARCELS;
     }
 
+
+
+
+
     // Methods and Function
     public Parcel getParcel (int x, int y, int z) {
         return getParcel(new Position(x, y, z));

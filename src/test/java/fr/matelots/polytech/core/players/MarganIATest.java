@@ -309,4 +309,12 @@ public class MarganIATest {
     }
 
 
+    @Test
+    public void testCountNumberResolvePatternLine() {
+
+
+
+    }
+
+
 }

@@ -363,35 +363,19 @@ public class MarganIA {
 
 
     public static int countNumberResolvePatternLine(CardObjectiveParcel objective, Board board) {
-
-        Board boardTemp = new Board();
-        boardTemp = board;
-        boolean stop = false;
-
-
-        Set<PositionColored> placeWhereWeNeedToPlace = objective.getMissingPositionsToComplete();
-
-        while (!stop) {
-            PositionColored idealPosition = resolvePatternLine(objective, boardTemp);
-            boardTemp.addParcel(idealPosition.getPosition(), new BambooPlantation(idealPosition.getColor(), null));
-
-            int numberOfParcelsInObj = objective.getColors().length;
-            for (PositionColored positionColored : placeWhereWeNeedToPlace) {
-                if (boardTemp.containTile(positionColored.getPosition())) {
-
-
-
-                }
+        switch (objective.getPattern()) {
+            case TRIANGLE:
+            case C: {
+                return 3;
             }
-
+            case RHOMBUS: {
+                return 4;
+            }
+            case LINE: {
+                return 5;
+            }
         }
-
-        return null;
-
-
-
-
-
+        return 0;
     }
 
 

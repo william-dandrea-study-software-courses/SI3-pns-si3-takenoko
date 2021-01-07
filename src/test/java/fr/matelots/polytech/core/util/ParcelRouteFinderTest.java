@@ -43,7 +43,6 @@ public class ParcelRouteFinderTest {
     void AllIsNormal() {
         initMap();
         var result = getIrrigationToIrrigate(board, new Position(0, 0, 0), new Position(2, -3, 1));
-        drawer.print();
         assertFalse(result.isEmpty());
 
 
@@ -52,9 +51,6 @@ public class ParcelRouteFinderTest {
                     .filter(val -> !val.isIrrigate() && val.canBeIrrigated())
                     .forEach(AbsolutePositionIrrigation::irrigate);
         }
-
-        drawer.print();
-        result.stream().map(Object::toString).forEach(System.out::println);
 
 
         var expecteds = new AbsolutePositionIrrigation[] {
@@ -86,8 +82,6 @@ public class ParcelRouteFinderTest {
             nextIrr = getNextParcelToIrrigate(path);
         }
 
-        drawer.print();
-
         assertTrue(board.getParcel(3, -1, -2).isIrrigate());
     }
 
@@ -115,7 +109,6 @@ public class ParcelRouteFinderTest {
 
             if(!board.getParcel(pos).isIrrigate()) {
 
-                drawer.print();
                 assertTrue(false);
             }
 
@@ -150,7 +143,6 @@ public class ParcelRouteFinderTest {
         this.board.addParcel(new Position(1, 0, -1), plantation2);
         BambooPlantation plantation3 = new BambooPlantation(BambooColor.YELLOW);
         this.board.addParcel(new Position(1, 1, -2), plantation3);
-        drawer.print();
 
 
         var path = getBestPathToIrrigate(board, new Position(1, 1, -2));
