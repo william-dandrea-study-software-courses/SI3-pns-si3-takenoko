@@ -104,8 +104,6 @@ public class ParcelRouteFinder {
             else
                 return Optional.empty();
         } else {
-            if(currentPosition.equals(new Position(1, -2, 1)))
-                System.out.println("Truc bizz");
 
             var opt = getPathInParcel(output, new Predicate<Side>() {
                 @Override
