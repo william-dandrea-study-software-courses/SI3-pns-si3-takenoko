@@ -312,7 +312,9 @@ public class BotTest {
     public void testIrrigation() {
         AbsolutePositionIrrigation api = new AbsolutePositionIrrigation(new Position(1, 0, -1), Side.LEFT, game.getBoard());
         BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        BambooPlantation plantation2 = new BambooPlantation(BambooColor.GREEN);
         game.getBoard().addParcel(new Position(1, 0, -1), plantation);
+        game.getBoard().addParcel(new Position(0, 1, -1), plantation2);
 
         // Check can't irrigate
         assertFalse(bot.irrigate(api, turnLog));
@@ -352,6 +354,7 @@ public class BotTest {
 
         AbsolutePositionIrrigation api2 = new AbsolutePositionIrrigation(new Position(0, 1, -1), Side.LEFT, game.getBoard());
 
+        bot.movePanda(turnLog, Config.POND_POSITION);
         assertFalse(bot.irrigate(api2, turnLog));
     }
 
