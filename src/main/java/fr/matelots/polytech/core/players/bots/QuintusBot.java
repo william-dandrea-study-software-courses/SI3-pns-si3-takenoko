@@ -242,7 +242,7 @@ public class QuintusBot extends Bot {
     /**
      * Place a parcel of a needed color
      */
-    private void placeAParcel (TurnLog log) {
+    void placeAParcel (TurnLog log) {
         final List<Position> placeablePositions = new ArrayList<>();
         board.getPositions().forEach(position ->
                 Config.CUBE_DIRECTIONS.forEach(direction -> {
@@ -361,7 +361,10 @@ public class QuintusBot extends Bot {
         Set<Position> positions = board.getPositions();
 
         if (neededColors == null) {
-            return false;
+            neededColors = getNeededColor();
+            if (neededColors.isEmpty()) {
+                return false;
+            }
         }
 
         for (Position position : positions) {

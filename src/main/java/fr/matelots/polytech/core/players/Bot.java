@@ -58,6 +58,7 @@ public abstract class Bot {
         this.board = game.getBoard();
         this.name = toString();
         this.individualBoard = new IndividualBoard();
+        maxNumberOfActions = Config.TOTAL_NUMBER_OF_ACTIONS;
         panda = board.getPanda();
         gardener = board.getGardener();
         playWithWeather = false;

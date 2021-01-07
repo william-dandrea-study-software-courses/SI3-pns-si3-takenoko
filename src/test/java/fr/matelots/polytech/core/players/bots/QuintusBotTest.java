@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,9 +100,6 @@ public class QuintusBotTest {
         assertFalse(bot.isThereAnythingInterestingToEat());
 
         board.addParcel(1, -1, 0, new BambooPlantation(BambooColor.GREEN));
-        assertFalse(bot.isThereAnythingInterestingToEat());
-
-        bot.moveGardener(log);
 
         assertTrue(bot.isThereAnythingInterestingToEat());
 

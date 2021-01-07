@@ -74,27 +74,27 @@ public class Board {
         if (parcelLeftToPlace <= 0)
             throw new NoParcelLeftToPlaceException();
 
-        if(p.getBambooColor() != null) {
-            // The tile have a color
-            switch (p.getBambooColor()) {
-                case YELLOW:
-                    // if tile of color exhausted, throw error
-                    if(yellowParcelLeftToPlace <= 0) throw  new NoParcelLeftToPlaceException();
-                    // else decrement corresponding counter
-                    else yellowParcelLeftToPlace--;
-                    break;
-                case GREEN:
-                    if(greenParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
-                    else greenParcelLeftToPlace--;
-                    break;
-                case PINK:
-                    if(pinkParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
-                    else pinkParcelLeftToPlace--;
-                    break;
-            }
-        }
-
         if (isPlaceValid(x, y, z)) {
+            if(p.getBambooColor() != null) {
+                // The tile have a color
+                switch (p.getBambooColor()) {
+                    case YELLOW:
+                        // if tile of color exhausted, throw error
+                        if(yellowParcelLeftToPlace <= 0) throw  new NoParcelLeftToPlaceException();
+                            // else decrement corresponding counter
+                        else yellowParcelLeftToPlace--;
+                        break;
+                    case GREEN:
+                        if(greenParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
+                        else greenParcelLeftToPlace--;
+                        break;
+                    case PINK:
+                        if(pinkParcelLeftToPlace <= 0) throw new NoParcelLeftToPlaceException();
+                        else pinkParcelLeftToPlace--;
+                        break;
+                }
+            }
+
             Position position = new Position(x, y, z);
             grid.put(position, p);
             parcelLeftToPlace--;
