@@ -21,7 +21,6 @@ public class Board {
     private final DeckGardenerObjective deckGardenerObjective;
     private final DeckPandaObjective deckPandaObjective;
     private final DeckParcel deckParcel;
-
     private final DeckLayout deckLayout;
 
     private int parcelLeftToPlace;
@@ -171,6 +170,18 @@ public class Board {
 
         return res;
     }
+
+
+    public boolean placeLayout(Position position, Layout layout) {
+
+        if (getPositions().contains(position) && !getParcel(position).hasLayout() && getParcel(position).getBambooSize() == 0) {
+            return getParcel(position).setLayout(layout);
+        }
+
+        return false;
+    }
+
+
 
     /**
      * Place une irrigation sur le côté <code>side</code> de la parcelle se trouvant à la position <code>position</code>.
@@ -387,6 +398,8 @@ public class Board {
         irrigationLeft--;
         return true;
     }
+
+
 
 
 }

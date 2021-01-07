@@ -38,7 +38,7 @@ public abstract class Parcel {
     }
 
 
-    public boolean setLayout (Layout layout) {
+    public boolean setLayout(Layout layout) {
         if (!hasLayout() && !isPond()) {
             this.layout = layout;
         }
