@@ -296,16 +296,24 @@ public abstract class Bot {
         return res;
     }
 
-    protected final void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
-        if (BotActionType.PLACE_LAYOUT.equals(lastAction)  && !canDoSameActionInOneTour)
-            throw new IllegalActionRepetitionException();
-
-        if (parcel.setLayout(layout)) {
-            log.addAction(BotActionType.PLACE_LAYOUT, layout.name() + " on " + parcel.toString());
-            lastAction = BotActionType.PLACE_LAYOUT;
-        } else {
-            log.addAction(BotActionType.NONE, "");
+    /**
+     * Place un aménagement sur la parcelle. Il faut que le bot ai l'aménagement dans son plateau individuelle.
+     * Une fois placé, l'aménagement est enlevé du plateau individuelle.
+     * @param log Les logs
+     * @param parcel La parcelle où placé l'aménagement
+     * @param layout L'aménagement à placé
+     * @return true si l'aménagement est placé, false sinon.
+     */
+    protected final boolean placeLayout(TurnLog log, BambooPlantation parcel, Layout layout) {
+        if(layout != null) {
+            if (this.individualBoard.getLayouts().contains(layout) && parcel.setLayout(layout)) {
+                this.individualBoard.getLayouts().remove(layout);
+                log.addAction(BotActionType.PLACE_LAYOUT, layout.name() + " on " + parcel.toString());
+                return true;
+            }
         }
+        log.addAction(BotActionType.NONE, "");
+        return false;
     }
 
     /**

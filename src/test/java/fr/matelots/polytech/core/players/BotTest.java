@@ -3,7 +3,6 @@ package fr.matelots.polytech.core.players;
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.Weather;
 import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
@@ -12,11 +11,9 @@ import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.game.parcels.Side;
-import fr.matelots.polytech.core.players.bots.PremierBot;
-import fr.matelots.polytech.core.players.bots.QuintusBot;
 import fr.matelots.polytech.core.players.bots.ThirdBot;
-import fr.matelots.polytech.core.players.bots.logger.BotAction;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
@@ -368,4 +365,42 @@ public class BotTest {
 
 
     }
+
+    @Test
+    public void placeLayout() {
+        Layout layout = Layout.ENCLOSURE;
+        this.bot.individualBoard.addLayouts(layout);
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        this.bot.board.addParcel(new Position(0, 1, -1), plantation);
+        assertTrue(this.bot.placeLayout(turnLog, plantation, layout));
+        assertEquals(0, this.bot.getIndividualBoard().getLayouts().size());
+    }
+
+    @Test
+    public void placeLayoutNoStock() {
+        Layout layout = Layout.ENCLOSURE;
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        this.bot.board.addParcel(new Position(0, 1, -1), plantation);
+        assertFalse(this.bot.placeLayout(turnLog, plantation, layout));
+    }
+
+    //setLayout return true même si la parcelle a déjà un layout
+    /*@Test
+    public void placeLayoutAlreadyLayout() {
+        Layout layout = Layout.ENCLOSURE;
+        this.bot.individualBoard.addLayouts(layout);
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN, layout);
+        this.bot.board.addParcel(new Position(0, 1, -1), plantation);
+        assertFalse(this.bot.placeLayout(turnLog, plantation, layout));
+    }*/
+
+    @Test
+    public void placeNullLayout() {
+        Layout layout = Layout.ENCLOSURE;
+        this.bot.individualBoard.addLayouts(layout);
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        this.bot.board.addParcel(new Position(0, 1, -1), plantation);
+        assertFalse(this.bot.placeLayout(turnLog, plantation, null));
+    }
+
 }

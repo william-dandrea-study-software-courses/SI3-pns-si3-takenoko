@@ -99,6 +99,7 @@ public class CardObjectiveGardener extends CardObjective {
                 ", size=" + size +
                 ", count=" + count +
                 ", countMissing=" + countMissing +
+                ", layout=" + layout +
                 '}';
     }
 }
