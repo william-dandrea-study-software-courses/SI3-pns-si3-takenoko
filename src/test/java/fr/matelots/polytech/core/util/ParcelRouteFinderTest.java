@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.*;
+import static fr.matelots.polytech.engine.util.ParcelRouteFinder.getBestPathToIrrigate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParcelRouteFinderTest {
@@ -21,11 +22,14 @@ public class ParcelRouteFinderTest {
     Board board;
     BoardDrawer drawer;
     @BeforeEach
-    void Init() {
+    void init() {
         game = new Game();
         board = game.getBoard();
         drawer = new BoardDrawer(board);
 
+    }
+
+    void initMap() {
         for(var color : BambooColor.values()) {
             while (board.getParcelLeftToPlace(color) != 0) {
                 board.getValidPlaces().stream().findAny().ifPresent(p -> board.addParcel(p, new BambooPlantation(color)));
@@ -35,6 +39,7 @@ public class ParcelRouteFinderTest {
 
     @Test
     void AllIsNormal() {
+        initMap();
         var result = getIrrigationToIrrigate(board, new Position(0, 0, 0), new Position(2, -3, 1));
         drawer.print();
         assertFalse(result.isEmpty());
@@ -65,6 +70,7 @@ public class ParcelRouteFinderTest {
 
     @Test
     void testGoingTo_3_minus1_minus2() {
+        initMap();
         board.placeIrrigation(new Position(1, -1, 0), Side.UPPER_LEFT);
         board.placeIrrigation(new Position(1, -1, 0), Side.UPPER_RIGHT);
 
@@ -72,18 +78,23 @@ public class ParcelRouteFinderTest {
         assertTrue(optpath.isPresent());
         var path = optpath.get();
 
-        while(path.stream().filter(Predicate.not(AbsolutePositionIrrigation::isIrrigate)).anyMatch(AbsolutePositionIrrigation::canBeIrrigated)) {
-            path.stream()
-                    .filter(val -> !val.isIrrigate() && val.canBeIrrigated())
-                    .forEach(api -> board.placeIrrigation(api.getPosition(), api.getSide()));
+        var nextIrr = getNextParcelToIrrigate(path);
+        while(nextIrr.isPresent()) {
+            nextIrr.get().irrigate();
+            nextIrr = getNextParcelToIrrigate(path);
         }
+
+        drawer.print();
 
         assertTrue(board.getParcel(3, -1, -2).isIrrigate());
     }
 
     @Test
     void TestIrrigateOnMany() {
-        for(int i = 0; i < 15; i++) {
+        for(int i = 0; i < 500; i++) {
+            init();
+            initMap();
+
             var posOpt = board.getPositions().stream().filter(p -> !board.getParcel(p).isIrrigate()).findAny();
             if(posOpt.isEmpty()) continue;
 
@@ -92,15 +103,20 @@ public class ParcelRouteFinderTest {
 
             if(path.isEmpty()) continue;
 
-            while(path.get().stream().filter(Predicate.not(AbsolutePositionIrrigation::isIrrigate)).anyMatch(AbsolutePositionIrrigation::canBeIrrigated)) {
-                path.get().stream()
-                        .filter(val -> !val.isIrrigate() && val.canBeIrrigated())
-                        .forEach(api -> board.placeIrrigation(api.getPosition(), api.getSide()));
+            var nextIrr = getNextParcelToIrrigate(path.get());
+            while(nextIrr.isPresent()) {
+                nextIrr.get().irrigate();
+                nextIrr = getNextParcelToIrrigate(path.get());
             }
             // Force Render
             //path.get().forEach(api -> board.getParcel(api.getPosition()).setIrrigate(api.getSide()));
 
-            assertTrue(board.getParcel(pos).isIrrigate());
+            if(!board.getParcel(pos).isIrrigate()) {
+
+                drawer.print();
+                assertTrue(false);
+            }
+
         }
 
     }
@@ -108,6 +124,7 @@ public class ParcelRouteFinderTest {
 
     @Test
     void testVerySmallPath() {
+        initMap();
         var path = getBestPathToIrrigate(board, new Position(1, -3, 2));
         assertTrue(path.isPresent());
 
@@ -122,5 +139,28 @@ public class ParcelRouteFinderTest {
 
         var path2 = getBestPathToIrrigate(board, new Position(2, -3, 1));
         assertTrue(path2.isPresent());
+    }
+
+    @Test
+    void diamondTest() {
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(new Position(0, 1, -1), plantation);
+        BambooPlantation plantation2 = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(new Position(1, 0, -1), plantation2);
+        BambooPlantation plantation3 = new BambooPlantation(BambooColor.YELLOW);
+        this.board.addParcel(new Position(1, 1, -2), plantation3);
+        drawer.print();
+
+
+        var path = getBestPathToIrrigate(board, new Position(1, 1, -2));
+        assertTrue(path.isPresent());
+
+        var nextP = getNextParcelToIrrigate(path.get());
+        while(nextP.isPresent()) {
+            nextP.get().irrigate();
+            nextP = getNextParcelToIrrigate(path.get());
+        }
+
+        assertTrue(plantation3.isIrrigate());
     }
 }
