@@ -47,7 +47,7 @@ public class QuintusBot extends Bot {
     }
 
     public QuintusBot(Game game) {
-        this(game, "Quintus the Rush Panda");
+        this(game, "Jojo (Rush Panda)");
     }
 
     @Override
