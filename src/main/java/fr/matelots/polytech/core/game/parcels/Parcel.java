@@ -29,11 +29,11 @@ public abstract class Parcel {
     // Constructors
     public abstract boolean isPond();
 
-    public abstract int getBambooSize ();
+    public abstract int getBambooSize();
 
-    public abstract void growBamboo ();
+    public abstract void growBamboo();
 
-    public abstract boolean destroyUnitOfBamboo ();
+    public abstract boolean destroyUnitOfBamboo();
 
     public abstract BambooColor getBambooColor();
 

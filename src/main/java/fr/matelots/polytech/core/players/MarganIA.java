@@ -240,20 +240,26 @@ public class MarganIA {
             int difference = 20;
 
             for (Position p: board.getPositions()) {
-                BambooPlantation bambooPlantation = (BambooPlantation) board.getParcel(p);
-                if (bambooPlantation.isIrrigate()) {
+                if (!board.getParcel(p).isPond()) {
+                    BambooPlantation bambooPlantation = (BambooPlantation) board.getParcel(p);
+                    if (bambooPlantation.isIrrigate()) {
 
-                    for (int i = 0; i < 6; i++) {
-                        Position internalPosition2 = nextPositionIncrement(i, p);
-                        // On regarde la différence entre le nombre de bambou actuel sur la parcelle et le nombre voulu par l'objectif
-                        int sizeOfAroundBamboo = board.getParcel(internalPosition2).getBambooSize();
-                        int var = sizeLayout - sizeOfAroundBamboo;
+                        for (int i = 1; i <= 6; i++) {
+                            Position internalPosition2 = nextPositionIncrement(i, p);
 
-                        if (var <= difference) {
-                            difference = var;
-                            finalPosition = internalPosition2;
+                            // On vérifie que position 2 est sur le board :
+                            if (board.getParcel(internalPosition2) != null) {
+                                // On regarde la différence entre le nombre de bambou actuel sur la parcelle et le nombre voulu par l'objectif
+                                int sizeOfAroundBamboo = board.getParcel(internalPosition2).getBambooSize();
+                                int var = sizeLayout - sizeOfAroundBamboo;
+
+                                if (var <= difference) {
+                                    difference = var;
+                                    finalPosition = internalPosition2;
+                                }
+                                idealPositionWhereWeCanMoveTheGardener.add(p);
+                            }
                         }
-                        idealPositionWhereWeCanMoveTheGardener.add(p);
                     }
                 }
             }

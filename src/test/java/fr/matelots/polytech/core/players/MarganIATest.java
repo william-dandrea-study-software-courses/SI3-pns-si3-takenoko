@@ -1,7 +1,9 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
@@ -12,7 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static fr.matelots.polytech.core.players.MarganIA.findTheBestPlaceToMoveTheGardener;
 import static fr.matelots.polytech.core.players.MarganIA.searchTheParcelsAroundAnIrrigateParcel;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -300,6 +304,34 @@ public class MarganIATest {
         assertEquals(new Position(1,0,-1), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(0,0,0), new Position(1,0,-1), board));
 
         assertEquals(new Position(-1,1,0), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(1,-1,0), new Position(-1,1,0), board));
+
+    }
+
+
+    @Test
+    public void testFindTheBestPlaceToMoveTheGardener() {
+        game.getBoard().addParcel(0,1,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,0,-1, new BambooPlantation(BambooColor.YELLOW));
+        game.getBoard().addParcel(1,-1,0, new BambooPlantation(BambooColor.PINK));
+        game.getBoard().addParcel(0,-1,1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(-1,0,1, new BambooPlantation(BambooColor.YELLOW));
+        game.getBoard().addParcel(-1,1,0, new BambooPlantation(BambooColor.PINK));
+        game.getBoard().addParcel(1,1,-2, new BambooPlantation(BambooColor.YELLOW));
+        game.getBoard().addParcel(-1,2,-1, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(0,2,-2, new BambooPlantation(BambooColor.GREEN));
+        game.getBoard().addParcel(1,-2,1, new BambooPlantation(BambooColor.YELLOW));
+        game.getBoard().addParcel(1,-1,2, new BambooPlantation(BambooColor.PINK));
+        game.getBoard().addParcel(2,-1,-1, new BambooPlantation(BambooColor.PINK));
+
+        CardObjectiveGardener obj1 = new CardObjectiveGardener(board, 6, BambooColor.YELLOW, 4, 1, null);
+        System.out.println(findTheBestPlaceToMoveTheGardener(obj1, game.getBoard()));
+        Collection<Set<Position>> pos = findTheBestPlaceToMoveTheGardener(obj1, game.getBoard()).values();
+
+        //Set<Position> pos2 = pos.stream().collect(Collectors.toSet());
+
+
+        //assertTrue(findTheBestPlaceToMoveTheGardener(obj1, game.getBoard());
+        //assertFalse(findTheBestPlaceToMoveTheGardener(obj1, game.getBoard()).containsValue(Collectors.)   );
 
     }
 
