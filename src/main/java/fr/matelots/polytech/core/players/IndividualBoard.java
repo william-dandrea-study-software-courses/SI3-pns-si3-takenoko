@@ -4,7 +4,6 @@ import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.*;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Layout;
-import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,11 @@ public class IndividualBoard {
 
 
     public void checkAllParcelGoal() {
-        objectiveParcels.forEach(CardObjectiveParcel::verify);
+        objectiveParcels.forEach(card -> {
+            if(card.isCompleted()) return;
+            card.verify();
+            if(card.isCompleted()) System.out.println("Parcel objective completed: +"+card.getScore());
+        });
     }
     public void checkAllGoal() {
         checkAllParcelGoal();
@@ -87,7 +90,18 @@ public class IndividualBoard {
     }
 
     public void checkAllGardenerGoal() {
-        objectiveGardeners.forEach(CardObjectiveGardener::verify);
+        for (CardObjectiveGardener card : objectiveGardeners) {
+            if(card.isCompleted()) return;
+            card.verify();
+            if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
+        }
+/*
+
+        objectiveGardeners.forEach(card -> {
+            if(card.isCompleted()) return;
+            card.verify();
+            if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
+        });*/
     }
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 

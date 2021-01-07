@@ -93,7 +93,14 @@ public class BambooPlantation extends Parcel {
         drawer.setLayout(getLayout());
     }
 
-
+    @Override
+    public String toString() {
+        return "BambooPlantation{" +
+                "bambooSize=" + bambooSize +
+                ", bambooColor=" + bambooColor +
+                ", layout=" + layout +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -5,7 +5,6 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 
 /**
@@ -16,7 +15,7 @@ public abstract class Parcel {
     private Gardener gardener;
     private Panda panda;
     private final EnumMap<Side, Boolean> irrigate;
-    private Layout layout;
+    protected Layout layout;
 
     public Parcel() {
         this.irrigate = new EnumMap<>(Side.class);
