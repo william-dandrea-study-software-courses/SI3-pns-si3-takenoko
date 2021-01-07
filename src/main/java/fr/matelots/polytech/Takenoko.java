@@ -2,15 +2,10 @@ package fr.matelots.polytech;
 
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.QuintusBot;
-import fr.matelots.polytech.core.players.bots.RushParcelBot;
 import fr.matelots.polytech.engine.util.LogHandler;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -25,6 +20,9 @@ public class Takenoko {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.addHandler(new LogHandler());
         long time = System.currentTimeMillis();
+        List<Double> percents = new ArrayList<>();
+        for (double i = 0; i < 10; i++)
+            percents.add(i / 10.);
 
         final int NB_GAMES = 100;
         final boolean LOG_DETAIL = false;
@@ -40,7 +38,7 @@ public class Takenoko {
         rootLogger.info("Lancement de " + NB_GAMES + " partie(s)...");
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
-            if(nbGame % 25 == 0)
+            if(percents.contains(nbGame / ((double) NB_GAMES)))
                 System.out.print("" + nbGame + "... ");
             game = new Game();
 
