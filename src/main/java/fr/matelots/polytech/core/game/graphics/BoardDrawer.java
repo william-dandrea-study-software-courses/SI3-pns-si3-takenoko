@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.game.graphics;
 import fr.matelots.polytech.core.game.Board;
 
 /**
+ * Cette classe permet d'afficher les élements du board
  * @author Yann Clodong
  */
 public class BoardDrawer {

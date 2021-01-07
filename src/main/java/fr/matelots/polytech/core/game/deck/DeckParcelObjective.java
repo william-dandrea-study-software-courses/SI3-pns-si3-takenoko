@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 
 /**
+ * This class represent the deck of the parcels objectives who is composed of 15 objectives
  * @author Alexandre Arcil
  */
 public class DeckParcelObjective extends Deck<CardObjectiveParcel> {

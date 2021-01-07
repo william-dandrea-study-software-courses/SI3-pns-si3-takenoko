@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * This method represent the deck of each objectives
  * @author Alexandre Arcil
  */
 public abstract class Deck<T> {
@@ -19,21 +20,18 @@ public abstract class Deck<T> {
         this.board = board;
         this.cards = new ArrayList<>();
         this.fill();
-        /*if(this.cards.size() != Config.DECK_OBJECTIVE_SIZE) Plus utilisable depuis l'ajout de DeckParcel
-            throw new RuntimeException("La taille du paquet est de "+this.cards.size()
-                    + " alors qu'elle devrait être de "+Config.DECK_OBJECTIVE_SIZE);*/
         Collections.shuffle(this.cards);
     }
 
     /**
-     * C'est dans cette méthode qu'il faut remplir {@link #cards}
+     * It is in this method that the different objectives will have to be fulfilled:  : {@link #cards}
      */
     protected abstract void fill();
 
     /**
-     * Tire la carte au sommet du paquet.
-     * @return une carte
-     * @throws PickDeckEmptyException Si le packet est vide
+     * Draws the card at the top of the deck.
+     * @return a card
+     * @throws PickDeckEmptyException if the deck is empty
      */
     public T pick() {
         if(this.canPick())
@@ -43,8 +41,8 @@ public abstract class Deck<T> {
     }
 
     /**
-     * Permet de savoir si le paquet contient des cartes. Il faut l'appeler avant d'appeler {@link #pick()}
-     * @return true si le paquet n'est pas vide, false sinon
+     * Lets you know if the deck contains cards. It must be called before calling : {@link #pick()}
+     * @return true if the deck is empty, false otherwise
      */
     public boolean canPick() {
         return !this.cards.isEmpty();

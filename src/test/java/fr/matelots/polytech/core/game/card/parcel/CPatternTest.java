@@ -55,7 +55,6 @@ public class CPatternTest {
         expected.add(new PositionColored(new Position(-1, 1, 0), BambooColor.GREEN));
         expected.add(new PositionColored(new Position(0, 1, -1), BambooColor.GREEN));
         Set<PositionColored> check = Patterns.C.check(this.positions, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
-        System.out.println(check);
         assertTrue(expected.containsAll(check));
     }
 

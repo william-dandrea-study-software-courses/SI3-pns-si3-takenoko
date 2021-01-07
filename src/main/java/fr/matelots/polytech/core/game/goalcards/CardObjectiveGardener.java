@@ -21,7 +21,7 @@ public class CardObjectiveGardener extends CardObjective {
     private final int size;
     private final int count;
     private int countMissing;
-    private Layout layout;
+    private final Layout layout;
 
 
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {

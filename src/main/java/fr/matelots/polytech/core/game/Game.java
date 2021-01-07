@@ -42,7 +42,7 @@ public class Game {
         //addBot(new QuintusBot(this"));
         //addBot(new QuintusBot(this));
         //bots.add(new RushParcelBot(this, "RushParcel"));
-        //addBot(new RushParcelBot(this, "RushParcel2"));
+        addBot(new RushParcelBot(this, "RushParcel2"));
         //addBot(new RushParcelBot(this, "RushParcel1"));
         //addBot(new ThirdBot(this, "31bot"));
         addBot(new ThirdBot(this, "3bot"));
@@ -328,7 +328,6 @@ public class Game {
             boolean res = getBoard().getPanda().moveToAbsolute(pos.getX(), pos.getY(), pos.getZ());
             if (res) {
                 log.addAction(BotActionType.MOVE_PANDA, pos.toString());
-                lastAction = BotActionType.MOVE_PANDA;
                 bot.setCurrentNumberOfAction(bot.getCurrentNumberOfAction() + 1);
             }
 

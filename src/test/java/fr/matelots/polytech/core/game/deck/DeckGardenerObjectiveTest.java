@@ -2,7 +2,6 @@ package fr.matelots.polytech.core.game.deck;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import org.junit.jupiter.api.BeforeEach;

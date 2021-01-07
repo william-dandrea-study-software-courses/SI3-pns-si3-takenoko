@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Layout;
 
 /**
+ * This class represent the deck of the parcels :
  * @author Alexandre Arcil
  */
 public class DeckParcel extends Deck<BambooPlantation> {
@@ -33,5 +34,6 @@ public class DeckParcel extends Deck<BambooPlantation> {
         this.cards.add(new BambooPlantation(BambooColor.PINK, Layout.BASIN));
         this.cards.add(new BambooPlantation(BambooColor.PINK, Layout.ENCLOSURE));
         this.cards.add(new BambooPlantation(BambooColor.PINK, Layout.FERTILIZER));
+
     }
 }
