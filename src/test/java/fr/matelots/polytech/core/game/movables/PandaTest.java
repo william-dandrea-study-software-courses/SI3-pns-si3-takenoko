@@ -1,5 +1,6 @@
 package fr.matelots.polytech.core.game.movables;
 
+import fr.matelots.polytech.core.UnreachableParcelException;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
@@ -8,7 +9,6 @@ import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 import fr.matelots.polytech.core.players.Bot;
-import fr.matelots.polytech.core.players.bots.PremierBot;
 import fr.matelots.polytech.core.players.bots.QuintusBot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +113,21 @@ public class PandaTest {
         assertTrue(panda.moveTo(1, -1, 0));
 
         assertEquals(1, bot.getIndividualBoard().getGreenEatenBamboo());
+    }
+
+    @Test
+    public void testMoveCurve () {
+        Parcel p1 = new BambooPlantation(BambooColor.GREEN);
+        Parcel p2 = new BambooPlantation(BambooColor.GREEN);
+        board.addParcel(-1, 1, 0, p1);
+        board.addParcel(0, -1, 1, p2);
+
+        panda.setCurrentPlayer(bot);
+
+        assertTrue(panda.moveTo(-1, 1, 0));
+        assertThrows(UnreachableParcelException.class, () -> panda.moveTo(0, -1, 1));
+
+        assertNull(p2.getPanda());
     }
 
 }
