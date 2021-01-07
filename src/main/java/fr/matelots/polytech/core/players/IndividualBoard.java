@@ -9,6 +9,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class describe a Player board. A board is composed of :
@@ -107,20 +108,18 @@ public class IndividualBoard {
     }
 
     // @return the number of completed objectives (all types of objectives)
-    public int getCompletedObjectives() {
-        int n = 0;
-        n += objectiveParcels.stream().filter(CardObjective::isCompleted).count();
-        n += objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
-        n += objectivePandas.stream().filter(CardObjective::isCompleted).count();
-        return n;
+    public CardObjective[] getCompletedObjectives() {
+        return Stream.concat(
+                Stream.concat(
+                    objectiveParcels.stream().filter(CardObjective::isCompleted),
+                    objectivePandas.stream().filter(CardObjective::isCompleted)
+                ),
+                objectiveGardeners.stream().filter(CardObjective::isCompleted))
+        .toArray(CardObjective[]::new);
     }
 
     public int countCompletedObjectives() {
-        int n = 0;
-        n += (int)objectiveParcels.stream().filter(CardObjectiveParcel::isCompleted).count();
-        n += (int)objectiveGardeners.stream().filter(CardObjective::isCompleted).count();
-        n += (int)objectivePandas.stream().filter(CardObjective::isCompleted).count();
-        return n;
+        return getCompletedObjectives().length;
     }
 
     /**
