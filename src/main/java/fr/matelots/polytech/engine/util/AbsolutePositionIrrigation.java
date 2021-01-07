@@ -35,6 +35,7 @@ public class AbsolutePositionIrrigation {
      */
     public boolean isIrrigate() {
         if(board == null) throw new RuntimeException("Board were null");
+        if(board.getParcel(position) == null) return false;
         else return board.getParcel(position).isIrrigate(side);
     }
 

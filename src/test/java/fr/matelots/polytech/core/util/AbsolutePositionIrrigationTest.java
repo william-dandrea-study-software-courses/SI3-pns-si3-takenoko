@@ -37,7 +37,7 @@ public class AbsolutePositionIrrigationTest {
         AbsolutePositionIrrigation api = new AbsolutePositionIrrigation(new Position(1, 0, -1), Side.LEFT, board);
         assertFalse(api.isIrrigate());
         board.placeIrrigation(new Position(1, 0, -1), Side.LEFT);
-        assertTrue(api.isIrrigate());
+        assertFalse(api.isIrrigate());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AbsolutePositionIrrigationTest {
         AbsolutePositionIrrigation api = new AbsolutePositionIrrigation(new Position(0, 1, -1), Side.RIGHT, board);
         assertFalse(api.isIrrigate());
         board.placeIrrigation(new Position(1, 0, -1), Side.LEFT);
-        assertTrue(api.isIrrigate());
+        assertFalse(api.isIrrigate());
     }
 
     @Test
