@@ -237,7 +237,7 @@ public class IndividualBoard {
         }
     }
 
-    // ======LAYOUT
+    // ====== LAYOUT
 
 
     public List<Layout> getLayouts() {
@@ -248,7 +248,7 @@ public class IndividualBoard {
         layouts.add(layout);
     }
 
-    public boolean placeLayout(Layout lay) {
+    public boolean getLayoutFromIndBoard(Layout lay) {
         return layouts.remove(lay);
     }
 }

@@ -23,6 +23,11 @@ public class Board {
     private final DeckParcel deckParcel;
     private final DeckLayout deckLayout;
 
+
+    private int layoutBasinLeftToPlace;
+    private int layoutFertilizerLeftToPlace;
+    private int layoutEnclosureLeftToPlace;
+
     private int parcelLeftToPlace;
     private int yellowParcelLeftToPlace;
     private int pinkParcelLeftToPlace;
@@ -54,6 +59,10 @@ public class Board {
         yellowParcelLeftToPlace = Config.NB_MAX_YELLOW_PARCELS;
         greenParcelLeftToPlace = Config.NB_MAX_GREEN_PARCELS;
         pinkParcelLeftToPlace = Config.NB_MAX_PINK_PARCELS;
+
+        layoutBasinLeftToPlace = Config.NB_LAYOUT_BASIN;
+        layoutFertilizerLeftToPlace = Config.NB_LAYOUT_FERTILIZER;
+        layoutEnclosureLeftToPlace = Config.NB_LAYOUT_ENCLOSURE;
     }
 
 
@@ -174,11 +183,36 @@ public class Board {
 
     public boolean placeLayout(Position position, Layout layout) {
 
-        if (getPositions().contains(position) && !getParcel(position).hasLayout() && getParcel(position).getBambooSize() == 0) {
-            return getParcel(position).setLayout(layout);
+        boolean res = false;
+        boolean canAdd = false;
+        switch (layout) {
+            case BASIN: {
+                if (layoutBasinLeftToPlace >= 1)
+                    canAdd = true;
+            } break;
+            case ENCLOSURE: {
+                if (layoutEnclosureLeftToPlace >= 1)
+                    canAdd = true;
+            }break;
+            case FERTILIZER: {
+                if (layoutFertilizerLeftToPlace >= 1)
+                    canAdd = true;
+            }break;
         }
 
-        return false;
+        if (getPositions().contains(position) && !getParcel(position).hasLayout() && getParcel(position).getBambooSize() == 0 && canAdd) {
+            res = getParcel(position).setLayout(layout);
+        }
+
+        if (res) {
+            switch (layout) {
+                case BASIN: { layoutBasinLeftToPlace--; } break;
+                case ENCLOSURE: { layoutEnclosureLeftToPlace--; }break;
+                case FERTILIZER: { layoutFertilizerLeftToPlace--;}break;
+            }
+        }
+
+        return res;
     }
 
 
