@@ -62,7 +62,6 @@ public abstract class Bot {
         panda = board.getPanda();
         gardener = board.getGardener();
         playWithWeather = false;
-
     }
 
 
@@ -136,7 +135,7 @@ public abstract class Bot {
         getIndividualBoard().addLayouts(Layout.BASIN);
     }
 
-    void weatherCaseThunderstormInitial(TurnLog log) {
+    protected void weatherCaseThunderstormInitial(TurnLog log) {
         Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
         place.ifPresent(position -> game.movePandaWhenWeather(lastAction, this, position, log));
     }
@@ -157,7 +156,12 @@ public abstract class Bot {
 
     /**
      * This method pick a new parcel objective from the pile of card and add this objective to the individual board
-     * @return the objective that is picked
+     * He can be empty if:
+     *  - The deck is empty
+     *  - The bot already done the maximum number of actions he can
+     *  - The bot have the maximum number of objective cards in his individual board
+     * @return the objective picked
+     * @throws IllegalActionRepetitionException if the last action was already been of picking a objective card
      */
     public final Optional<CardObjectiveParcel> pickParcelObjective(TurnLog log) {
         if (Config.isPickAction(lastAction))
@@ -491,7 +495,6 @@ public abstract class Bot {
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction))
             throw new IllegalActionRepetitionException();
-
         return this.placeParcel(log, position, new BambooPlantation(color));
     }
 
