@@ -79,6 +79,11 @@ public class IndividualBoard {
     public void checkAllGoal() {
         checkAllParcelGoal();
         checkAllGardenerGoal();
+        checkAllPandaGoal();
+    }
+
+    public void checkAllPandaGoal() {
+        objectivePandas.forEach(this::verify);
     }
 
     public void checkAllGardenerGoal() {

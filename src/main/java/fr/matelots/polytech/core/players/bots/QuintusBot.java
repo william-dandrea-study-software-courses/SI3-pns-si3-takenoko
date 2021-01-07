@@ -15,7 +15,6 @@ import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * This bot goal is to rush the panda objective.
@@ -115,6 +114,30 @@ public class QuintusBot extends Bot {
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);
         //displayState();
+    }
+
+    @Override
+    protected void weatherCaseThunderstormInitial(TurnLog log) {
+        if (neededColors == null || neededColors.isEmpty()) {
+            neededColors = getNeededColor();
+        }
+
+        Position chosen = null;
+        if (!neededColors.isEmpty()) {
+            for (Position pos : board.getPositions()) {
+                Parcel p = board.getParcel(pos);
+                if (p != null &&
+                        neededColors.get(0).equals(p.getBambooColor()) &&
+                        p.getBambooSize() > 0) {
+                    chosen = pos;
+                    break;
+                }
+            }
+        }
+        if (chosen == null) {
+            chosen = (new ArrayList<>(board.getPositions())).get(random.nextInt(board.getPositions().size()));
+        }
+        game.movePandaWhenWeather(getLastAction(), this, chosen, log);
     }
 
     /**
@@ -395,32 +418,5 @@ public class QuintusBot extends Bot {
         getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
         getIndividualBoard().getUnfinishedGardenerObjectives().forEach(CardObjectiveGardener::verify);
         getIndividualBoard().getUnfinishedParcelObjectives().forEach(CardObjectiveParcel::verify);
-    }
-
-    /**
-     * Log the unfinished objectives, the needed colors, the number of objectives complete and the score
-     */
-    private void displayState () {
-        StringBuilder builder = new StringBuilder("Objectifs :\n");
-        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> builder.append("{green ")
-                .append(obj.getCountForColor(BambooColor.GREEN))
-                .append(" (")
-                .append(getIndividualBoard().getGreenEatenBamboo())
-                .append("), pink ")
-                .append(obj.getCountForColor(BambooColor.PINK))
-                .append(" (")
-                .append(getIndividualBoard().getPinkEatenBamboo())
-                .append("), yellow ")
-                .append(obj.getCountForColor(BambooColor.YELLOW))
-                .append(" (")
-                .append(getIndividualBoard().getYellowEatenBamboo())
-                .append(")\n"));
-        builder.append("Needed colors :\n");
-        neededColors.forEach(bambooColor -> builder.append(bambooColor).append("\n"));
-
-        builder.append("Objectifs complets : ").append(getIndividualBoard().countCompletedObjectives());
-        builder.append("\nScore : ").append(getIndividualBoard().getPlayerScore());
-
-        Logger.getGlobal().info(builder.toString());
     }
 }
