@@ -55,10 +55,6 @@ public class ThirdBot extends Bot {
                 .ifPresent(card -> objectiveGardener = card);
     }
 
-    private boolean lastActionIsPlaceParcel() {
-        return Arrays.stream(turnLog.getActions()).anyMatch(ba -> ba.getType() == BotActionType.PLACE_PARCEL);
-    }
-
     private boolean parcelObjectiveCanBeSolved(CardObjectiveParcel objectiveParcel) {
         if(objectiveParcel.verify()) return false;
         if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
@@ -121,19 +117,26 @@ public class ThirdBot extends Bot {
 
         //      2 - there is no tile of the good color irrigated
         //              a - reachable by Irrigations
+        //              b - has no layout or there is the good layout
+
         boolean goodColorAndReachableByIrrigation = canPerformAction(BotActionType.PLACE_IRRIGATION) &&
                 (getIndividualBoard().canPlaceIrrigation() || board.canPickIrrigation()) &&
                 board.getPositions().stream().anyMatch(position ->
-                board.getParcel(position).getBambooColor() == bambooColor &&
-                !board.getParcel(position).isIrrigate() &&
-                isIrrigable(position) &&
-                (board.canPickIrrigation() || getIndividualBoard().canPlaceIrrigation())
+                    board.getParcel(position).getBambooColor() == bambooColor &&            // Good color
+                    !board.getParcel(position).isIrrigate() &&                              // Position irrigate
+                    (                                                                       // Check layouts
+                            objectiveGardener.getLayout() == null                                   // Check objectiveCard has no layout
+                    ) &&
+                    isIrrigable(position) &&
+                    (board.canPickIrrigation() || getIndividualBoard().canPlaceIrrigation())
         );
         if(goodColorAndReachableByIrrigation)
             return true;
 
         //      3 - there is no tile a tile of the good color and is irrigated
         //              a - reachable by the gardenner
+        //              b - has no layout or there is the good layout
+
         boolean irrigatedAndReachableByGardenner = canPerformAction(BotActionType.MOVE_GARDENER) && board.getPositions().stream().anyMatch(position ->
                 board.getParcel(position).isIrrigate() &&
                 board.getParcel(position).getBambooColor() == bambooColor &&

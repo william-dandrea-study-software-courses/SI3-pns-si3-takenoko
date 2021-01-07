@@ -43,12 +43,16 @@ public class ParcelRouteFinder {
                     toIrrigate.add(temp);
                     temp = temp.leftSide();
                 }
+                toIrrigate.add(temp);
+
             } else {
                 temp = output;
                 while (!isGoodInput.test(temp)) {
                     toIrrigate.add(temp);
                     temp = temp.rightSide();
                 }
+                toIrrigate.add(temp);
+
             }
         } else if(canUseLeft) {
             temp = output.leftSide();
@@ -57,6 +61,7 @@ public class ParcelRouteFinder {
                 toIrrigate.add(temp);
                 temp = temp.leftSide();
             }
+            toIrrigate.add(temp);
 
             if(temp == output)
                 return Optional.empty();
@@ -67,6 +72,7 @@ public class ParcelRouteFinder {
                 toIrrigate.add(temp);
                 temp = temp.rightSide();
             }
+            toIrrigate.add(temp);
 
             if(temp == output)
                 return Optional.empty();
