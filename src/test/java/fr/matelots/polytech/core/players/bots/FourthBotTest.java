@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.players.bots;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
@@ -8,6 +9,7 @@ import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.players.IndividualBoard;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.Position;
@@ -262,6 +264,34 @@ public class FourthBotTest {
         assertEquals(goal, board.getGardener().getPosition());
     }
 
+    @Test @DisplayName("Bouge le panda pour compléter l'objectif")
+    public void movePanda() {
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        Position position = new Position(0, 1, -1);
+        this.board.addParcel(position, plantation);
+        plantation.growBamboo();
+        plantation.growBamboo();
+        plantation.growBamboo();
+        plantation.growBamboo();
+        this.bot.currentGardenerObjective = new CardObjectiveGardener(board, 1, BambooColor.GREEN, 3, 1);
+        this.bot.tryToResolveGardenerObjective(log);
+        assertEquals(position, this.board.getPanda().getPosition());
+    }
+
+    @Test @DisplayName("Ne bouge pas le panda si la parcelle contient un enclos, et pose une parcelle")
+    public void dontMovePanda() {
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN, Layout.ENCLOSURE);
+        this.board.addParcel(new Position(0, 1, -1), plantation);
+        plantation.growBamboo();
+        plantation.growBamboo();
+        plantation.growBamboo();
+        plantation.growBamboo();
+        this.bot.currentGardenerObjective = new CardObjectiveGardener(board, 1, BambooColor.GREEN, 3, 1);
+        this.bot.tryToResolveGardenerObjective(log);
+        assertEquals(Config.POND_POSITION, this.board.getPanda().getPosition());
+        assertEquals(3, this.bot.getBoard().getParcelCount());
+        assertEquals(2, this.bot.getBoard().getParcelCount(BambooColor.GREEN));
+    }
 
 
 

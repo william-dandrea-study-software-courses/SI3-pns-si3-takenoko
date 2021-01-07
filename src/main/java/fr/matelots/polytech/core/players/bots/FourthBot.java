@@ -7,9 +7,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.Parcel;
-import fr.matelots.polytech.core.game.parcels.Side;
+import fr.matelots.polytech.core.game.parcels.*;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.MarganIA;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -394,8 +392,13 @@ public class FourthBot extends Bot {
                 }
             }
         } else if(this.canDoAction()) {
-            List<Position> tooSmall = positions.stream().filter(position -> board.getParcel(position).getBambooSize() < currentGardenerObjective.getSize()).collect(Collectors.toList());
-            List<Position> tooBig = positions.stream().filter(position -> board.getParcel(position).getBambooSize() > currentGardenerObjective.getSize()).collect(Collectors.toList());
+            List<Position> tooSmall = positions.stream()
+                    .filter(position -> board.getParcel(position).getBambooSize() < currentGardenerObjective.getSize())
+                    .collect(Collectors.toList());
+            List<Position> tooBig = positions.stream()
+                    .filter(position -> board.getParcel(position).getBambooSize() > currentGardenerObjective.getSize() &&
+                            ((BambooPlantation) board.getParcel(position)).getLayout() != Layout.ENCLOSURE)
+                    .collect(Collectors.toList());
             if(!tooSmall.isEmpty()) {
                 Position pos = tooSmall.get(0); // La parcelle avec le bamboo le plus grand
                 if(this.getBoard().getGardener().getPosition().equals(pos)) { // Si le jardinier est déjà dessus
@@ -407,7 +410,7 @@ public class FourthBot extends Bot {
                     this.moveGardenerByStep(pos, log);
             }
             if(!tooBig.isEmpty()) {
-                Position pos = tooBig.get(0); // La parcelle est trop grande
+                Position pos = tooBig.get(0); // La parcelle a un bamboo trop grande
                 if(this.getBoard().getPanda().getPosition().equals(pos)) { // Si le panda est déjà dessus
                     if(tooBig.size() >= 2)
                         this.movePandaByStep(log, tooBig.get(1));
@@ -421,6 +424,8 @@ public class FourthBot extends Bot {
                 } else
                     this.movePandaByStep(log, pos);
             }
+            if(tooBig.isEmpty() && tooSmall.isEmpty())
+                this.placeAnParcelAnywhere(this.currentGardenerObjective.getColor(), log);
         }
     }
 
