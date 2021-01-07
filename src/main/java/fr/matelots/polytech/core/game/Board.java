@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 import fr.matelots.polytech.core.game.parcels.*;
+import fr.matelots.polytech.core.NoLayoutLeftException;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -187,16 +188,19 @@ public class Board {
         boolean canAdd = false;
         switch (layout) {
             case BASIN: {
-                if (layoutBasinLeftToPlace >= 1)
+                if (layoutBasinLeftToPlace > 0)
                     canAdd = true;
+                else throw new NoLayoutLeftException();
             } break;
             case ENCLOSURE: {
-                if (layoutEnclosureLeftToPlace >= 1)
+                if (layoutEnclosureLeftToPlace > 0)
                     canAdd = true;
+                else throw new NoLayoutLeftException();
             }break;
             case FERTILIZER: {
-                if (layoutFertilizerLeftToPlace >= 1)
+                if (layoutFertilizerLeftToPlace > 0)
                     canAdd = true;
+                else throw new NoLayoutLeftException();
             }break;
         }
 
@@ -215,7 +219,17 @@ public class Board {
         return res;
     }
 
+    public int getLayoutBasinLeftToPlace() {
+        return layoutBasinLeftToPlace;
+    }
 
+    public int getLayoutFertilizerLeftToPlace() {
+        return layoutFertilizerLeftToPlace;
+    }
+
+    public int getLayoutEnclosureLeftToPlace() {
+        return layoutEnclosureLeftToPlace;
+    }
 
     /**
      * Place une irrigation sur le côté <code>side</code> de la parcelle se trouvant à la position <code>position</code>.

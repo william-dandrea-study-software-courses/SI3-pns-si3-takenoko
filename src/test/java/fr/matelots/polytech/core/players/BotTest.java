@@ -344,7 +344,7 @@ public class BotTest {
         assertEquals(lastOpt.get().getType(), BotActionType.PLACE_IRRIGATION);
 
         // Check numberOfAction
-        assertEquals(bot.currentNumberOfAction, 2);
+        assertEquals(bot.currentNumberOfAction, 1);
 
         // Check the side has been irrigated
         assertTrue(api.isIrrigate());
