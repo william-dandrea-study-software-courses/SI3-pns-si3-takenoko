@@ -203,12 +203,8 @@ public class BoardTest {
         BambooPlantation border = new BambooPlantation(BambooColor.GREEN);
         board.addParcel(0, 1, -1, border);
 
-        assertTrue(board.placeIrrigation(new Position(0, 1, -1), Side.RIGHT));
-        assertTrue(border.isIrrigate(Side.RIGHT));
-
-        BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
-        board.addParcel(1, 0, -1, afterPlaceIrrigation);
-        assertTrue(afterPlaceIrrigation.isIrrigate(Side.BOTTOM_LEFT));
+        assertFalse(board.canPlaceIrrigation(new Position(0, 1, -1), Side.RIGHT));
+        assertFalse(board.placeIrrigation(new Position(0, 1, -1), Side.RIGHT));
     }
 
     @Test
@@ -216,12 +212,8 @@ public class BoardTest {
         BambooPlantation border = new BambooPlantation(BambooColor.GREEN);
         board.addParcel(0, 1, -1, border);
 
-        assertTrue(board.placeIrrigation(new Position(1, 0, -1), Side.LEFT));
-        assertTrue(border.isIrrigate(Side.RIGHT));
-
-        BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
-        board.addParcel(1, 0, -1, afterPlaceIrrigation);
-        assertTrue(afterPlaceIrrigation.isIrrigate(Side.BOTTOM_LEFT));
+        assertFalse(board.canPlaceIrrigation(new Position(1, 0, -1), Side.LEFT));
+        assertFalse(board.placeIrrigation(new Position(1, 0, -1), Side.LEFT));
     }
 
     @Test

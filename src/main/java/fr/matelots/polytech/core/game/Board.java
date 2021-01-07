@@ -203,17 +203,18 @@ public class Board {
 
         // si parcel null on recommence avec la parcelle adjacente.
         // parcelAdjacent != null evite les boucles infinies
-        if(parcel == null && parcelAdjacent != null) return placeIrrigation(position.add(side.getDirection()), side.oppositeSide());
 
+        if(parcelAdjacent == null || parcel == null) return false;
 
-        if(parcel != null) {
+        if(parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide())) return true;
+        return parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) || parcelAdjacent.isIrrigate(sideAdjacent.leftSide());
+    }
 
-            if(parcel.isIrrigate(side.rightSide()) || parcel.isIrrigate(side.leftSide())) return true;
-            if(parcelAdjacent != null) {
-                return parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) || parcelAdjacent.isIrrigate(sideAdjacent.leftSide());
-            }
-        }
-        return false;
+    public boolean isInterstice(Position position, Side side) {
+        Parcel parcel = getParcel(position);
+        Parcel adjacenteParcel = getParcel(position.add(side.getDirection()));
+
+        return parcel != null && adjacenteParcel != null;
     }
 
     @Override
