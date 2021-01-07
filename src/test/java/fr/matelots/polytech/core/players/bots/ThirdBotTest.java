@@ -12,6 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
+
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -59,26 +63,57 @@ public class ThirdBotTest {
     }
 
     @Test
-    void AfterCompleteParcelObjectives() {
-        bot.DecideAction(log);
-        var opt = log.getLastAction();
-        while(bot.canPlay() && (opt.isEmpty()
-                || opt.get().getType() == BotActionType.PICK_PARCEL_GOAL
-                || opt.get().getType() == BotActionType.PICK_GARDENER_GOAL
-                || opt.get().getType() == BotActionType.PLACE_PARCEL )) {
-            bot.moveGardener(Config.POND_POSITION, log);
-            bot.DecideAction(log);
-            try {
-                opt = log.getLastAction();
-            } catch (IllegalActionRepetitionException e) {
-                System.out.println(log.toString());
-                throw e;
-            }
-            bot.setCurrentNumberOfAction(0);
+    void afterPickedFiveObjectifAttemptCompleteParcel() {
+        //bot.DecideAction(log);
+        boolean canPlay = bot.canPlay();
+        BotActionType[] gardenerPhaseActions = new BotActionType[] {
+                BotActionType.MOVE_GARDENER,
+                BotActionType.PLACE_IRRIGATION,
+                BotActionType.PLACE_PARCEL
+        };
+        BotActionType[] parcelPhase = new BotActionType[] {
+                BotActionType.PLACE_PARCEL
+        };
+        while(canPlay && (log.getActions().length == 0 ||
+                Config.isPickAction(log.getActions()[0].getType()))) {
+
             log = new TurnLog(bot);
+            bot.playTurn(log, null);
+            bot.setCurrentNumberOfAction(0);
+            canPlay = bot.canPlay();
         }
-        var action = opt.get();
-        //assertTrue(action.getType() == BotActionType.MOVE_GARDENER || action.getType() == BotActionType.PLACE_IRRIGATION);
+        if(bot.getIndividualBoard().countUnfinishedParcelObjectives() != 0) {
+            assertTrue(Arrays.stream(parcelPhase).anyMatch(ba -> ba == log.getActions()[0].getType()));
+        } else {
+            assertTrue(Arrays.stream(gardenerPhaseActions).anyMatch(ba -> ba == log.getActions()[0].getType()));
+        }
+
+    }
+
+    @Test
+    void afterCompleteParcelObjectiveAttemptCompleteGardenerObjectives() {
+        boolean canPlay = bot.canPlay();
+        BotActionType[] gardenerPhaseActions = new BotActionType[] {
+                BotActionType.MOVE_GARDENER,
+                BotActionType.PLACE_IRRIGATION,
+                BotActionType.PLACE_PARCEL
+        };
+        BotActionType[] parcelPhase = new BotActionType[] {
+                BotActionType.PLACE_PARCEL
+        };
+
+        while(canPlay && (log.getActions().length == 0 ||
+                Config.isPickAction(log.getActions()[0].getType()) ||
+                Arrays.stream(parcelPhase).anyMatch(ba -> ba == log.getActions()[0].getType()))) {
+            log = new TurnLog(bot);
+            bot.playTurn(log, null);
+            bot.setCurrentNumberOfAction(0);
+            canPlay = bot.canPlay();
+        }
+
+        if(bot.getIndividualBoard().countUnfinishedGardenerObjectives() > 0) {
+            assertTrue(Arrays.stream(gardenerPhaseActions).anyMatch(ba -> ba == log.getActions()[0].getType()));
+        }
     }
 
     @Disabled

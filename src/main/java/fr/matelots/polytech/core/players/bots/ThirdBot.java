@@ -159,8 +159,10 @@ public class ThirdBot extends Bot {
     }
 
     private boolean haveObjectiveSolvable() {
-        if(haveParcelObjectiveSolvable()) return true;
-        return haveGardenerObjectiveSolvable();
+        if(haveParcelObjectiveSolvable())
+            return true;
+        boolean haveGardenerSolvable = haveGardenerObjectiveSolvable();
+        return haveGardenerSolvable;
     }
     private boolean haveGardenerObjectiveSolvable() {
         var solvable = getIndividualBoard()
