@@ -1,6 +1,7 @@
 package fr.matelots.polytech.core.util;
 
 import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
@@ -11,6 +12,7 @@ import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.*;
@@ -121,7 +123,6 @@ public class ParcelRouteFinderTest {
 
     }
 
-
     @Test
     void testVerySmallPath() {
         initMap();
@@ -162,5 +163,19 @@ public class ParcelRouteFinderTest {
         }
 
         assertTrue(plantation3.isIrrigate());
+    }
+
+    @Test
+    void testBestPathFinderDoNotReturnIrrigatedPosition() {
+        for(int i = 0; i < 500; i++) {
+            init();
+            initMap();
+
+            var randomPosition = board.getPositions().toArray(Position[]::new)[Config.RANDOM.nextInt(board.getPositions().size())];
+            var path = getBestPathToIrrigate(board, randomPosition);
+            if(path.isEmpty()) continue;
+
+            assertTrue(path.get().stream().noneMatch(AbsolutePositionIrrigation::isIrrigate));
+        }
     }
 }

@@ -200,7 +200,7 @@ public class FourthBot extends Bot {
             List<CardObjectiveParcel> objectivesCompletable = unfinishedParcelsObjectives.stream().filter(this::canDoParcelObjective).collect(Collectors.toList());
             if(objectivesCompletable.isEmpty()) {
                 for(int i = 0; i < Config.TOTAL_NUMBER_OF_ACTIONS; i++) {
-                    Optional<CardObjective> cardObjective = this.pickParcelObjective(log);
+                    Optional<CardObjectiveParcel> cardObjective = this.pickParcelObjective(log);
                     if(cardObjective.isPresent()) {
                         if(this.canDoParcelObjective((CardObjectiveParcel) cardObjective.get()))
                             this.currentParcelObjective = (CardObjectiveParcel) cardObjective.get();

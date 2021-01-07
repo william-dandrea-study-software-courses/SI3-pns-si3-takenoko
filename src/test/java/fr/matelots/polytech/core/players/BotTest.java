@@ -145,7 +145,7 @@ public class BotTest {
 
         // We test with just one objective and the number of actions we do
         int numberOfActions = bot.getCurrentNumberOfAction();
-        Optional<CardObjective> cardObjective = bot.pickParcelObjective(turnLog);
+        Optional<CardObjectiveParcel> cardObjective = bot.pickParcelObjective(turnLog);
         assertTrue(cardObjective.get() instanceof CardObjectiveParcel);
 
 
@@ -173,7 +173,7 @@ public class BotTest {
 
         // We test with just one objective and the number of actions we do
         int numberOfActions = bot.getCurrentNumberOfAction();
-        Optional<CardObjective> cardObjective = bot.pickGardenerObjective(turnLog);
+        Optional<CardObjectiveGardener> cardObjective = bot.pickGardenerObjective(turnLog);
         assertTrue(cardObjective.get() instanceof CardObjectiveGardener);
 
 
@@ -201,7 +201,7 @@ public class BotTest {
 
         // We test with just one objective and the number of actions we do
 
-        Optional<CardObjective> cardObjective = bot.pickPandaObjective(turnLog);
+        Optional<CardObjectivePanda> cardObjective = bot.pickPandaObjective(turnLog);
         assertTrue(cardObjective.get() instanceof CardObjectivePanda);
 
 
