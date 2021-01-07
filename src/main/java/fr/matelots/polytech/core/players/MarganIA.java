@@ -8,6 +8,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Layout;
+import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -359,4 +360,37 @@ public class MarganIA {
     }
 
 
+
+
+    public static int countNumberResolvePatternLine(CardObjectiveParcel objective, Board board) {
+
+        Board boardTemp = new Board();
+        boardTemp = board;
+
+
+
+        Set<PositionColored> placeWhereWeNeedToPlace = objective.getMissingPositionsToComplete();
+
+        PositionColored idealPosition = resolvePatternLine(objective, boardTemp);
+        boardTemp.addParcel(idealPosition.getPosition(), new BambooPlantation(idealPosition.getColor(), null));
+
+
+
+
+
+    }
+
+
+    public static boolean isRelativePlaceValid(Position position, Set<Position> positions) {
+
+        int increment = 0;
+        for (int i = 1; i <= 6; i++) {
+            Position posAround = nextPositionIncrement(i,position);
+            if (positions.contains(posAround)) {
+                increment++;
+            }
+        }
+
+        return increment >= 2;
+    }
 }

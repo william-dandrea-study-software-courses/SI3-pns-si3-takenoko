@@ -69,7 +69,7 @@ import java.util.*;
 public class RushParcelBotOneObj extends Bot {
 
     private TurnLog turnLogger;
-    private Optional<CardObjective> currentObjective;
+    private Optional<CardObjectiveParcel> currentObjective;
 
     private int minNumberOfParcels = 6;
     private int finishIncrement = 0;
@@ -211,7 +211,7 @@ public class RushParcelBotOneObj extends Bot {
 
 
 
-    public Optional<CardObjective> getCurrentObjective() {
+    public Optional<CardObjectiveParcel> getCurrentObjective() {
         return currentObjective;
     }
 
