@@ -24,7 +24,7 @@ public class Takenoko {
         for (double i = 0; i < 20; i++)
             percents.add(i / 20.);
 
-        final int NB_GAMES = 1000;
+        final int NB_GAMES = 100;
         final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;

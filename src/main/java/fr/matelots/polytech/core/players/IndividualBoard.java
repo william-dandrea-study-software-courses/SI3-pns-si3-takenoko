@@ -258,8 +258,8 @@ public class IndividualBoard {
         return layouts;
     }
 
-    public void addLayouts(Layout layout) {
-        layouts.add(layout);
+    public boolean addLayouts(Layout layout) {
+        return layouts.add(layout);
     }
 
     public boolean getLayoutFromIndBoard(Layout lay) {

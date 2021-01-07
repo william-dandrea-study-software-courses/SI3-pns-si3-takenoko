@@ -22,7 +22,9 @@ public class Board {
     private final DeckGardenerObjective deckGardenerObjective;
     private final DeckPandaObjective deckPandaObjective;
     private final DeckParcel deckParcel;
-    private final DeckLayout deckLayout;
+    private final DeckLayoutBasin deckLayoutBasin;
+    private final DeckLayoutEnclosure deckLayoutEnclosure;
+    private final DeckLayoutFertilizer deckLayoutFertilizer;
 
 
     private int layoutBasinLeftToPlace;
@@ -46,7 +48,10 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         this.deckPandaObjective = new DeckPandaObjective(this);
         this.deckParcel = new DeckParcel(this);
-        this.deckLayout = new DeckLayout(this);
+
+        this.deckLayoutBasin = new DeckLayoutBasin(this);
+        this.deckLayoutFertilizer = new DeckLayoutFertilizer(this);
+        this.deckLayoutEnclosure = new DeckLayoutEnclosure(this);
         // On ajoute l'étang
         grid.put(Config.POND_POSITION, new Pond());
         gardener = new Gardener(this, Config.POND_POSITION);
@@ -311,6 +316,18 @@ public class Board {
 
     public DeckPandaObjective getDeckPandaObjective() {
         return deckPandaObjective;
+    }
+
+
+    public DeckLayoutBasin getDeckBasinLayout() {
+        return deckLayoutBasin;
+    }
+    public DeckLayoutFertilizer getDeckFertilizerLayout() {
+        return deckLayoutFertilizer;
+    }
+
+    public DeckLayoutEnclosure getDeckEnclosureLayout() {
+        return deckLayoutEnclosure;
     }
 
     public int getParcelCount() {

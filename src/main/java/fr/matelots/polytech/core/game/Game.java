@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -304,6 +305,23 @@ public class Game {
     public CardObjectivePanda getNextPandaObjective() {
         if (board.getDeckGardenerObjective().canPick())
             return board.getDeckPandaObjective().pick();
+        return null;
+    }
+
+
+    public Layout getNextBasinLayout() {
+        if (board.getDeckBasinLayout().canPick())
+            return (Layout) board.getDeckBasinLayout().pick();
+        return null;
+    }
+    public Layout getNextFertilizerLayout() {
+        if (board.getDeckFertilizerLayout().canPick())
+            return (Layout) board.getDeckFertilizerLayout().pick();
+        return null;
+    }
+    public Layout getNextEnclosureLayout() {
+        if (board.getDeckEnclosureLayout().canPick())
+            return (Layout) board.getDeckEnclosureLayout().pick();
         return null;
     }
 

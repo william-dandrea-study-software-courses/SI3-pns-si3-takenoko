@@ -139,7 +139,7 @@ public abstract class Bot {
     }
 
     protected void weatherCaseCloudInitial() {
-        getIndividualBoard().addLayouts(Layout.BASIN);
+        //getIndividualBoard().addLayouts(Layout.BASIN);
     }
 
     protected void weatherCaseThunderstormInitial(TurnLog log) {
@@ -563,6 +563,59 @@ public abstract class Bot {
         }
         else return false;
     }
+
+    
+
+
+    public Optional<Layout> pickBasinLayout(TurnLog log) {
+        if (!canAddAmenagement && !canDoSameActionInOneTour)
+            throw new IllegalActionRepetitionException();
+
+        if (this.canDoAction()) {
+            Layout layout = game.getNextBasinLayout();
+            if (layout == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addLayouts(layout)) {
+                return Optional.empty();
+            }
+            return Optional.of(layout);
+        }
+        return Optional.empty();
+    }
+    public Optional<Layout> pickFertilizerLayout(TurnLog log) {
+        if (!canAddAmenagement && !canDoSameActionInOneTour)
+            throw new IllegalActionRepetitionException();
+
+        if (this.canDoAction()) {
+            Layout layout = game.getNextFertilizerLayout();
+            if (layout == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addLayouts(layout)) {
+                return Optional.empty();
+            }
+            return Optional.of(layout);
+        }
+        return Optional.empty();
+    }
+    public Optional<Layout> pickEnclosureLayout(TurnLog log) {
+        if (!canAddAmenagement && !canDoSameActionInOneTour)
+            throw new IllegalActionRepetitionException();
+
+        if (this.canDoAction()) {
+            Layout layout = game.getNextEnclosureLayout();
+            if (layout == null) {
+                return Optional.empty();
+            }
+            if(!individualBoard.addLayouts(layout)) {
+                return Optional.empty();
+            }
+            return Optional.of(layout);
+        }
+        return Optional.empty();
+    }
+
 
     public String getName() {
         return name;
