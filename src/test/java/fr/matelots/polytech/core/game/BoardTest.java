@@ -208,7 +208,7 @@ public class BoardTest {
 
         BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
         board.addParcel(1, 0, -1, afterPlaceIrrigation);
-        assertTrue(afterPlaceIrrigation.isIrrigate(Side.LEFT));
+        assertTrue(afterPlaceIrrigation.isIrrigate(Side.BOTTOM_LEFT));
     }
 
     @Test
@@ -221,7 +221,7 @@ public class BoardTest {
 
         BambooPlantation afterPlaceIrrigation = new BambooPlantation(BambooColor.GREEN);
         board.addParcel(1, 0, -1, afterPlaceIrrigation);
-        assertTrue(afterPlaceIrrigation.isIrrigate(Side.LEFT));
+        assertTrue(afterPlaceIrrigation.isIrrigate(Side.BOTTOM_LEFT));
     }
 
     @Test
