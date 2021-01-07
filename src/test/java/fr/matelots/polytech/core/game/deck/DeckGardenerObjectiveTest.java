@@ -41,19 +41,19 @@ public class DeckGardenerObjectiveTest {
     @Test @DisplayName("contient 4 cartes '1 bamboo vert de 4 de hauteur'")
     public void containGreenBambooSizeFour() {
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 5, BambooColor.GREEN, 4, 1);
-        this.containCards(card, 4);
+        this.containCards(card, 1);
     }
 
     @Test @DisplayName("contient 4 cartes '1 bamboo jaune de 4 de hauteur'")
     public void containYellowBambooSizeFour() {
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 5, BambooColor.YELLOW, 4, 1);
-        this.containCards(card, 4);
+        this.containCards(card, 2);
     }
 
     @Test @DisplayName("contient 4 cartes '1 bamboo rose de 4 de hauteur'")
     public void containPinkBambooSizeFour() {
         CardObjectiveGardener card = new CardObjectiveGardener(this.board, 5, BambooColor.PINK, 4, 1);
-        this.containCards(card, 4);
+        this.containCards(card, 1);
     }
 
     @Test @DisplayName("contient 1 cartes '4 bamboo vert de 3 de hauteur'")
