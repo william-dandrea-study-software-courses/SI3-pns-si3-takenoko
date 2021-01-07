@@ -64,6 +64,14 @@ public abstract class Bot {
         playWithWeather = false;
     }
 
+    protected int getMaxNumberOfActions () {
+        return maxNumberOfActions;
+    }
+
+    protected boolean canDoSameActionInOneTour () {
+        return canDoSameActionInOneTour;
+    }
+
 
     /**
      * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
@@ -91,7 +99,7 @@ public abstract class Bot {
     }
 
 
-    void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
+    protected void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
         //System.out.println(weather);
         if (weather!= null) {
             switch (weather) {
@@ -126,12 +134,12 @@ public abstract class Bot {
         }
     }
 
-    void weatherCaseRainInitial() {
+    protected void weatherCaseRainInitial() {
         Optional<Position> place = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate() && !board.getParcel(p).equals(Config.POND_POSITION)).findAny();
         place.ifPresent(position -> getBoard().getParcel(position).growBamboo());
     }
 
-    void weatherCaseCloudInitial() {
+    protected void weatherCaseCloudInitial() {
         getIndividualBoard().addLayouts(Layout.BASIN);
     }
 
@@ -139,7 +147,7 @@ public abstract class Bot {
         Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
         place.ifPresent(position -> game.movePandaWhenWeather(lastAction, this, position, log));
     }
-    void weatherCaseInterrogationInitial(TurnLog log) {
+    protected void weatherCaseInterrogationInitial(TurnLog log) {
         playTurn(log, game.diceRandomWeather());
     }
 
@@ -164,7 +172,7 @@ public abstract class Bot {
      * @throws IllegalActionRepetitionException if the last action was already been of picking a objective card
      */
     public final Optional<CardObjectiveParcel> pickParcelObjective(TurnLog log) {
-        if (Config.isPickAction(lastAction))
+        if (Config.isPickAction(lastAction) && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if(canDoAction()) {
@@ -188,7 +196,7 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public final Optional<CardObjectiveGardener> pickGardenerObjective(TurnLog log) {
-        if (Config.isPickAction(lastAction))
+        if (Config.isPickAction(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if(this.canDoAction()) {
@@ -212,7 +220,7 @@ public abstract class Bot {
      * @return the objective that is picked
      */
     public final Optional<CardObjectivePanda> pickPandaObjective(TurnLog log) {
-        if (Config.isPickAction(lastAction))
+        if (Config.isPickAction(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if (this.canDoAction()) {
@@ -259,7 +267,7 @@ public abstract class Bot {
 
 
     protected final boolean movePanda(TurnLog log, Position pos) {
-        if (BotActionType.MOVE_PANDA.equals(lastAction))
+        if (BotActionType.MOVE_PANDA.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         panda.setCurrentPlayer(this);
@@ -274,7 +282,7 @@ public abstract class Bot {
     }
 
     protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
-        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+        if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if (!canPlay() || currentNumberOfAction >= maxNumberOfActions) {
@@ -292,7 +300,7 @@ public abstract class Bot {
     }
 
     protected final void placeLayout (TurnLog log, BambooPlantation parcel, Layout layout) {
-        if (BotActionType.PLACE_LAYOUT.equals(lastAction))
+        if (BotActionType.PLACE_LAYOUT.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if (parcel.setLayout(layout)) {
@@ -315,7 +323,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
-        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+        if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
@@ -418,7 +426,7 @@ public abstract class Bot {
      * @return true if we have place a parcel, false else
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
-        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+        if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if (board.getParcelCount() < Config.MAX_PARCEL_ON_BOARD && this.canDoAction()) {
@@ -493,7 +501,7 @@ public abstract class Bot {
      * @return true if the parcel is placed else return false
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
-        if (BotActionType.PLACE_PARCEL.equals(lastAction))
+        if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
         return this.placeParcel(log, position, new BambooPlantation(color));
     }
@@ -524,7 +532,7 @@ public abstract class Bot {
      * @param log The logger
      */
     public boolean moveGardener(Position position, TurnLog log) {
-        if (BotActionType.MOVE_GARDENER.equals(lastAction))
+        if (BotActionType.MOVE_GARDENER.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if(!this.canDoAction()) return false;
@@ -548,7 +556,7 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
-        if (BotActionType.PLACE_IRRIGATION.equals(lastAction))
+        if (BotActionType.PLACE_IRRIGATION.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
 
         if(!canDoAction()) return false;
