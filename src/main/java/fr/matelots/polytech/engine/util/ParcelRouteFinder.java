@@ -169,14 +169,31 @@ public class ParcelRouteFinder {
         return Optional.of(positions);
     }
     public static Optional<Set<AbsolutePositionIrrigation>> getBestPathToIrrigate(Board board, Position positionToIrrigate) {
-        var shortest = board.getPositions().stream()
+        var nearestPoint = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate()).sorted(Comparator.comparing(o1 -> (Math.abs(o1.getX() - positionToIrrigate.getX()) +
+                Math.abs(o1.getY() - positionToIrrigate.getY()) +
+                Math.abs(o1.getZ() - positionToIrrigate.getZ())) / 2)).toArray(Position[]::new);
+        Set<AbsolutePositionIrrigation> path = null;
+        int i = 0;
+
+        while(path == null && i < nearestPoint.length) {
+            path = getIrrigationToIrrigate(board, nearestPoint[i], positionToIrrigate).orElse(null);
+            i++;
+        }
+
+        if(path == null) return Optional.empty();
+        else return Optional.of(path);
+
+
+
+
+        /*var shortest = board.getPositions().stream()
                 .filter(p -> board.getParcel(p).isIrrigate()) // on recupere les cases irrigué
                 .map(p -> getIrrigationToIrrigate(board, p, positionToIrrigate)) // On recherche tout les chemins
                 .filter(Optional::isPresent)        // On retire les positions jugé sans chemin
                 .map(Optional::get)                 // on recupere les valeur des optionnels
                 .filter(p -> !p.isEmpty())
                 .min(Comparator.comparing(Set::size)); // on recupere le chemin le moins couteux
-        return shortest;
+        return shortest;*/
     }
 
     public static Optional<AbsolutePositionIrrigation> getNextParcelToIrrigate(Set<AbsolutePositionIrrigation> path) {
