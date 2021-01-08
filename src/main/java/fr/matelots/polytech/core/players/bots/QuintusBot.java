@@ -39,6 +39,8 @@ public class QuintusBot extends Bot {
 
     private boolean nextStep = false;
 
+    private List<Position> pathToTake;
+
     public QuintusBot(Game game, String name) {
         super(game, name);
         this.game = game;
@@ -286,26 +288,56 @@ public class QuintusBot extends Bot {
      * Move the gardener on a new parcel
      */
     void moveGardener (TurnLog log) {
-        List<Position> accessibles = board.getReachablePositionFrom(gardener.getPosition());
-        accessibles.remove(gardener.getPosition());
+        Position chosen = findCommonPosition();
 
-        Position chosen = null;
+        if (chosen == null) {
+            List<Position> accessibles = board.getReachablePositionFrom(gardener.getPosition());
+            accessibles.remove(gardener.getPosition());
 
-        for (Position position : accessibles) {
-            Parcel tmp = board.getParcel(position);
-            assert tmp != null;
-            if (neededColors.contains(tmp.getBambooColor())) {
-                chosen = position;
-                break;
+            for (Position position : accessibles) {
+                Parcel tmp = board.getParcel(position);
+                assert tmp != null;
+                if (neededColors.contains(tmp.getBambooColor())) {
+                    chosen = position;
+                    break;
+                }
             }
-        }
 
-        if (chosen == null)
-            chosen = accessibles.get(random.nextInt(accessibles.size()));
+            if (chosen == null)
+                chosen = accessibles.get(random.nextInt(accessibles.size()));
+        }
 
         super.moveGardener(chosen, log);
         turnDoingNothing = 0;
         turnPastMovingGardener++;
+    }
+
+    private Position findCommonPosition() {
+        List<Position> reachableByG = board.getReachablePositionFrom(gardener.getPosition());
+        List<Position> reachableByP = board.getReachablePositionFrom(panda.getPosition());
+
+        List<Position> commons = new ArrayList<>();
+
+        for (Position posG : reachableByG) {
+            for (Position posP : reachableByP) {
+                if (posG.equals(posP)) {
+                    commons.add(posG);
+                }
+            }
+        }
+
+        if (commons.isEmpty())
+            return null;
+        else if (neededColors != null && !neededColors.isEmpty()) {
+            for (Position pos : commons) {
+                Parcel p = board.getParcel(pos);
+                assert p != null;
+                if (neededColors.get(0).equals(p.getBambooColor())) {
+                    return pos;
+                }
+            }
+        }
+        return commons.get(0);
     }
 
     /**
