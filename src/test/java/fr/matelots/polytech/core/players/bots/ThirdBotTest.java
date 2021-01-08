@@ -63,7 +63,7 @@ public class ThirdBotTest {
     }
 
     @Test
-    void afterPickedFiveObjectifAttemptCompleteParcel() {
+    void testCycleOfTheBot() {
         //bot.DecideAction(log);
         boolean canPlay = bot.canPlay();
         BotActionType[] gardenerPhaseActions = new BotActionType[] {
@@ -74,46 +74,26 @@ public class ThirdBotTest {
         BotActionType[] parcelPhase = new BotActionType[] {
                 BotActionType.PLACE_PARCEL
         };
-        while(canPlay && (log.getActions().length == 0 ||
-                Config.isPickAction(log.getActions()[0].getType()))) {
-
-            log = new TurnLog(bot);
-            bot.playTurn(log, null);
+        while(bot.canPlayThisTurn()) {
             bot.setCurrentNumberOfAction(0);
-            canPlay = bot.canPlay();
-        }
-        if(bot.getIndividualBoard().countUnfinishedParcelObjectives() != 0) {
-            assertTrue(Arrays.stream(parcelPhase).anyMatch(ba -> ba == log.getActions()[0].getType()));
-        } else {
-            assertTrue(Arrays.stream(gardenerPhaseActions).anyMatch(ba -> ba == log.getActions()[0].getType()));
-        }
 
-    }
+            boolean haveParcelSolvable = bot.haveParcelObjectiveSolvable();
+            boolean haveGardenerSolvable = bot.haveGardenerObjectiveSolvable();
+            boolean willPick = !haveGardenerSolvable && !haveGardenerSolvable && bot.canPickObjective();
+            bot.DecideAction(log);
 
-    @Test
-    void afterCompleteParcelObjectiveAttemptCompleteGardenerObjectives() {
-        boolean canPlay = bot.canPlay();
-        BotActionType[] gardenerPhaseActions = new BotActionType[] {
-                BotActionType.MOVE_GARDENER,
-                BotActionType.PLACE_IRRIGATION,
-                BotActionType.PLACE_PARCEL
-        };
-        BotActionType[] parcelPhase = new BotActionType[] {
-                BotActionType.PLACE_PARCEL
-        };
+            if(willPick) {
+                log.getLastAction().ifPresent(ba -> assertTrue("No solvable objective and return : " + ba.getType(), Config.isPickAction(ba.getType())));
+            } else {
+                if(haveParcelSolvable) {
+                    log.getLastAction().ifPresent(ba -> assertTrue(Arrays.stream(parcelPhase).anyMatch(ba2 -> ba.getType() == ba2)));
+                } else if(haveGardenerSolvable) {
+                    log.getLastAction().ifPresent(ba -> assertTrue(Arrays.stream(gardenerPhaseActions).anyMatch(ba2 -> ba.getType() == ba2)));
+                }
+            }
 
-        while(canPlay && (log.getActions().length == 0 ||
-                Config.isPickAction(log.getActions()[0].getType()) ||
-                Arrays.stream(parcelPhase).anyMatch(ba -> ba == log.getActions()[0].getType()))) {
-            log = new TurnLog(bot);
-            bot.playTurn(log, null);
-            bot.setCurrentNumberOfAction(0);
-            canPlay = bot.canPlay();
         }
 
-        if(bot.getIndividualBoard().countUnfinishedGardenerObjectives() > 0) {
-            assertTrue(Arrays.stream(gardenerPhaseActions).anyMatch(ba -> ba == log.getActions()[0].getType()));
-        }
     }
 
     @Disabled
@@ -169,5 +149,21 @@ public class ThirdBotTest {
          var action = opt.get();
          assertTrue(action.getType() == BotActionType.PICK_GARDENER_GOAL || action.getType() == BotActionType.PICK_PARCEL_GOAL);
      }
+
+     @Test
+    void bot3vs3bot() {
+        for(int i = 0; i < 20; i++) {
+            ThirdBot bot2 = new ThirdBot(game);
+            game.addBot(bot2);
+
+            while (bot.canPlay() && bot2.canPlay()) {
+                bot.playTurn(log);
+                log = new TurnLog(bot2);
+                bot2.playTurn(log);
+                log = new TurnLog(bot);
+            }
+        }
+    }
+
 
 }

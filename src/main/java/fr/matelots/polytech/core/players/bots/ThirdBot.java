@@ -13,15 +13,11 @@ import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.BotAction;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
-import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-import static fr.matelots.polytech.engine.util.LineDrawer.lineOverVoid;
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.getBestPathToIrrigate;
 import static fr.matelots.polytech.engine.util.ParcelRouteFinder.getNextParcelToIrrigate;
 
@@ -45,18 +41,18 @@ public class ThirdBot extends Bot {
     /// Helping methods
     private void getNextParcelGoal() {
         getIndividualBoard().getUnfinishedParcelObjectives().stream()
-                .filter(this::parcelObjectiveCanBeSolved) // Get solvable objectifs
+                .filter(this::canSolveParcelObjective) // Get solvable objectifs
                 .findAny()
                 .ifPresent(card -> objectiveParcel = card);
     }
     private void getNextGardenerGoal() {
         getIndividualBoard().getUnfinishedGardenerObjectives().stream()
-                .filter(this::gardenerObjectiveCanBeSolved) // get solvable goal
+                .filter(this::canSolveGardenerObjective) // get solvable goal
                 .findAny()
                 .ifPresent(card -> objectiveGardener = card);
     }
 
-    private boolean parcelObjectiveCanBeSolved(CardObjectiveParcel objectiveParcel) {
+    boolean canSolveParcelObjective(CardObjectiveParcel objectiveParcel) {
         if(objectiveParcel.verify()) return false;
         if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
 
@@ -98,7 +94,7 @@ public class ThirdBot extends Bot {
         return Arrays.stream(turnLog.getActions()).map(BotAction::getType).anyMatch(Config::isPickAction);
     }
 
-    private boolean gardenerObjectiveCanBeSolved(CardObjectiveGardener objectiveGardener) {
+    boolean canSolveGardenerObjective(CardObjectiveGardener objectiveGardener) {
         if(objectiveGardener.verify()) return false;
 
 
@@ -158,27 +154,27 @@ public class ThirdBot extends Bot {
         return false;
     }
 
-    private boolean haveObjectiveSolvable() {
+    boolean haveObjectiveSolvable() {
         if(haveParcelObjectiveSolvable())
             return true;
         boolean haveGardenerSolvable = haveGardenerObjectiveSolvable();
         return haveGardenerSolvable;
     }
-    private boolean haveGardenerObjectiveSolvable() {
+    boolean haveGardenerObjectiveSolvable() {
         var solvable = getIndividualBoard()
                 .getUnfinishedGardenerObjectives().stream()
-                .anyMatch(this::gardenerObjectiveCanBeSolved);
+                .anyMatch(this::canSolveGardenerObjective);
         return solvable;
     }
-    private boolean haveParcelObjectiveSolvable() {
+    boolean haveParcelObjectiveSolvable() {
         if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
         if(!board.getDeckParcel().canPick()) return false;
 
         return getIndividualBoard().getUnfinishedParcelObjectives().stream()
-                .anyMatch(this::parcelObjectiveCanBeSolved);
+                .anyMatch(this::canSolveParcelObjective);
     }
 
-    private boolean canPickObjective() {
+    boolean canPickObjective() {
         var already = alreadyPickGoal();
         var canPickSomewhere = board.getDeckGardenerObjective().canPick() || board.getDeckParcelObjective().canPick();
         var havePlace = getIndividualBoard().countUnfinishedObjectives() < Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND;
@@ -249,7 +245,7 @@ public class ThirdBot extends Bot {
             getNextParcelGoal();
         if(objectiveParcel == null) return; /// il n'y a plus d'objectifs resolvables, on piochera donc d'autres objectifs parcels plus tard
 
-        if(!parcelObjectiveCanBeSolved(objectiveParcel)) {
+        if(!canSolveParcelObjective(objectiveParcel)) {
             getNextParcelGoal();
         }
 
@@ -296,9 +292,9 @@ public class ThirdBot extends Bot {
         if(objectiveGardener == null) {
             return;
         }
-        if(!gardenerObjectiveCanBeSolved(objectiveGardener)) {
+        if(!canSolveGardenerObjective(objectiveGardener)) {
             objectiveGardener = getIndividualBoard().getUnfinishedGardenerObjectives().stream()
-                    .filter(this::gardenerObjectiveCanBeSolved).findAny().get();
+                    .filter(this::canSolveGardenerObjective).findAny().get();
         }
 
         var gardenerPosition = board.getGardener().getPosition();
@@ -370,7 +366,6 @@ public class ThirdBot extends Bot {
     private int nothingDoneDuring = 30;
     void DecideAction(TurnLog log) {
 
-        nothingDoneDuring = 30;
         checkAllObjectives();
         this.turnLog = log;
 
@@ -405,17 +400,15 @@ public class ThirdBot extends Bot {
         setCurrentNumberOfAction(0);
 
         turnLog = log;
-        while(canDoAction() && canPlayThisTurn())
+        while(canDoAction() && canPlayThisTurn()) {
             DecideAction(log);
-
-        if(log.getActions().length == 0) {
-            nothingDoneDuring--;
         }
+
         turnLog = null;
     }
 
 
-    private boolean canPlayThisTurn() {
+    boolean canPlayThisTurn() {
         checkAllObjectives();
         boolean canPick = canPickObjective();
         boolean haveObjectiveSolvable = haveObjectiveSolvable();
@@ -424,8 +417,7 @@ public class ThirdBot extends Bot {
 
     @Override
     public boolean canPlay() {
-        if(canPlayThisTurn()) return true;
-        return !(turnLog == null || turnLog.getActions().length == 0); //nothingDoneDuring > 0;
+        return canPlayThisTurn();
     }
 
 }
