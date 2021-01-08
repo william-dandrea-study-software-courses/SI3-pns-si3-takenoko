@@ -21,7 +21,7 @@ public class CardObjectiveGardener extends CardObjective {
     private final int size;
     private final int count;
     private int countMissing;
-    private Layout layout;
+    private final Layout layout;
 
 
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {
@@ -72,7 +72,9 @@ public class CardObjectiveGardener extends CardObjective {
 
     public Layout getLayout() { return layout; }
 
-
+    public int getCount() {
+        return count;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -97,6 +99,7 @@ public class CardObjectiveGardener extends CardObjective {
                 ", size=" + size +
                 ", count=" + count +
                 ", countMissing=" + countMissing +
+                ", layout=" + layout +
                 '}';
     }
 }

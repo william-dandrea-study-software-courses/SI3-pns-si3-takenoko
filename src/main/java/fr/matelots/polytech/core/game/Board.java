@@ -1,14 +1,12 @@
 package fr.matelots.polytech.core.game;
 
 import fr.matelots.polytech.core.NoParcelLeftToPlaceException;
-import fr.matelots.polytech.core.game.deck.DeckGardenerObjective;
-import fr.matelots.polytech.core.game.deck.DeckPandaObjective;
-import fr.matelots.polytech.core.game.deck.DeckParcel;
-import fr.matelots.polytech.core.game.deck.DeckParcelObjective;
+import fr.matelots.polytech.core.game.deck.*;
 import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 import fr.matelots.polytech.core.game.parcels.*;
+import fr.matelots.polytech.core.NoLayoutLeftException;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
@@ -24,6 +22,14 @@ public class Board {
     private final DeckGardenerObjective deckGardenerObjective;
     private final DeckPandaObjective deckPandaObjective;
     private final DeckParcel deckParcel;
+    private final DeckLayoutBasin deckLayoutBasin;
+    private final DeckLayoutEnclosure deckLayoutEnclosure;
+    private final DeckLayoutFertilizer deckLayoutFertilizer;
+
+
+    private int layoutBasinLeftToPlace;
+    private int layoutFertilizerLeftToPlace;
+    private int layoutEnclosureLeftToPlace;
 
     private int parcelLeftToPlace;
     private int yellowParcelLeftToPlace;
@@ -42,6 +48,10 @@ public class Board {
         this.deckGardenerObjective = new DeckGardenerObjective(this);
         this.deckPandaObjective = new DeckPandaObjective(this);
         this.deckParcel = new DeckParcel(this);
+
+        this.deckLayoutBasin = new DeckLayoutBasin(this);
+        this.deckLayoutFertilizer = new DeckLayoutFertilizer(this);
+        this.deckLayoutEnclosure = new DeckLayoutEnclosure(this);
         // On ajoute l'étang
         grid.put(Config.POND_POSITION, new Pond());
         gardener = new Gardener(this, Config.POND_POSITION);
@@ -55,6 +65,10 @@ public class Board {
         yellowParcelLeftToPlace = Config.NB_MAX_YELLOW_PARCELS;
         greenParcelLeftToPlace = Config.NB_MAX_GREEN_PARCELS;
         pinkParcelLeftToPlace = Config.NB_MAX_PINK_PARCELS;
+
+        layoutBasinLeftToPlace = Config.NB_LAYOUT_BASIN;
+        layoutFertilizerLeftToPlace = Config.NB_LAYOUT_FERTILIZER;
+        layoutEnclosureLeftToPlace = Config.NB_LAYOUT_ENCLOSURE;
     }
 
 
@@ -172,6 +186,56 @@ public class Board {
         return res;
     }
 
+
+    public boolean placeLayout(Position position, Layout layout) {
+
+        boolean res = false;
+        boolean canAdd = false;
+        switch (layout) {
+            case BASIN: {
+                if (layoutBasinLeftToPlace > 0)
+                    canAdd = true;
+                else throw new NoLayoutLeftException();
+            } break;
+            case ENCLOSURE: {
+                if (layoutEnclosureLeftToPlace > 0)
+                    canAdd = true;
+                else throw new NoLayoutLeftException();
+            }break;
+            case FERTILIZER: {
+                if (layoutFertilizerLeftToPlace > 0)
+                    canAdd = true;
+                else throw new NoLayoutLeftException();
+            }break;
+        }
+
+        if (getPositions().contains(position) && !getParcel(position).hasLayout() && getParcel(position).getBambooSize() == 0 && canAdd) {
+            res = getParcel(position).setLayout(layout);
+        }
+
+        if (res) {
+            switch (layout) {
+                case BASIN: { layoutBasinLeftToPlace--; } break;
+                case ENCLOSURE: { layoutEnclosureLeftToPlace--; }break;
+                case FERTILIZER: { layoutFertilizerLeftToPlace--;}break;
+            }
+        }
+
+        return res;
+    }
+
+    public int getLayoutBasinLeftToPlace() {
+        return layoutBasinLeftToPlace;
+    }
+
+    public int getLayoutFertilizerLeftToPlace() {
+        return layoutFertilizerLeftToPlace;
+    }
+
+    public int getLayoutEnclosureLeftToPlace() {
+        return layoutEnclosureLeftToPlace;
+    }
+
     /**
      * Place une irrigation sur le côté <code>side</code> de la parcelle se trouvant à la position <code>position</code>.
      * Pour cela, il faut qu'elle se trouve entre 2 parcelles, et qu'au moins un côté adjacent soit irrigué. Si le
@@ -252,6 +316,18 @@ public class Board {
 
     public DeckPandaObjective getDeckPandaObjective() {
         return deckPandaObjective;
+    }
+
+
+    public DeckLayoutBasin getDeckBasinLayout() {
+        return deckLayoutBasin;
+    }
+    public DeckLayoutFertilizer getDeckFertilizerLayout() {
+        return deckLayoutFertilizer;
+    }
+
+    public DeckLayoutEnclosure getDeckEnclosureLayout() {
+        return deckLayoutEnclosure;
     }
 
     public int getParcelCount() {
@@ -387,4 +463,8 @@ public class Board {
         irrigationLeft--;
         return true;
     }
+
+
+
+
 }

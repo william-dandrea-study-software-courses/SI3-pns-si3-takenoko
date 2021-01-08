@@ -7,7 +7,7 @@ import java.util.Set;
 
 /**
  * @author Alexandre Arcil
- * Les différents types de paternes
+ * Les différents types de paterns
  */
 public enum Patterns {
 

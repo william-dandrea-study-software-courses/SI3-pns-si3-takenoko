@@ -101,7 +101,7 @@ public class PatternChecker {
         Set<PositionColored> posBuffer = new HashSet<>(); //Va contenir les positions manquantes par rapport à la position actuellement exécutés dans la boucle
         PositionColored[] offsetsBuffer = new PositionColored[this.offsets.length]; //Buffer des position après avoir appliqué un offset
         int offsetPos = 0;
-        int currentColor = 0;
+        int currentColor;
         int posStart = 0;
         for(Position[] offsetSource : this.offsets) {
             currentColor = posStart;

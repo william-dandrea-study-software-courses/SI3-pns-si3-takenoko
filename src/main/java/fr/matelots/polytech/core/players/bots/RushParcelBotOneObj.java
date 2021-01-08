@@ -13,57 +13,6 @@ import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import java.util.*;
 
 
-/**
- * Je pioche un objectif parcelle, je le resoud, j'en pioche un autre ...
- *
- *
-
- - [OK] Si on a aucun objectif dans le deck
- -      [OK] Tirer un objectif parcelle (TOUR+1)
- -      [OK] Regardé si l’objectif peut déjà être réalisé sans actions de la part du joueur
- -          [OK] Si oui, tirer un objectif parcelle (TOUR+1)
- - [ ] Sinon
- -      [OK] Récolter l’objectif actuel
- -      [ ] Essayer de résoudre l’objectif actuel
- -          [ ] Regarder le pattern de l’objectif
- -          [ ] Regarder sur le board de jeu si on trouve le même pattern avec une case en moins
- -          [ ] Si on le trouve
- -              [ ] Mettre une parcelle de la bonne couleur au bon endroit (TOUR+1)
- -          [ ] Sinon
- -              [ ] Mettre une parcelle de couleur random a un endroit random (TOUR+1)
- - [ ] Regarder si l’objectif est réalisé
-
-
-     - [ ] Essayer de résoudre un objectif parcelle
-        - [ ] Enregistrer le nombre de parcelles de chaques couleurs qu’il faut pour résoudre l’objectif et leur emplacement
-        - [ ] Si l’objectif comporte que des parcelles de meme couleur
-            - [ ] Si il y a sur le board une parcelle de la meme couleur
-                - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
-                    - [ ] Si on peut placer une parcelle autour
-                        - [ ] Placer la parcelle de la bonne couleur a cet endroit
-                        - [ ] Sortir de la boucle
-            - [ ] Sinon (s’il n’y pas pas de parcelle de la meme couleur que les parcelles de l’objectif sur le board)
-                - [ ] Placer une parcelle de la couleur de l’objectif n’importe ou
-        - [ ] Si l’objectif comporte des parcelles de couleur différentes
-            - [ ] Mettre dans des variables la couleur1 et la couleur2 (couleur des parcelles de l’objectif)
-            - [ ] Si il y a sur le board une parcelle de la couleur1
-                - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
-                    - [ ] Placer la parcelle de la bonne couleur a cet endroit
-                    - [ ] Sortir de la boucle
-        - [ ] Si il y a sur le board une parcelle de la couleur2
-            - [ ] Parcourir le board a la recherche de parcelle ou l’on peut placer une parcelle autour
-                - [ ] Placer la parcelle de la bonne couleur a cet endroit
-                - [ ] Sortir de la boucle
-        - [ ] Sinon, placer une parcelle avec la couleur1 n’importe ou
-     - [ ] Si l’objectif est résolu
-        - [ ] Piocher un nouvel objectif
-     - [ ] Sinon
-        - [ ] Garder le même objectif et recommancer
- * @author williamdandrea
- *
- *
- * @todo Impossible de checker les objectifs donc boucle infini, a revoir
- */
 
 
 public class RushParcelBotOneObj extends Bot {

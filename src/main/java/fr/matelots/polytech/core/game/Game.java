@@ -6,6 +6,7 @@ import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectivePanda;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.graphics.BoardDrawer;
+import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.*;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
@@ -29,6 +30,7 @@ public class Game {
     private boolean lastTurn;
     private boolean canceledGame = false;
     private boolean canPlayWeather = false;
+    private boolean canMovePandaSomewhere = false;       // For the THUNDERSTORM weather => The panda can move somewhere
 
     // Constructors
     public Game () {
@@ -37,15 +39,14 @@ public class Game {
         drawer = new BoardDrawer(board);
     }
 
-    private void setDemoBots() {
-        addBot(new QuintusBot(this, "Jojo (Rush Panda)"));
-        //addBot(new QuintusBot(this"));
-        //addBot(new QuintusBot(this));
-        //bots.add(new RushParcelBot(this, "RushParcel"));
-        //addBot(new RushParcelBot(this, "RushParcel2"));
-        //addBot(new RushParcelBot(this, "RushParcel1"));
-        //addBot(new ThirdBot(this, "31bot"));
-        addBot(new ThirdBot(this, "3bot"));
+    private void setDemoBots(boolean twiceSameBot) {
+        if (twiceSameBot) {
+            addBot(new QuintusBot(this));
+        }
+        else {
+            addBot(new ThirdBot(this, "3bot"));
+        }
+        addBot(new QuintusBot(this, "Quintus (Rush Panda)"));
     }
 
     public void addBot(Bot bot) {
@@ -188,7 +189,7 @@ public class Game {
 
 
     public void run () {
-        setDemoBots();
+        setDemoBots(false);
 
         if(bots.size() < 2 || bots.size() > 4) {
             ACTIONLOGGER.info("Pas le bon nombre de joueurs");
@@ -205,8 +206,8 @@ public class Game {
         return canceledGame;
     }
 
-    public void run (boolean draw) {
-        setDemoBots();
+    public void run (boolean draw, boolean twiceSameBot) {
+        setDemoBots(twiceSameBot);
 
         if(bots.size() < 2 || bots.size() > 4) {
             if (draw)
@@ -306,6 +307,23 @@ public class Game {
         return null;
     }
 
+
+    public Layout getNextBasinLayout() {
+        if (board.getDeckBasinLayout().canPick())
+            return (Layout) board.getDeckBasinLayout().pick();
+        return null;
+    }
+    public Layout getNextFertilizerLayout() {
+        if (board.getDeckFertilizerLayout().canPick())
+            return (Layout) board.getDeckFertilizerLayout().pick();
+        return null;
+    }
+    public Layout getNextEnclosureLayout() {
+        if (board.getDeckEnclosureLayout().canPick())
+            return (Layout) board.getDeckEnclosureLayout().pick();
+        return null;
+    }
+
     public Board getBoard() {
         return board;
     }
@@ -314,13 +332,30 @@ public class Game {
         return new ArrayList<>(bots);
     }
 
+    /**
+     * @return a random Weather (like the weather dice)
+     */
     public Weather diceRandomWeather() {
+        canMovePandaSomewhere = false;
         int num = Config.RANDOM.nextInt(Weather.values().length);
-        return Weather.values()[num];
+        Weather weather = Weather.values()[num];
+
+        if (weather.equals(Weather.THUNDERSTORM)) {
+            canMovePandaSomewhere = true;
+        }
+        return weather;
     }
 
+    /**
+     * This method will move the panda at a certain position (somewhere)
+     * @param lastAction The last action from the bot
+     * @param bot
+     * @param pos the position where we want to move the panda
+     * @param log
+     * @return true if we arrived to move, false otherwise
+     */
     public boolean movePandaWhenWeather(BotActionType lastAction, Bot bot, Position pos, TurnLog log) {
-        if (bot.isCanMovePandaSomewhere()) {
+        if (canMovePandaSomewhere) {
             if (BotActionType.MOVE_PANDA.equals(lastAction))
                 throw new IllegalActionRepetitionException();
 
@@ -328,7 +363,6 @@ public class Game {
             boolean res = getBoard().getPanda().moveToAbsolute(pos.getX(), pos.getY(), pos.getZ());
             if (res) {
                 log.addAction(BotActionType.MOVE_PANDA, pos.toString());
-                lastAction = BotActionType.MOVE_PANDA;
                 bot.setCurrentNumberOfAction(bot.getCurrentNumberOfAction() + 1);
             }
 

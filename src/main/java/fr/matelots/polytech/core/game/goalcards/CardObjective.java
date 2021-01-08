@@ -30,8 +30,7 @@ public abstract class CardObjective {
     }
 
     /**
-     * Le score remporté par le bot quand l'objectif est complété.
-     * @return
+     * @return le score remporté par le bot quand l'objectif est complété
      */
     public int getScore() {
         return score;

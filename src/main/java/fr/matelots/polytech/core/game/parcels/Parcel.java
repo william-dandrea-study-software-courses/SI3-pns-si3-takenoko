@@ -5,7 +5,6 @@ import fr.matelots.polytech.core.game.movables.Gardener;
 import fr.matelots.polytech.core.game.movables.Panda;
 import fr.matelots.polytech.core.game.movables.Pawn;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 
 /**
@@ -16,7 +15,7 @@ public abstract class Parcel {
     private Gardener gardener;
     private Panda panda;
     private final EnumMap<Side, Boolean> irrigate;
-    private Layout layout;
+    protected Layout layout;
 
     public Parcel() {
         this.irrigate = new EnumMap<>(Side.class);
@@ -29,6 +28,7 @@ public abstract class Parcel {
      * @return true si la parcelle a un aménagement
      */
     public boolean hasLayout() {
+
         return this.layout != null;
     }
 
@@ -37,8 +37,8 @@ public abstract class Parcel {
     }
 
 
-    public boolean setLayout (Layout layout) {
-        if (!hasLayout()) {
+    public boolean setLayout(Layout layout) {
+        if (!hasLayout() && !isPond()) {
             this.layout = layout;
         }
         return hasLayout();
@@ -107,11 +107,6 @@ public abstract class Parcel {
     }
 
     public void draw(ParcelDrawer drawer) {
-        //System.out.println("irrigate : ");
-        /*if(isIrrigate()) {
-            Arrays.stream(Side.values()).forEach(drawer::setIrrigate);
-            return;
-        }*/
 
         // Si elle n'est pas irrigué, elle peut partager des bordures qui le sont
         irrigate.forEach((side, isIrrigated) -> {
@@ -123,7 +118,6 @@ public abstract class Parcel {
             }
         });
     }
-
 
 
     // Methods

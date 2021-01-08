@@ -27,7 +27,7 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
     private final List<CardObjectivePanda> objectivePandas;
-    private List<Layout> layouts;
+    private final List<Layout> layouts;
     private int irrigations;
     private CardObjectiveEmperor emperor;
 
@@ -75,7 +75,11 @@ public class IndividualBoard {
 
 
     public void checkAllParcelGoal() {
-        objectiveParcels.forEach(CardObjectiveParcel::verify);
+        objectiveParcels.forEach(card -> {
+            if(card.isCompleted()) return;
+            card.verify();
+            //if(card.isCompleted()) System.out.println("Parcel objective completed: +"+card.getScore());
+        });
     }
     public void checkAllGoal() {
         checkAllParcelGoal();
@@ -88,7 +92,11 @@ public class IndividualBoard {
     }
 
     public void checkAllGardenerGoal() {
-        objectiveGardeners.forEach(CardObjectiveGardener::verify);
+        for (CardObjectiveGardener card : objectiveGardeners) {
+            if(card.isCompleted()) return;
+            card.verify();
+            //if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
+        }
     }
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
@@ -101,7 +109,10 @@ public class IndividualBoard {
         return null;
     }
 
-    // @return the number of unfinished objectives (all types of objectives)
+    /**
+     *
+     * @return the number of unfinished objectives (all types of objectives)
+     */
     public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives()
                 + countUnfinishedGardenerObjectives() + countUnfinishedPandaObjectives();
@@ -236,18 +247,18 @@ public class IndividualBoard {
         }
     }
 
-    // ======LAYOUT
+    // ====== LAYOUT
 
 
     public List<Layout> getLayouts() {
         return layouts;
     }
 
-    public void addLayouts(Layout layout) {
-        layouts.add(layout);
+    public boolean addLayouts(Layout layout) {
+        return layouts.add(layout);
     }
 
-    public boolean placeLayout(Layout lay) {
+    public boolean getLayoutFromIndBoard(Layout lay) {
         return layouts.remove(lay);
     }
 }

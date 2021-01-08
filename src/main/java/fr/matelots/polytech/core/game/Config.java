@@ -56,6 +56,10 @@ public class Config {
 
     public static final int NB_IRRIGATION = 20;
 
+    public static final int NB_LAYOUT_BASIN = 3;
+    public static final int NB_LAYOUT_FERTILIZER = 3;
+    public static final int NB_LAYOUT_ENCLOSURE = 3;
+
     public static final Random RANDOM = new Random();
 
 

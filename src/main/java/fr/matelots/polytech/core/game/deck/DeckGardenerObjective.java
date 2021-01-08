@@ -1,12 +1,12 @@
 package fr.matelots.polytech.core.game.deck;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Layout;
 
 /**
+ * This class represent the deck of gardener objective who is composed of 15 objectives :
  * @author Alexandre Arcil
  */
 public class DeckGardenerObjective extends Deck<CardObjectiveGardener> {
@@ -35,14 +35,5 @@ public class DeckGardenerObjective extends Deck<CardObjectiveGardener> {
         this.cards.add(new CardObjectiveGardener(board, 6, BambooColor.PINK, 4, 1, Layout.BASIN));
         this.cards.add(new CardObjectiveGardener(board, 6, BambooColor.PINK, 3, 2, null));
         this.cards.add(new CardObjectiveGardener(board, 7, BambooColor.PINK, 4, 1, null));
-        
-        if(this.cards.size() != Config.DECK_OBJECTIVE_SIZE)
-            throw new RuntimeException("La taille du paquet est de "+this.cards.size()
-                    + " alors qu'elle devrait être de "+Config.DECK_OBJECTIVE_SIZE);
-
-
-
-
-
     }
 }

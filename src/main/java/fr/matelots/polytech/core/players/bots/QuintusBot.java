@@ -42,12 +42,12 @@ public class QuintusBot extends Bot {
     public QuintusBot(Game game, String name) {
         super(game, name);
         this.game = game;
-        turnLeftToPick = 2;
+        turnLeftToPick = 5;
         Arrays.fill(lastState, 0);
     }
 
     public QuintusBot(Game game) {
-        this(game, "Quintus the Rush Panda");
+        this(game, "Jojo (Rush Panda)");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class QuintusBot extends Bot {
         setCurrentNumberOfAction(0);
         int action = 0;
 
-        for ( ; action < Config.TOTAL_NUMBER_OF_ACTIONS; action++){
+        for ( ; action < getMaxNumberOfActions(); action++){
             if (!canPlay())
                 return;
 
@@ -65,15 +65,18 @@ public class QuintusBot extends Bot {
                 // There is no more panda objective to resolve
                 // So I'm resolving gardener objective instead
                 if (turnLeftToPick > 0 &&
-                        !(Config.isPickAction(getLastAction()))) {
+                        (!(Config.isPickAction(getLastAction()))
+                        || canDoSameActionInOneTour())) {
                     pickNextStepObjective(log);
                 }
                 else if (!isThereAPlantationWhereYouCanEat() &&
-                        !BotActionType.PLACE_PARCEL.equals(getLastAction())) {
+                        (!BotActionType.PLACE_PARCEL.equals(getLastAction())
+                        || canDoSameActionInOneTour())) {
                     placeAParcel(log);
                 }
                 else if (!isThereAnythingInterestingToEat() &&
-                        !BotActionType.MOVE_GARDENER.equals(getLastAction()))
+                        (!BotActionType.MOVE_GARDENER.equals(getLastAction())
+                        || canDoSameActionInOneTour()))
                     moveGardener(log);
                 else {
                     turnDoingNothing++;
@@ -85,7 +88,7 @@ public class QuintusBot extends Bot {
 
             // Do an action
             if (getIndividualBoard().countUnfinishedPandaObjectives() < 1) {
-                turnLeftToPick = Math.max(1, turnLeftToPick);
+                turnLeftToPick = Math.max(2, turnLeftToPick);
             }
 
             neededColors = getNeededColor();
@@ -113,7 +116,6 @@ public class QuintusBot extends Bot {
             turnDoingNothing++;
 
         turnLeftToPick = Math.max(0, turnLeftToPick - 1);
-        //displayState();
     }
 
     @Override
@@ -138,6 +140,50 @@ public class QuintusBot extends Bot {
             chosen = (new ArrayList<>(board.getPositions())).get(random.nextInt(board.getPositions().size()));
         }
         game.movePandaWhenWeather(getLastAction(), this, chosen, log);
+    }
+
+    @Override
+    protected void weatherCaseRainInitial() {
+        if (neededColors == null || neededColors.isEmpty()) {
+            neededColors = getNeededColor();
+        }
+
+        Parcel chosen = null;
+        if (!neededColors.isEmpty()) {
+            for (Position pos : board.getPositions()) {
+                Parcel p = board.getParcel(pos);
+                if (p != null &&
+                        neededColors.get(0).equals(p.getBambooColor()) &&
+                        p.getBambooSize() > 0) {
+                    chosen = p;
+                    break;
+                }
+            }
+        }
+        if (chosen == null) {
+            chosen = board.getParcel(
+                    (new ArrayList<>(board.getPositions())).get(random.nextInt(board.getPositions().size())));
+        }
+        chosen.growBamboo();
+    }
+
+    @Override
+    protected void weatherCaseInterrogationInitial(TurnLog log) {
+        if (neededColors == null || neededColors.isEmpty()) {
+            neededColors = getNeededColor();
+        }
+
+        if (nextStep) {
+            whatWeCanDoWithWeather(Weather.RAIN, log);
+        }
+        else {
+            if (isThereAnythingInterestingToEat()) {
+                whatWeCanDoWithWeather(Weather.THUNDERSTORM, log);
+            }
+            else {
+                whatWeCanDoWithWeather(Weather.RAIN, log);
+            }
+        }
     }
 
     /**

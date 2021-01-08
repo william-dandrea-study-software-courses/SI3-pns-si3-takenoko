@@ -1,0 +1,5 @@
+git clone https://github.com/pns-si3-projects/projet2-ps5-20-21-takenoko-2021-les-matelots-des-7-mers.git
+cd projet2-ps5-20-21-takenoko-2021-les-matelots-des-7-mers
+git v0.2
+mvn clean package
+mvn exec:java

@@ -27,7 +27,7 @@ public class CardObjectiveParcelTest {
     @BeforeEach
     public void init() {
         this.board = new Board();
-        this.obj = new CardObjectiveParcel(this.board, 1, Patterns.TRIANGLE);
+        this.obj = new CardObjectiveParcel(board, 2, Patterns.TRIANGLE, BambooColor.GREEN, BambooColor.GREEN, BambooColor.GREEN);
     }
 
     @Test @DisplayName("test card objective success")
@@ -79,7 +79,7 @@ public class CardObjectiveParcelTest {
 
     @Test @DisplayName("test card score = 1")
     public void objectiveScoreEqualOne() {
-        assertEquals(1, obj.getScore());
+        assertEquals(2, obj.getScore());
     }
 
     @Test @DisplayName("test card score = 492")

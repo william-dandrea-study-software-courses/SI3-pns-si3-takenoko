@@ -362,20 +362,61 @@ public class MarganIA {
 
 
 
-    public static int countNumberResolvePatternLine(CardObjectiveParcel objective, Board board) {
-        switch (objective.getPattern()) {
-            case TRIANGLE:
-            case C: {
-                return 3;
+    public static int countNumberActionsResolvePatternLine(CardObjectiveParcel objective, Board board) {
+
+        boolean stop = false;
+        int actionsNumber = 0;
+
+        Set<PositionColored> posMisColored = objective.getMissingPositionsToComplete();
+        Set<Position> posMis = new HashSet<>();
+        for (PositionColored posMise : posMisColored) {
+            posMis.add(posMise.getPosition());
+        }
+
+        Set<Position> posA = board.getPositions();
+
+        while (!stop) {
+
+            Position temporaire = null;
+            Position temporaire2 = null;
+            for (Position posMisFor: posMis) {
+
+                // On cherche combien de parcelles on a autour
+                int incrementForParcelsAround = 0;
+                for (int i = 1; i <= 6; i++) {
+                    if (posA.contains(nextPositionIncrement(i, posMisFor))) {
+                        incrementForParcelsAround++;
+                        temporaire = nextPositionIncrement(i, posMisFor);
+                    }
+                }
+
+                // Si PosMis contient 2 parcelles de PosA autour d'elle
+                if (incrementForParcelsAround >= 2) {
+                    posA.add(posMisFor);
+                    actionsNumber++;
+                    temporaire2 = posMisFor;
+                }
+
+                if (incrementForParcelsAround == 1) {
+                    posA.add(temporaire);
+                    actionsNumber++;
+                    temporaire2 = temporaire;
+                }
             }
-            case RHOMBUS: {
-                return 4;
+
+            if (temporaire2 != null) {
+                posMis.remove(temporaire2);
             }
-            case LINE: {
-                return 5;
+
+            // Condition de sortie : Tant que tout les posMis ne sont pas dans PosA
+            for (Position posMisPos : posMis) {
+                if (!posA.contains(posMisPos))
+                    stop = true;
             }
         }
-        return 0;
+
+        return actionsNumber;
+
     }
 
 

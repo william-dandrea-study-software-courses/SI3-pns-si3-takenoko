@@ -1,29 +1,13 @@
+
 package fr.matelots.polytech.core.players.bots;
 
-import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
-import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
-import fr.matelots.polytech.core.game.graphics.BoardDrawer;
-import fr.matelots.polytech.core.game.parcels.BambooColor;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Layout;
-import fr.matelots.polytech.core.players.IndividualBoard;
-import fr.matelots.polytech.core.players.bots.logger.TurnLog;
-import fr.matelots.polytech.engine.util.Position;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author williamdandrea
  */
-public class FourthBotTest {
 
+public class FourthBotTest {
+/*
     Game game;
     FourthBot bot;
     TurnLog log;
@@ -40,10 +24,12 @@ public class FourthBotTest {
         game.addBot(bot);
     }
 
-    /**
+    */
+/**
      * Here, we test the start of the game, we verify if we take MAX_NUMBER_OF_PARCEL_OBJECTIVES and the
      * MAX_NUMBER_OF_GARDENER_OBJECTIVES
-     */
+     *//*
+
     @Test
     public void launchGameTest(){
         // We verify if the firstLaunch boolean variable is at true (because we launch the game)
@@ -293,12 +279,33 @@ public class FourthBotTest {
         assertEquals(2, this.bot.getBoard().getParcelCount(BambooColor.GREEN));
     }
 
+    @Test @DisplayName("Prend des irrigations quand nécessaire")
+    public void takeIrrigations() {
+        BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(new Position(0, 1, -1), plantation);
+        BambooPlantation plantation2 = new BambooPlantation(BambooColor.GREEN);
+        this.board.addParcel(new Position(1, 0, -1), plantation2);
+        BambooPlantation plantation3 = new BambooPlantation(BambooColor.YELLOW);
+        this.board.addParcel(new Position(1, 1, -2), plantation3);
+        BoardDrawer drawer = new BoardDrawer(this.board);
+        drawer.print();
+        this.bot.currentGardenerObjective = new CardObjectiveGardener(board, 1, BambooColor.YELLOW, 3, 1);
+        this.bot.tryToResolveGardenerObjective(log);
+        assertEquals(2, bot.irrigationNeeded);
+        this.bot.playTurn(log, null);
+        assertEquals(1, bot.irrigationNeeded);
+        assertEquals(1, bot.getIndividualBoard().getNumberOfIrrigations());
+    }
 
 
-    /**
+
+    */
+/**
      * Here, we test the after start
-     */
-    /*@Test
+     *//*
+
+    */
+/*@Test
     public void gameTest(){
 
         // We launch the bot one time
@@ -313,5 +320,7 @@ public class FourthBotTest {
             bot.playTurn(log);
         }
 
-    }*/
+    }*//*
+ */
 }
+
