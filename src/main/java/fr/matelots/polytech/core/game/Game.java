@@ -41,12 +41,12 @@ public class Game {
 
     private void setDemoBots(boolean twiceSameBot) {
         if (twiceSameBot) {
-            addBot(new QuintusBot(this));
+            addBot(new ThirdBot(this, "31bot"));
         }
         else {
-            addBot(new ThirdBot(this, "3bot"));
+            addBot(new QuintusBot(this));
         }
-        addBot(new QuintusBot(this, "Quintus (Rush Panda)"));
+        addBot(new ThirdBot(this, "3bot"));
     }
 
     public void addBot(Bot bot) {
