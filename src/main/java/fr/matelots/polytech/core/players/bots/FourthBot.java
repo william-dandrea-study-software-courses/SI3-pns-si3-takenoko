@@ -381,7 +381,7 @@ public class FourthBot extends Bot {
     private boolean placeParcelAnywhereAndLayout(Parcel parcel, Layout layout, TurnLog log) {
         Optional<Position> present = this.placeAnParcelAnywhere(log, parcel);
         if(present.isPresent()) {
-            if(layout != null && !this.board.getParcel(present.get()).isIrrigate())
+            if(this.board.getParcel(present.get()) != null && layout != null && !this.board.getParcel(present.get()).isIrrigate())
                 this.placeLayout(log, (BambooPlantation) parcel, layout);
             return true;
         } else

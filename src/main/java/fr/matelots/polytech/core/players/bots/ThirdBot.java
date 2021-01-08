@@ -415,11 +415,13 @@ public class ThirdBot extends Bot {
 
         turnLog = log;
         int duringTurn = 20;
-        while (canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
+        int loop = 0;
+        while (canDoAction() && canPlayThisTurn() && duringTurn >= 0 && loop < 20) {
             int qOfAction = turnLog.getActions().length;
             DecideAction(log);
             boolean actionDone = (turnLog.getActions().length - qOfAction) > 0;
             if (!actionDone) duringTurn--;
+            loop++;
         }
 
         if(turnLog.getActions().length == 0)
