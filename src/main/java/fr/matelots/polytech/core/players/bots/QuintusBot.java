@@ -37,9 +37,7 @@ public class QuintusBot extends Bot {
 
     private final Game game;
 
-    private boolean nextStep = false;
-
-    private List<Position> pathToTake;
+    private int step = 1;
 
     public QuintusBot(Game game, String name) {
         super(game, name);
@@ -63,9 +61,18 @@ public class QuintusBot extends Bot {
             if (!canPlay())
                 return;
 
-            if (nextStep) {
+            if (board.getParcelCount(BambooColor.GREEN) +
+                board.getParcelCount(BambooColor.PINK) +
+                board.getParcelCount(BambooColor.YELLOW) < 1 && step == 2) {
+                step ++;
+            }
+
+            if (step > 2) {
+                if (getIndividualBoard().countUnfinishedGardenerObjectives() < 1) {
+                    turnLeftToPick++;
+                }
                 // There is no more panda objective to resolve
-                // So I'm resolving gardener objective instead
+                // So I'm resolving parcel objective instead
                 if (turnLeftToPick > 0 &&
                         (!(Config.isPickAction(getLastAction()))
                         || canDoSameActionInOneTour())) {
@@ -80,6 +87,29 @@ public class QuintusBot extends Bot {
                         (!BotActionType.MOVE_GARDENER.equals(getLastAction())
                         || canDoSameActionInOneTour()))
                     moveGardener(log);
+                else {
+                    turnDoingNothing++;
+                    log.addAction(BotActionType.NONE, "");
+                }
+                checkObjectives();
+                continue;
+            }
+            else if (step > 1) {
+                if (getIndividualBoard().countUnfinishedParcelObjectives() < 1) {
+                    turnLeftToPick++;
+                }
+
+                // There is no more panda objective to resolve
+                // So I'm resolving parcel objective instead
+                if (turnLeftToPick > 0 &&
+                        (!(Config.isPickAction(getLastAction()))
+                                || canDoSameActionInOneTour())) {
+                    pickNextStepObjective(log);
+                }
+                else if ((!BotActionType.PLACE_PARCEL.equals(getLastAction())
+                                || canDoSameActionInOneTour())) {
+                    placeAParcel(log);
+                }
                 else {
                     turnDoingNothing++;
                     log.addAction(BotActionType.NONE, "");
@@ -175,7 +205,7 @@ public class QuintusBot extends Bot {
             neededColors = getNeededColor();
         }
 
-        if (nextStep) {
+        if (step > 1) {
             whatWeCanDoWithWeather(Weather.RAIN, log);
         }
         else {
@@ -200,7 +230,7 @@ public class QuintusBot extends Bot {
         } catch (PickDeckEmptyException e) {
             if (getIndividualBoard().countCompletedObjectives() -
                     Config.getNbObjectivesToCompleteForLastTurn(game.getBots().size()) > 0) {
-                nextStep = true;
+                step++;
                 turnWithUnchangedState = 0;
                 pickNextStepObjective(log);
                 return;
@@ -212,15 +242,18 @@ public class QuintusBot extends Bot {
     }
 
     private void pickNextStepObjective (TurnLog log) {
-        int dice = random.nextInt(2);
-        if (dice >= 1) {
-            pickGardenerObjective(log);
-            neededColors = getNeededColorsNextStep();
+        if (board.getDeckParcelObjective().canPick()) {
+            step = Math.min(3, step + 1);
         }
-        else {
+
+        if (step == 2) {
             pickParcelObjective(log);
             neededColors = new ArrayList<>(List.of(BambooColor.values()));
             Collections.shuffle(neededColors);
+        }
+        else if (step > 2) {
+            pickGardenerObjective(log);
+            neededColors = getNeededColorsNextStep();
         }
         turnDoingNothing = 0;
         turnPastMovingGardener = 0;
