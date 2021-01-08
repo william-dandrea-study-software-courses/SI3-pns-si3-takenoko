@@ -47,17 +47,17 @@ public class RushParcelBot extends Bot {
 
         //Set<PositionColored> missingsPositions = recoverTheMissingsPositionsToCompleteForParcelObjective(cardWeActuallyTryToResolve);
 
-        PositionColored missingPosition = MarganIA.findTheBestPlaceToPlaceAnParcel(cardWeActuallyTryToResolve, getBoard());
+        if (cardWeActuallyTryToResolve != null) {
+            PositionColored missingPosition = MarganIA.findTheBestPlaceToPlaceAnParcel(cardWeActuallyTryToResolve, getBoard());
+            if (missingPosition != null && getBoard().getPositions().size() < Config.DECK_PARCEL_SIZE) {
 
-        if (missingPosition != null && getBoard().getPositions().size() < Config.DECK_PARCEL_SIZE) {
+                List<Parcel> availableParcels = board.pickParcels();
+                if (!availableParcels.isEmpty() && availableParcels != null) {
+                    placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
+                }
 
-            List<Parcel> availableParcels = board.pickParcels();
-            if (!availableParcels.isEmpty() && availableParcels != null) {
-                placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
             }
-
         }
-
     }
 
 
@@ -68,7 +68,10 @@ public class RushParcelBot extends Bot {
     void easiestObjectiveToResolve2() {
         int min = 10;
 
-        cardWeActuallyTryToResolve = individualBoard.getUnfinishedParcelObjectives().get(0);
+        if (individualBoard.getUnfinishedParcelObjectives() != null) {
+            cardWeActuallyTryToResolve = individualBoard.getUnfinishedParcelObjectives().get(0);
+        }
+
 
         for (CardObjective cardOp: individualBoard.getUnfinishedParcelObjectives()) {
 

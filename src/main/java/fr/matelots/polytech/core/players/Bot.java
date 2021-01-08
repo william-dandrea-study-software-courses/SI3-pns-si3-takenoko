@@ -600,6 +600,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_BASIN_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();
@@ -616,6 +617,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_FERTILIZER_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();
@@ -632,6 +634,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_ENCLOSURE_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();

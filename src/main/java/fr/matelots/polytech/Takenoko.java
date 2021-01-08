@@ -33,7 +33,7 @@ public class Takenoko {
         for (double i = 0; i < 10; i++)
             percents.add(i / 10.);
 
-        final int NB_GAMES = 1000;
+        final int NB_GAMES = 100;
         final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
@@ -57,7 +57,7 @@ public class Takenoko {
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             if(percents.contains(nbGame / ((double) NB_GAMES)))
-                System.out.print("" + nbGame + "... ");
+                System.out.print("" + nbGame + "-");
             game = new Game();
 
             game.run(LOG_DETAIL, twiceSameBot);

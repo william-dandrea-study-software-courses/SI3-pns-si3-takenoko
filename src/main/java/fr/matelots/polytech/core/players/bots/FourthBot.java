@@ -68,6 +68,7 @@ public class FourthBot extends Bot {
     private int trials = 0;
     int irrigationNeeded;
     private boolean blocked;
+    private TurnLog turnLog;
 
     public FourthBot(Game game) {
         super(game);
@@ -80,6 +81,7 @@ public class FourthBot extends Bot {
     @Override
     public void playTurn(TurnLog log, Weather weather) {
         super.playTurn(log, weather);
+        turnLog = log;
         this.trials++;
         // We pick cards in order to always have 2 objectives parcels and gardener objectives
         this.fillObjectiveCards(log);
@@ -123,9 +125,8 @@ public class FourthBot extends Bot {
         }
         // Now we need to compare the easiest objective to resolve
         /*CardObjective easiestObjective = this.easiestObjectiveToResolve();
-       *//* if(easiestObjective == null)
+         *//* if(easiestObjective == null)
             System.out.println("easiestObjective null");*//*
-
         //System.out.println(easiestObjective);
         // Now we will resolve the easiest objectives
         if (easiestObjective instanceof CardObjectiveParcel) {
@@ -134,7 +135,6 @@ public class FourthBot extends Bot {
             // We try to resolve the objective
             if (!easiestObjective.isCompleted())
                 this.tryToResolveParcelObjective(log);
-
             // Now we check if the objective is completed
             //System.out.println("completed: "+easiestObjective.isCompleted()+" - "+this.checkObjective(easiestObjective));
             if (this.checkObjective(easiestObjective)) {
@@ -146,13 +146,11 @@ public class FourthBot extends Bot {
                 //obj.ifPresent(cardObjectiveParcel -> log.addAction(BotActionType.PICK_PARCEL_GOAL, cardObjectiveParcel.toString()));
             }
         }
-
         if (easiestObjective instanceof CardObjectiveGardener) {
             //System.out.println("Trying to do a gardener objective ("+this.currentGardenerObjective.getColor()+" - "+this.currentGardenerObjective.getSize()+" - "+this.currentGardenerObjective.getCountMissing()+")");
             // We try to resolve the objective
             if (!easiestObjective.isCompleted())
                 this.tryToResolveGardenerObjective(log);
-
             //System.out.println("completed: "+easiestObjective.isCompleted()+" - "+this.checkObjective(easiestObjective));
             // Now we check if the objective is completed
             if (this.checkObjective(easiestObjective)) {
@@ -160,7 +158,6 @@ public class FourthBot extends Bot {
                 this.pickGardenerObjective(log);
                 //obj.ifPresent(cardObjectiveGardener -> log.addAction(BotActionType.PICK_GARDENER_GOAL, cardObjectiveGardener.toString()));
             }
-
         }*/
 
         //}
@@ -409,30 +406,23 @@ public class FourthBot extends Bot {
                 missingPositions = this.currentParcelObjective.getMissingPositionsToComplete();
             }
             ArrayList<PositionColored> positionsWeChoose = new ArrayList<>();
-
-
             // We browse all the place where we can place a parcel and we add this positions to the ArrayList positionsWeChoose
             if (missingPositions != null)
                 missingPositions.stream()
                         .filter(posColor -> board.isPlaceValid(posColor.getPosition()))
                         .forEach(positionsWeChoose::add);
-
             if(positionsWeChoose.size() != 0) {
                 // We have an place to put the new parcel
-
                 // We choose a random parcel in the potential list
                 Random randomNumber = new Random();
                 int position = randomNumber.nextInt(positionsWeChoose.size());
                 PositionColored positionColored = positionsWeChoose.get(position);
-
                 // We add the new parcel
                 board.addParcel(positionColored.getPosition(), new BambooPlantation(positionColored.getColor()));
-
                 log.addAction(BotActionType.PLACE_PARCEL, positionsWeChoose.get(position).toString());
             } else {
                 // We put a parcel anywhere
                 var position = placeAnParcelAnywhere(log);
-
                 position.ifPresent(position1 -> log.addAction(BotActionType.PLACE_PARCEL, position1.toString()));
             }*/
     }
@@ -597,7 +587,6 @@ public class FourthBot extends Bot {
         else
             return false;
 *//*
-
         List<Position> positions = ShortestPathAlgorithm.shortestPath(this.board.getGardener().getPosition(), position, this.board);
         if(positions.size() == 1)
             return false; //Bouger au même endroit !?
@@ -644,11 +633,13 @@ public class FourthBot extends Bot {
     @Override
     public boolean canPlay() {
         if(this.blocked) {
-            System.out.println("bot bloqué !");
+            //System.out.println("bot bloqué !");
         } else if(this.trials > 100) {
-            System.out.println("nb essai > 100");
-        } else if(this.cantDoObjectives())
-            System.out.println("ne peut plus faire ses objectifs");
+            //System.out.println("nb essai > 100");
+        } else if(this.cantDoObjectives()) {
+            //  System.out.println("ne peut plus faire ses objectifs");
+        }
+
         return !this.blocked &&
                 !this.cantDoObjectives() &&
                 this.trials <= 100;
@@ -700,20 +691,19 @@ public class FourthBot extends Bot {
         this.stockRandomLayout();
     }
 
-    private Optional<Layout> getLayoutInDeck(Layout layout) {
-        TurnLog log = new TurnLog(this);
+    Optional<Layout> getLayoutInDeck(Layout layout) {
         switch (layout) {
             case BASIN:
-                return this.pickBasinLayout(log);
+                return this.pickBasinLayout(turnLog);
             case FERTILIZER:
-                return this.pickFertilizerLayout(log);
+                return this.pickFertilizerLayout(turnLog);
             case ENCLOSURE:
-                return this.pickEnclosureLayout(log);
+                return this.pickEnclosureLayout(turnLog);
         }
         return Optional.empty();
     }
 
-    private void stockRandomLayout() {
+    void stockRandomLayout() {
         List<Layout> layouts = Arrays.asList(Layout.values());
         Collections.shuffle(layouts);
         for (Layout layout : layouts) {
