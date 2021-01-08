@@ -15,6 +15,23 @@ import java.util.logging.Logger;
  */
 public class Takenoko {
 
+    // DEMO 1 PARTIE
+    /*
+    final static int NB_GAMES = 1;
+    final static int NB_DIVIDER = 1;
+    final static double NB_DIVIDER_PCT = 1.;
+    final static boolean LOG_DETAIL = true;
+    */
+
+
+    // DEMO 100 PARTIES
+    // /*
+    final static int NB_GAMES = 100;
+    final static int NB_DIVIDER = 10;
+    final static double NB_DIVIDER_PCT = 10.;
+    final static boolean LOG_DETAIL = false;
+    // */
+
     public static void main(String[] args) {
         LogManager.getLogManager().reset();
         Logger rootLogger = LogManager.getLogManager().getLogger("");
@@ -30,11 +47,10 @@ public class Takenoko {
 
     private static void run1000Game (Logger log, boolean twiceSameBot) {
         List<Double> percents = new ArrayList<>();
-        for (double i = 0; i < 10; i++)
-            percents.add(i / 10.);
+        for (double i = 0; i < NB_DIVIDER; i++)
+            percents.add(i / NB_DIVIDER_PCT);
 
-        final int NB_GAMES = 1000;
-        final boolean LOG_DETAIL = false;
+
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
         int nbDraw = 0;
@@ -57,7 +73,7 @@ public class Takenoko {
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             if(percents.contains(nbGame / ((double) NB_GAMES)))
-                System.out.print("" + nbGame + "... ");
+                System.out.print("" + nbGame + "-");
             game = new Game();
 
             game.run(LOG_DETAIL, twiceSameBot);

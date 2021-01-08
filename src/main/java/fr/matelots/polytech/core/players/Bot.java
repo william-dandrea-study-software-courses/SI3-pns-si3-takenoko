@@ -56,7 +56,7 @@ public abstract class Bot {
     public Bot(Game game) {
         this.game = game;
         this.board = game.getBoard();
-        this.name = toString();
+        this.name = getClass().getSimpleName();
         this.individualBoard = new IndividualBoard();
         maxNumberOfActions = Config.TOTAL_NUMBER_OF_ACTIONS;
         panda = board.getPanda();
@@ -140,7 +140,27 @@ public abstract class Bot {
     }
 
     protected void weatherCaseCloudInitial() {
-        //getIndividualBoard().addLayouts(Layout.BASIN);
+
+        int n = (int)(Math.random() * 3);
+
+        switch (n) {
+            case 0: {
+                if (board.getLayoutBasinLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.BASIN);
+                }
+            } break;
+            case 1 : {
+                if (board.getLayoutFertilizerLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.FERTILIZER);
+                }
+            } break;
+            case 2 : {
+                if (board.getLayoutEnclosureLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.ENCLOSURE);
+                }
+            } break;
+        }
+
     }
 
     protected void weatherCaseThunderstormInitial(TurnLog log) {
@@ -580,6 +600,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_BASIN_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();
@@ -596,6 +617,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_FERTILIZER_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();
@@ -612,6 +634,7 @@ public abstract class Bot {
             if(!individualBoard.addLayouts(layout)) {
                 return Optional.empty();
             }
+            log.addAction(BotActionType.PICK_ENCLOSURE_LAYOUT, "");
             return Optional.of(layout);
         }
         return Optional.empty();

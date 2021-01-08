@@ -84,6 +84,14 @@ public class ParcelRouteFinderTest {
 
         assertTrue(board.getParcel(3, -1, -2).isIrrigate());
     }
+    @Test
+    void testGoingTo_3_minus1_minus2_Stability() {
+        for(int i = 0; i < 500; i++) {
+            init();
+            initMap();
+            testGoingTo_3_minus1_minus2();
+        }
+    }
 
     @Test
     void TestIrrigateOnMany() {
@@ -155,6 +163,14 @@ public class ParcelRouteFinderTest {
         }
 
         assertTrue(plantation3.isIrrigate());
+    }
+
+
+
+    @Test
+    void noWay() {
+        var path = getBestPathToIrrigate(board, new Position(3, 0, -3));
+        assertFalse(path.isPresent());
     }
 
     @Test

@@ -41,12 +41,12 @@ public class Game {
 
     private void setDemoBots(boolean twiceSameBot) {
         if (twiceSameBot) {
-            addBot(new ThirdBot(this, "31bot"));
+            addBot(new FourthBot(this, "Bot super intelligent 1"));
         }
         else {
-            addBot(new QuintusBot(this));
+            addBot(new ThirdBot(this));
         }
-        addBot(new ThirdBot(this, "3bot"));
+        addBot(new FourthBot(this, "Bot super intelligent 2"));
     }
 
     public void addBot(Bot bot) {
@@ -188,19 +188,7 @@ public class Game {
 
 
 
-    public void run () {
-        setDemoBots(false);
 
-        if(bots.size() < 2 || bots.size() > 4) {
-            ACTIONLOGGER.info("Pas le bon nombre de joueurs");
-            return;
-        }
-
-
-        launchTurnLoop(true);
-        drawRanks();
-
-    }
 
     public boolean isCanceledGame () {
         return canceledGame;
