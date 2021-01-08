@@ -39,15 +39,14 @@ public class Game {
         drawer = new BoardDrawer(board);
     }
 
-    private void setDemoBots() {
-        addBot(new QuintusBot(this, "Jojo (Rush Panda)"));
-        //addBot(new QuintusBot(this));
-        //addBot(new QuintusBot(this));
-        //bots.add(new RushParcelBot(this, "RushParcel"));
-        //addBot(new RushParcelBot(this, "RushParcel2"));
-        //addBot(new RushParcelBot(this, "RushParcel1"));
-        //addBot(new ThirdBot(this, "31bot"));
-        addBot(new ThirdBot(this, "3bot"));
+    private void setDemoBots(boolean twiceSameBot) {
+        if (twiceSameBot) {
+            addBot(new QuintusBot(this));
+        }
+        else {
+            addBot(new ThirdBot(this, "3bot"));
+        }
+        addBot(new QuintusBot(this, "Quintus (Rush Panda)"));
     }
 
     public void addBot(Bot bot) {
@@ -190,7 +189,7 @@ public class Game {
 
 
     public void run () {
-        setDemoBots();
+        setDemoBots(false);
 
         if(bots.size() < 2 || bots.size() > 4) {
             ACTIONLOGGER.info("Pas le bon nombre de joueurs");
@@ -207,8 +206,8 @@ public class Game {
         return canceledGame;
     }
 
-    public void run (boolean draw) {
-        setDemoBots();
+    public void run (boolean draw, boolean twiceSameBot) {
+        setDemoBots(twiceSameBot);
 
         if(bots.size() < 2 || bots.size() > 4) {
             if (draw)

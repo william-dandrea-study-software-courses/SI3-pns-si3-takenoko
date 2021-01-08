@@ -25,7 +25,7 @@ public class IndividualBoard {
     private final List<CardObjectiveParcel> objectiveParcels;
     private final List<CardObjectiveGardener> objectiveGardeners;
     private final List<CardObjectivePanda> objectivePandas;
-    private List<Layout> layouts;
+    private final List<Layout> layouts;
     private int irrigations;
     private CardObjectiveEmperor emperor;
 
@@ -76,7 +76,7 @@ public class IndividualBoard {
         objectiveParcels.forEach(card -> {
             if(card.isCompleted()) return;
             card.verify();
-            if(card.isCompleted()) System.out.println("Parcel objective completed: +"+card.getScore());
+            //if(card.isCompleted()) System.out.println("Parcel objective completed: +"+card.getScore());
         });
     }
     public void checkAllGoal() {
@@ -93,15 +93,8 @@ public class IndividualBoard {
         for (CardObjectiveGardener card : objectiveGardeners) {
             if(card.isCompleted()) return;
             card.verify();
-            if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
+            //if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
         }
-/*
-
-        objectiveGardeners.forEach(card -> {
-            if(card.isCompleted()) return;
-            card.verify();
-            if(card.isCompleted()) System.out.println("Gardener objective completed: +"+card.getScore());
-        });*/
     }
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
 
@@ -114,13 +107,18 @@ public class IndividualBoard {
         return null;
     }
 
-    // @return the number of unfinished objectives (all types of objectives)
+    /**
+     *
+     * @return the number of unfinished objectives (all types of objectives)
+     */
     public int countUnfinishedObjectives () {
         return countUnfinishedParcelObjectives()
                 + countUnfinishedGardenerObjectives() + countUnfinishedPandaObjectives();
     }
 
-    // @return the number of completed objectives (all types of objectives)
+    /**
+     * @return the number of completed objectives (all types of objectives)
+     */
     public int getCompletedObjectives() {
         int n = 0;
         n += objectiveParcels.stream().filter(CardObjective::isCompleted).count();
