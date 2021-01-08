@@ -371,7 +371,9 @@ public class BotTest {
         Layout layout = Layout.ENCLOSURE;
         this.bot.individualBoard.addLayouts(layout);
         BambooPlantation plantation = new BambooPlantation(BambooColor.GREEN);
-        this.bot.board.addParcel(new Position(0, 1, -1), plantation);
+        this.bot.board.addParcel(new Position(0, 1, -1), new BambooPlantation(BambooColor.GREEN));
+        this.bot.board.addParcel(new Position(1, 0, -1), new BambooPlantation(BambooColor.GREEN));
+        this.bot.board.addParcel(new Position(1, 1, -2), plantation);
         assertTrue(this.bot.placeLayout(turnLog, plantation, layout));
         assertEquals(0, this.bot.getIndividualBoard().getLayouts().size());
     }

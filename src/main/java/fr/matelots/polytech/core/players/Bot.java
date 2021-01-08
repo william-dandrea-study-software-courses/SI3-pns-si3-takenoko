@@ -349,7 +349,6 @@ public abstract class Bot {
                 return true;
             }
         }
-        log.addAction(BotActionType.NONE, "");
         return false;
     }
 

@@ -20,9 +20,9 @@ public class BambooPlantation extends Parcel {
     }
 
     public BambooPlantation (BambooColor color, Layout layout) {
+        setLayout(layout);
         this.bambooSize = layout == Layout.BASIN ? 1 : 0;
         this.bambooColor = color;
-        setLayout(layout);
     }
 
     /**
