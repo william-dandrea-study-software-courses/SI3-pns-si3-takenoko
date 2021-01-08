@@ -68,7 +68,8 @@ public class RushParcelBot extends Bot {
     void easiestObjectiveToResolve2() {
         int min = 10;
 
-        if (individualBoard.getUnfinishedParcelObjectives() != null) {
+        if (individualBoard.getUnfinishedParcelObjectives() != null &&
+            !individualBoard.getUnfinishedParcelObjectives().isEmpty()) {
             cardWeActuallyTryToResolve = individualBoard.getUnfinishedParcelObjectives().get(0);
         }
 
