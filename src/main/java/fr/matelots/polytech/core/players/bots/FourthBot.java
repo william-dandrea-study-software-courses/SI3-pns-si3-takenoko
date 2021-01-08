@@ -619,22 +619,7 @@ public class FourthBot extends Bot {
             return false;
     }*/
 
-    private Position getStepMovePosition(Position start, Position goal) {
-        List<Position> path = ShortestPathAlgorithm.shortestPath(start, goal, this.board);
-        if(path.size() == 1 || path.size() == 2) {
-            if(path.size() == 2)
-                path.remove(start);
-            return goal;
-        }
-        Side sideDirection = Side.getTouchedSide(path.get(0), path.get(1));
-        for(int i = 2; i < path.size(); i++) {
-            Side side = Side.getTouchedSide(path.get(i - 1), path.get(i));
-            if(side != sideDirection) {
-                return path.get(i - 1);
-            }
-        }
-        return goal;
-    }
+
 
     private Position getNextPosition(Position position) {
         Position posTmp;
