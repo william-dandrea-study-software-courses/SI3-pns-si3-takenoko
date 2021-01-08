@@ -188,19 +188,7 @@ public class Game {
 
 
 
-    public void run () {
-        setDemoBots(false);
 
-        if(bots.size() < 2 || bots.size() > 4) {
-            ACTIONLOGGER.info("Pas le bon nombre de joueurs");
-            return;
-        }
-
-
-        launchTurnLoop(true);
-        drawRanks();
-
-    }
 
     public boolean isCanceledGame () {
         return canceledGame;

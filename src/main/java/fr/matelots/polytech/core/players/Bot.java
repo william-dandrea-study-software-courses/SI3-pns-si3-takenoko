@@ -139,7 +139,27 @@ public abstract class Bot {
     }
 
     protected void weatherCaseCloudInitial() {
-        //getIndividualBoard().addLayouts(Layout.BASIN);
+
+        int n = (int)(Math.random() * 3);
+
+        switch (n) {
+            case 0: {
+                if (board.getLayoutBasinLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.BASIN);
+                }
+            } break;
+            case 1 : {
+                if (board.getLayoutFertilizerLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.FERTILIZER);
+                }
+            } break;
+            case 2 : {
+                if (board.getLayoutEnclosureLeftToPlace() != 0) {
+                    getIndividualBoard().addLayouts(Layout.ENCLOSURE);
+                }
+            } break;
+        }
+
     }
 
     protected void weatherCaseThunderstormInitial(TurnLog log) {
