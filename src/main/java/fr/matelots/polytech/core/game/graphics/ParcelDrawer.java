@@ -24,7 +24,7 @@ public class ParcelDrawer {
     }
 
     public void setIrrigate(Side side) {
-        var position = getPosition(side.getConsoleDelta()); // ??? getConsoleDelta ne devrais pas pouvoir retourner null...
+        var position = getPosition(side.getConsoleDelta());
         buffer.changeColor(position.getX(), position.getY(), ConsoleColor.BLUE);
     }
 

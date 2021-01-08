@@ -37,9 +37,6 @@ public class BambooPlantation extends Parcel {
         return bambooColor;
     }
 
-    /**
-     * Made the bamboo grow by one unit
-     */
     @Override
     public void growBamboo () {
         if (!isIrrigate())

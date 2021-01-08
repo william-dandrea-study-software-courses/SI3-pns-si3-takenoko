@@ -22,4 +22,5 @@ public class ColoredString {
     public String getContent() {
         return content;
     }
+
 }

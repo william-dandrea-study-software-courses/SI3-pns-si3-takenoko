@@ -31,4 +31,5 @@ public enum ConsoleColor {
     String getColorCode() {
         return colorCode;
     }
+
 }

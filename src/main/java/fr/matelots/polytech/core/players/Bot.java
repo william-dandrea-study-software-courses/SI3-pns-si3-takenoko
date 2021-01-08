@@ -72,11 +72,10 @@ public abstract class Bot {
         return canDoSameActionInOneTour;
     }
 
-
     /**
      * Play a turn. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
      * @param log A logger to log action made
-     * @param weatherCard
+     * @param weatherCard The weather during this turn
      */
     public void playTurn (TurnLog log, Weather weatherCard) {
         lastAction = null;
@@ -86,21 +85,23 @@ public abstract class Bot {
         canPlaceOneMoreBamboo = false;                          // RAIN
         canMovePandaSomewhere = false;                          // THUNDERSTORM
         canAddAmenagement = false;                              // CLOUD
-        whatWeCanDoWithWeather(weatherCard, log);
+        applyWeatherBonus(weatherCard, log);
     }
 
-    public void playTurn(Weather weatherCard) {
-        TurnLog log = new TurnLog(this);
-        playTurn(log, weatherCard);
-    }
-
+    /**
+     * Play a turn without weather. He can't do more than {@link Config#TOTAL_NUMBER_OF_ACTIONS} actions.
+     * @param log A logger to log action made
+     */
     public void playTurn(TurnLog log) {
         playTurn(log, null);
     }
 
-
-    protected void whatWeCanDoWithWeather(Weather weather, TurnLog log) {
-        //System.out.println(weather);
+    /**
+     * Applique le bonus de la météo.
+     * @param weather La météo
+     * @param log Le logger
+     */
+    protected void applyWeatherBonus(Weather weather, TurnLog log) {
         if (weather!= null) {
             switch (weather) {
                 case SUN: {
@@ -109,7 +110,7 @@ public abstract class Bot {
                 }
                 case RAIN: {
                     canPlaceOneMoreBamboo = true;
-                    weatherCaseRainInitial();
+                    onRaining();
                     break;
                 }
                 case WIND: {
@@ -118,28 +119,28 @@ public abstract class Bot {
                 }
                 case CLOUD: {
                     canAddAmenagement = true;
-                    weatherCaseCloudInitial();
+                    onCloudy();
                     break;
                 }
                 case THUNDERSTORM: {
                     canMovePandaSomewhere = true;
-                    weatherCaseThunderstormInitial(log);
+                    onThunderstorm(log);
                     break;
                 }
                 case INTERROGATION: {
-                    weatherCaseInterrogationInitial(log);
+                    onJokerWeather(log);
                     break;
                 }
             }
         }
     }
 
-    protected void weatherCaseRainInitial() {
+    protected void onRaining() {
         Optional<Position> place = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate() && !board.getParcel(p).equals(Config.POND_POSITION)).findAny();
         place.ifPresent(position -> getBoard().getParcel(position).growBamboo());
     }
 
-    protected void weatherCaseCloudInitial() {
+    protected void onCloudy() {
 
         int n = (int)(Math.random() * 3);
 
@@ -163,16 +164,14 @@ public abstract class Bot {
 
     }
 
-    protected void weatherCaseThunderstormInitial(TurnLog log) {
+    protected void onThunderstorm(TurnLog log) {
         Optional<Position> place = board.getPositions().stream().filter(p -> !p.equals(getBoard().getPanda().getPosition())).findAny();
         place.ifPresent(position -> game.movePandaWhenWeather(lastAction, this, position, log));
     }
-    protected void weatherCaseInterrogationInitial(TurnLog log) {
+
+    protected void onJokerWeather(TurnLog log) {
         playTurn(log, game.diceRandomWeather());
     }
-
-
-
 
     protected BotActionType getLastAction () {
         return lastAction;
@@ -214,6 +213,7 @@ public abstract class Bot {
     /**
      * This method pick a new Gardener objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public final Optional<CardObjectiveGardener> pickGardenerObjective(TurnLog log) {
         if (Config.isPickAction(lastAction)  && !canDoSameActionInOneTour)
@@ -238,6 +238,7 @@ public abstract class Bot {
     /**
      * This method pick a new Panda objective from the pile of card and add this objective to the individual board
      * @return the objective that is picked
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public final Optional<CardObjectivePanda> pickPandaObjective(TurnLog log) {
         if (Config.isPickAction(lastAction)  && !canDoSameActionInOneTour)
@@ -284,6 +285,13 @@ public abstract class Bot {
         getIndividualBoard().checkAllGoal();
     }
 
+    /**
+     * Bouge le panda à la position donné. Se déplace qu'en ligne droite.
+     * @param log Le logger
+     * @param pos La position où déplacer le panda
+     * @return true si déplacement réussi, false sinon.
+     * @throws IllegalActionRepetitionException Si l'action a déjà été faite durant ce tour
+     */
     public final boolean movePanda(TurnLog log, Position pos) {
         if (BotActionType.MOVE_PANDA.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
@@ -299,6 +307,14 @@ public abstract class Bot {
         return res;
     }
 
+    /**
+     * Place une parcelle à la position donné. Doit être à une position valide.
+     * @param log Le logger
+     * @param pos La position où mettre la parcelle
+     * @param parcel La parcelle à placer qui vient du plateau
+     * @return true si posé, false sinon
+     * @throws IllegalActionRepetitionException Si l'action a déjà été faite durant ce tour
+     */
     protected final boolean placeParcel (TurnLog log, Position pos, Parcel parcel) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();
@@ -347,6 +363,7 @@ public abstract class Bot {
     /**
      * This method will place a parcel anywhere in the board, the color of the new parcel is random
      * @return true if we have place a parcel, false else
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public Optional<Position> placeAnParcelAnywhere(TurnLog log) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
@@ -373,7 +390,6 @@ public abstract class Bot {
         }
         return Optional.empty();
     }
-
 
     /**
      * List<Parcel> availableParcels = board.pickParcels();
@@ -452,6 +468,7 @@ public abstract class Bot {
      * This method will place a parcel anywhere in the board, the color of the new parcel is the color in parameter
      * @param color the color of the parcel we want
      * @return true if we have place a parcel, false else
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public Optional<Position> placeAnParcelAnywhere(BambooColor color, TurnLog log) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
@@ -482,7 +499,7 @@ public abstract class Bot {
      * @param card The parcel objective to verify
      * @return The missing position to complete the objective. Can be empty if he's completed.
      */
-     public Set<PositionColored> recoverTheMissingsPositionsToCompleteForParcelObjective(CardObjectiveParcel card) {
+     public Set<PositionColored> getMissingPositions(CardObjectiveParcel card) {
          Set<PositionColored> missingPositionsToComplete = new HashSet<>();
          if (card != null) {
              card.verify();
@@ -493,13 +510,13 @@ public abstract class Bot {
          return missingPositionsToComplete;
     }
 
-
     /**
      * Allow to place a parcel.
      * @param position: Position of the parcel to place
      * @param color: Color of the parcel
      * @param log: Logger par tour
      * @return true if the parcel is placed else return false
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public boolean placeParcel(Position position, BambooColor color, TurnLog log) {
         if (BotActionType.PLACE_PARCEL.equals(lastAction)  && !canDoSameActionInOneTour)
@@ -531,6 +548,7 @@ public abstract class Bot {
      * fail.
      * @param position The position where to move the gardener
      * @param log The logger
+     * @throws IllegalActionRepetitionException if the action was already done in the same turn.
      */
     public boolean moveGardener(Position position, TurnLog log) {
         if (BotActionType.MOVE_GARDENER.equals(lastAction)  && !canDoSameActionInOneTour)
@@ -557,9 +575,6 @@ public abstract class Bot {
      * @return true if success, return false otherwise
      */
     public boolean irrigate(AbsolutePositionIrrigation position, TurnLog log) {
-        /*if (BotActionType.PLACE_IRRIGATION.equals(lastAction)  && !canDoSameActionInOneTour)
-            throw new IllegalActionRepetitionException();*/
-
         if(!canDoAction()) return false;
         if(!individualBoard.canPlaceIrrigation()) return false;
 
@@ -567,12 +582,16 @@ public abstract class Bot {
         if(success) {
             log.addAction(BotActionType.PLACE_IRRIGATION, position.toString());
             individualBoard.placeIrrigation();
-            //currentNumberOfAction++;
             lastAction = BotActionType.PLACE_IRRIGATION;
         }
         return success;
     }
 
+    /**
+     * Prend une irrigation dans la pioche et la met dans le plateau individuelle.
+     * @param log Un logger
+     * @return true si l'irrigation a été pioché et mis, false sinon
+     */
     public boolean pickIrrigation(TurnLog log) {
         if(!canDoAction()) return false;
         if(board.canPickIrrigation()) {
@@ -581,13 +600,16 @@ public abstract class Bot {
             log.addAction(BotActionType.PICK_IRRIGATION, "");
             currentNumberOfAction++;
             return true;
-        }
-        else return false;
+        } else
+            return false;
     }
 
-    
-
-
+    /**
+     * Pioche un aménagement bassin et le met dans le plateau individuel.
+     * @param log Un logger
+     * @return l'aménagement bassin, vide si pioche vide.
+     * @throws IllegalActionRepetitionException Si l'action a déjà été faite durant ce tour
+     */
     public Optional<Layout> pickBasinLayout(TurnLog log) {
         if (!canAddAmenagement && !canDoSameActionInOneTour)
             throw new IllegalActionRepetitionException();

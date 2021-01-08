@@ -3,6 +3,7 @@ package fr.matelots.polytech.core.players.bots.logger;
 import fr.matelots.polytech.core.players.Bot;
 
 public class BotAction {
+
     private final Bot bot;
     private final BotActionType action;
     private final String parameter;
@@ -17,12 +18,9 @@ public class BotAction {
         return action;
     }
 
-    public String getParameter() {
-        return parameter;
-    }
-
     @Override
     public String toString() {
         return action.getMessage(bot, parameter);
     }
+
 }

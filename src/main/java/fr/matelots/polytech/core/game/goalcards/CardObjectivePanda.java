@@ -17,6 +17,14 @@ public class CardObjectivePanda extends CardObjective {
     private final int yellowCount;
     private IndividualBoard individualBoard;
 
+    /**
+     * Construit une carte objectif panda. Il faut ensuite assigner le plateau individuel avec
+     * {@link #setIndividualBoard(IndividualBoard)}.
+     * @param score Le nombre de points remporté
+     * @param greenCount Le nombre de bambous verts que le panda doit manger
+     * @param pinkCount Le nombre de bambous roses que le panda doit manger
+     * @param yellowCount Le nombre de bambous jaunes que le panda doit manger
+     */
     public CardObjectivePanda(int score, int greenCount, int pinkCount, int yellowCount) {
         super(score);
         this.greenCount = greenCount;
@@ -35,6 +43,11 @@ public class CardObjectivePanda extends CardObjective {
         this.individualBoard = individualBoard;
     }
 
+    /**
+     * Le nombre de bambou a mangé suivant la couleur
+     * @param color La couleur du bambou
+     * @return le nombre de bamboo que doit manger le panda pour compléter l'objectif.
+     */
     public int getCountForColor (BambooColor color) {
         switch (color) {
             case GREEN:

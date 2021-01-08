@@ -85,6 +85,11 @@ public class Config {
         }
     }
 
+    /**
+     * Permet de savoir si l'action est de type "piocher une carte objectif"
+     * @param action L'action à déterminer
+     * @return true si elle est de type "piocher une carte objectif", false sinon.
+     */
     public static boolean isPickAction (BotActionType action) {
         if (action == null)
             return false;

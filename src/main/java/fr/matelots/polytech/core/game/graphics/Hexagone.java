@@ -11,12 +11,12 @@ import java.util.Map;
  * @author Yann Clodong
  */
 public class Hexagone {
+
     //  / \ / \
     // | c |   |
     //  \ / \ /
     //   |   |
     //    \ /
-
 
     private final int radius = 2;
     private final Position consolePosition;
@@ -65,4 +65,5 @@ public class Hexagone {
         cores.put(new Position(-1, 1, 0), new Position(-2 * radius, 0, 0));
         return cores;
     }
+
 }

@@ -17,7 +17,6 @@ public class DeckGardenerObjective extends Deck<CardObjectiveGardener> {
 
     @Override
     protected void fill() {
-
         this.cards.add(new CardObjectiveGardener(board, 4, BambooColor.YELLOW, 4, 1, Layout.FERTILIZER));
         this.cards.add(new CardObjectiveGardener(board, 5, BambooColor.YELLOW, 4, 1, Layout.ENCLOSURE));
         this.cards.add(new CardObjectiveGardener(board, 5, BambooColor.YELLOW, 4, 1, Layout.BASIN));

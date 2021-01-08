@@ -1,16 +1,14 @@
 package fr.matelots.polytech.core.game.movables;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.engine.util.Position;
-
-import java.util.List;
 
 /**
  * @author Gabriel Cogne
  */
 public class Panda extends Pawn {
+
     private Bot currentPlayer;
 
     public Panda(Board board, Position position) {
@@ -46,4 +44,5 @@ public class Panda extends Pawn {
 
         currentPlayer = null;
     }
+
 }

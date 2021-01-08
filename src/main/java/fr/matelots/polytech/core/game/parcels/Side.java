@@ -2,6 +2,9 @@ package fr.matelots.polytech.core.game.parcels;
 
 import fr.matelots.polytech.engine.util.Position;
 
+/**
+ * Représente le côté d'une parcelle
+ */
 public enum Side {
 
     UPPER_RIGHT(0, new Position(1, 0, -1)),

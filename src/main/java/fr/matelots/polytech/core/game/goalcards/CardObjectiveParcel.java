@@ -26,6 +26,13 @@ public class CardObjectiveParcel extends CardObjective {
     private final BambooColor[] colors;
     private Set<PositionColored> missingPositions;
 
+    /**
+     * Construit une carte objectif parcelle.
+     * @param board Le plateau de jeu
+     * @param score Le nombre de points remporté
+     * @param pattern La forme recherché
+     * @param colors Les couleurs que doivent avoir les parcelles
+     */
     public CardObjectiveParcel(Board board, int score, Patterns pattern, BambooColor... colors) {
         super(score);
         this.board = board;
@@ -80,7 +87,7 @@ public class CardObjectiveParcel extends CardObjective {
     public String toString() {
         return "CardObjectiveParcel{" +
                 "completed=" + completed +
-                //", board=" + board +
+                ", board=" + board +
                 ", pattern=" + pattern +
                 ", colors=" + Arrays.toString(colors) +
                 ", missingPositions=" + missingPositions +

@@ -17,7 +17,7 @@ public abstract class CardObjective {
 
     /**
      * Vérifie que l'objectif est validé.
-     * @return true si l'objetif est rempli, false sinon.
+     * @return true si l'objectif est rempli, false sinon.
      */
     public abstract boolean verify();
 

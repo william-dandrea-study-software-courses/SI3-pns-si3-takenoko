@@ -8,9 +8,9 @@ import fr.matelots.polytech.engine.util.Position;
  * @author Gabriel Cogne
  */
 public abstract class Pawn {
+
     private final Board board;
     private Position position;
-
 
     public Pawn (Board board, Position position) {
         this.board = board;
@@ -18,11 +18,12 @@ public abstract class Pawn {
     }
 
     /**
-     * Move the pawn to the given location and apply is action
+     * Move the pawn to the given location with constraint and apply is action
      * @param x location on x axis
      * @param y location on y axis
      * @param z location on z axis
-     * @return is the movement success ?
+     * @return true if the movement success, false otherwise
+     * @throws UnreachableParcelException if the parcel is unreachable, meaning the movement violate the constraint
      */
     public boolean moveTo (int x, int y, int z) {
         Position tmp = new Position(x, y, z);
@@ -31,10 +32,17 @@ public abstract class Pawn {
             throw new UnreachableParcelException();
         }
 
-        return moveToAbsolute(x,y,z);
+        return moveFreelyTo(x,y,z);
     }
 
-    public boolean moveToAbsolute (int x, int y, int z) {
+    /**
+     * Move freely the pawn to the given location and apply is action
+     * @param x location on x axis
+     * @param y location on y axis
+     * @param z location on z axis
+     * @return true if the movement success, false otherwise
+     */
+    public boolean moveFreelyTo(int x, int y, int z) {
         Position tmp = new Position(x, y, z);
 
         if (getBoard().placePawn(this, tmp)) {

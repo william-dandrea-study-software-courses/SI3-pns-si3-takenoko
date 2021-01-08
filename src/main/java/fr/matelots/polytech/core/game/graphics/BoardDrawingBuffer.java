@@ -30,7 +30,6 @@ public class BoardDrawingBuffer {
         buffer.get(0).add(new ColoredCharacters(ConsoleColor.NONE, ' '));
     }
 
-
     void drawHexas() {
         beginDraw(Config.POND_POSITION, new Position(0, 0, 0));
         print();
@@ -39,7 +38,6 @@ public class BoardDrawingBuffer {
     void beginDraw(Position currentParcel, Position position) {
         if(board.containTile(currentParcel) && !allReadyDrawn.contains(currentParcel)) {
             Hexagone hexa = new Hexagone(position, currentParcel);
-            // Parcel  parcel = board.getParcel(currentParcel);
             allReadyDrawn.add(currentParcel);
             hexa.printHexa(this, board);
 
@@ -59,8 +57,6 @@ public class BoardDrawingBuffer {
                 lineContent.append(c);
             }
             lineContent.append('\n');
-            //System.out.println(lineContent);
-            //LOGGER.info(lineContent.toString());
         }
         LOGGER.info(lineContent.toString());
     }
@@ -77,10 +73,6 @@ public class BoardDrawingBuffer {
 
     void setCharacter(int x, int y, char c, ConsoleColor color) {
         setValue(x, y, new ColoredCharacters(color, c));
-    }
-
-    void setString(int x, int y, String val, ConsoleColor color) {
-        setValue(x, y, new ColoredString(color, val));
     }
 
     private void setValue(int x, int y, ColoredString value) {
@@ -149,4 +141,5 @@ public class BoardDrawingBuffer {
         height++;
         buffer.add(line);
     }
+
 }

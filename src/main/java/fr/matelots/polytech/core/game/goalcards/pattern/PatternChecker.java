@@ -46,7 +46,6 @@ public class PatternChecker {
      * @throws IllegalArgumentException si @param positions est vide ou contient seulement l'étang
      */
     public Set<PositionColored> check(Set<PositionColored> positions, BambooColor[] colors) {
-        //positions.removeIf(pos -> pos.getPosition().equals(Config.POND_POSITION)); //On enlève l'étang
         if (!positions.contains(POND))
             throw new IllegalArgumentException("Il manque l'étang !");
         if(colors.length - 1 != this.offsets[0].length)

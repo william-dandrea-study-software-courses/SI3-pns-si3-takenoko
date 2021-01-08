@@ -11,6 +11,7 @@ public enum HexagonePosition {
     RIGHT(new Position(1, 0, 0));
 
     private final Position pos;
+
     HexagonePosition(Position pos) {
         this.pos = pos;
     }
@@ -18,4 +19,5 @@ public enum HexagonePosition {
     Position getPosition() {
         return pos;
     }
+
 }

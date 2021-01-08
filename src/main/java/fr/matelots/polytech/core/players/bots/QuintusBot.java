@@ -24,6 +24,7 @@ import java.util.*;
  * @author Gabriel Cogne
  */
 public class QuintusBot extends Bot {
+
     private int turnLeftToPick;
     private int turnDoingNothing = 0;
     private int turnPastMovingGardener = 0;
@@ -55,9 +56,8 @@ public class QuintusBot extends Bot {
         super.playTurn(log, weatherCard);
 
         setCurrentNumberOfAction(0);
-        int action = 0;
 
-        for ( ; action < getMaxNumberOfActions(); action++){
+        for (int action = 0 ; action < getMaxNumberOfActions(); action++){
             if (!canPlay())
                 return;
 
@@ -151,7 +151,7 @@ public class QuintusBot extends Bot {
     }
 
     @Override
-    protected void weatherCaseThunderstormInitial(TurnLog log) {
+    protected void onThunderstorm(TurnLog log) {
         if (neededColors == null || neededColors.isEmpty()) {
             neededColors = getNeededColor();
         }
@@ -175,7 +175,7 @@ public class QuintusBot extends Bot {
     }
 
     @Override
-    protected void weatherCaseRainInitial() {
+    protected void onRaining() {
         if (neededColors == null || neededColors.isEmpty()) {
             neededColors = getNeededColor();
         }
@@ -200,20 +200,20 @@ public class QuintusBot extends Bot {
     }
 
     @Override
-    protected void weatherCaseInterrogationInitial(TurnLog log) {
+    protected void onJokerWeather(TurnLog log) {
         if (neededColors == null || neededColors.isEmpty()) {
             neededColors = getNeededColor();
         }
 
         if (step > 1) {
-            whatWeCanDoWithWeather(Weather.RAIN, log);
+            applyWeatherBonus(Weather.RAIN, log);
         }
         else {
             if (isThereAnythingInterestingToEat()) {
-                whatWeCanDoWithWeather(Weather.THUNDERSTORM, log);
+                applyWeatherBonus(Weather.THUNDERSTORM, log);
             }
             else {
-                whatWeCanDoWithWeather(Weather.RAIN, log);
+                applyWeatherBonus(Weather.RAIN, log);
             }
         }
     }
@@ -515,10 +515,10 @@ public class QuintusBot extends Bot {
     @Override
     public boolean canPlay() {
         final int MAX_TURN_DOING_NOTHING = 3;
-        final int MAX_TURN_MOVING_GARDENNER = 6;
+        final int MAX_TURN_MOVING_GARDENER = 6;
         final int MAX_TURN_STATE_UNCHANGING = 9;
         return turnDoingNothing < MAX_TURN_DOING_NOTHING
-                && turnPastMovingGardener < MAX_TURN_MOVING_GARDENNER
+                && turnPastMovingGardener < MAX_TURN_MOVING_GARDENER
                 && turnWithUnchangedState < MAX_TURN_STATE_UNCHANGING;
     }
 
@@ -530,4 +530,5 @@ public class QuintusBot extends Bot {
         getIndividualBoard().getUnfinishedGardenerObjectives().forEach(CardObjectiveGardener::verify);
         getIndividualBoard().getUnfinishedParcelObjectives().forEach(CardObjectiveParcel::verify);
     }
+
 }

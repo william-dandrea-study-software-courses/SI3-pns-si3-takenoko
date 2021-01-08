@@ -26,7 +26,6 @@ public class Board {
     private final DeckLayoutEnclosure deckLayoutEnclosure;
     private final DeckLayoutFertilizer deckLayoutFertilizer;
 
-
     private int layoutBasinLeftToPlace;
     private int layoutFertilizerLeftToPlace;
     private int layoutEnclosureLeftToPlace;
@@ -71,15 +70,22 @@ public class Board {
         layoutEnclosureLeftToPlace = Config.NB_LAYOUT_ENCLOSURE;
     }
 
-
-
-
-
-    // Methods and Function
+    /**
+     * Donne la parcelle se trouvant à ces coordonnées. Equivalent à {@link #getParcel(Position)}.
+     * @param x La position en x
+     * @param y La position en y
+     * @param z La position en z
+     * @return La parcelle, ou null
+     */
     public Parcel getParcel (int x, int y, int z) {
         return getParcel(new Position(x, y, z));
     }
 
+    /**
+     * Donne la parcelle se trouvant à ces coordonnées.
+     * @param position Les coordonnées
+     * @return La parcelle, ou null
+     */
     public Parcel getParcel (Position position) {
         for (Position pos : grid.keySet()) {
             if (pos.equals(position))
@@ -88,6 +94,15 @@ public class Board {
         return null;
     }
 
+    /**
+     * Ajout une parcelle au plateau.
+     * @param x La position x
+     * @param y La position y
+     * @param z La position z
+     * @param p La parcelle
+     * @return true si la parcelle a été ajouté, false sinon
+     * @throws NoParcelLeftToPlaceException Si la plateau a déjà le nombre maximal de parcelle
+     */
     public boolean addParcel (int x, int y, int z, Parcel p) throws NoParcelLeftToPlaceException {
         if (parcelLeftToPlace <= 0)
             throw new NoParcelLeftToPlaceException();
@@ -129,10 +144,22 @@ public class Board {
         return false;
     }
 
+    /**
+     * Ajout une parcelle au plateau. Equivalent à {@link #addParcel(int, int, int, Parcel)}
+     * @param position La position
+     * @param p La parcelle
+     * @return true si la parcelle a été ajouté, false sinon
+     * @throws NoParcelLeftToPlaceException Si la plateau a déjà le nombre maximal de parcelle
+     */
     public boolean addParcel(Position position, Parcel p) throws NoParcelLeftToPlaceException {
         return addParcel(position.getX(), position.getY(), position.getZ(), p);
     }
 
+    /**
+     * Ajoute une parcelle bambou au plateau
+     * @param position La position où l'ajouter
+     * @return true si placé, false sinon
+     */
     public boolean addBambooPlantation(Position position) {
         // Will change with the parcel deck
         // Will be renamed with others parcels
@@ -144,6 +171,13 @@ public class Board {
         return addParcel(position, new BambooPlantation(color));
     }
 
+    /**
+     * Permet de savoir s'il est possible de placer une parcelle à cette position
+     * @param x La position x
+     * @param y La position y
+     * @param z La position z
+     * @return true si on peut poser une parcelle, false sinon
+     */
     public boolean isPlaceValid (int x, int y, int z) {
         if (getParcel(x, y, z) != null)
             return false;
@@ -156,10 +190,19 @@ public class Board {
             return neighbours.stream().anyMatch(Parcel::isPond);
     }
 
+    /**
+     * Permet de savoir s'il est possible de placer une parcelle à cette position. Equivalent {@link #isPlaceValid(int, int, int)}
+     * @param position La position
+     * @return true si on peut poser une parcelle, false sinon
+     */
     public boolean isPlaceValid (Position position) {
         return isPlaceValid(position.getX(), position.getY(), position.getZ());
     }
 
+    /**
+     * Donne les positions valides où il est possible de placer une parcelle.
+     * @return un set contenant les positions valides
+     */
     public Set<Position> getValidPlaces() {
         Set<Position> validPlaces = new HashSet<>();
         var positions = getPositions();
@@ -174,6 +217,13 @@ public class Board {
         return validPlaces;
     }
 
+    /**
+     * Donne les parcelles voisines.
+     * @param x La position x
+     * @param y La position y
+     * @param z La position z
+     * @return Les parcelles voisines.
+     */
     public List<Parcel> getNeighbours(int x, int y, int z) {
         final List<Parcel> res = new ArrayList<>();
 
@@ -186,7 +236,12 @@ public class Board {
         return res;
     }
 
-
+    /**
+     * Place un aménagement.
+     * @param position La position où la poser
+     * @param layout L'aménagement à poser
+     * @return true si posé, false sinon.
+     */
     public boolean placeLayout(Position position, Layout layout) {
 
         boolean res = false;
@@ -264,6 +319,12 @@ public class Board {
         return false;
     }
 
+    /**
+     * Permet de savoir s'il est possible de poser une irrigation à cette position et côté.
+     * @param position La position où placer l'irrigation
+     * @param side Le côté où placer l'irrigation
+     * @return true si c'est possible, false sinon
+     */
     public boolean canPlaceIrrigation(Position position, Side side) {
         Parcel parcel = this.getParcel(position);
         Side sideAdjacent = side.oppositeSide();
@@ -278,6 +339,12 @@ public class Board {
         return parcelAdjacent.isIrrigate(sideAdjacent.rightSide()) || parcelAdjacent.isIrrigate(sideAdjacent.leftSide());
     }
 
+    /**
+     * Permet de savoir si le côté est entre 2 parcelles.
+     * @param position La position
+     * @param side Le côté
+     * @return true si entre 2 parcelles, false sinon.
+     */
     public boolean isInterstice(Position position, Side side) {
         Parcel parcel = getParcel(position);
         Parcel adjacenteParcel = getParcel(position.add(side.getDirection()));
@@ -302,6 +369,11 @@ public class Board {
         return new HashSet<>(this.grid.keySet()); // évite la modification
     }
 
+    /**
+     * Permet de savoir si une parcelle se trouve à cette position.
+     * @param position La position
+     * @return true s'il y a déjà une parcelle, false sinon.
+     */
     public boolean containTile(Position position) {
         return getParcel(position) != null;
     }
@@ -426,7 +498,11 @@ public class Board {
     public DeckParcel getDeckParcel() {
         return deckParcel;
     }
-    
+
+    /**
+     * Donne 3 parcelles disponibles.
+     * @return 3 parcelles, ou vide si toutes les parcelles ont été posées
+     */
     public List<Parcel> pickParcels () {
         List<Parcel> res = new ArrayList<>();
 

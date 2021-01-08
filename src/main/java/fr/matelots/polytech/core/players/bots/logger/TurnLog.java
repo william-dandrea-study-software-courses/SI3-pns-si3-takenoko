@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TurnLog {
+
     private final Bot bot;
     private final List<BotAction> actions;
 

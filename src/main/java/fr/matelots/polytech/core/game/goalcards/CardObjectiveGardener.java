@@ -23,11 +23,27 @@ public class CardObjectiveGardener extends CardObjective {
     private int countMissing;
     private final Layout layout;
 
-
+    /**
+     * Construit une carte objectif jardinier sans aménagement.
+     * @param board Le plateau
+     * @param score La valeur remporté par un bot si elle est complété
+     * @param color La couleur du bamboo
+     * @param size La taille que doivent avoir les bamboos
+     * @param count Le nombre de bamboo
+     */
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count) {
-        this(board,score,color,size,count,null);
+        this(board, score, color, size, count,null);
     }
 
+    /**
+     * Construit une carte objectif jardinier avec un aménagement.
+     * @param board Le plateau
+     * @param score La valeur remporté par un bot si elle est complété
+     * @param color La couleur du bamboo
+     * @param size La taille que doivent avoir les bamboos
+     * @param count Le nombre de bamboo
+     * @param layout L'aménagement que doit avoir la parcelle
+     */
     public CardObjectiveGardener(Board board, int score, BambooColor color, int size, int count, Layout layout) {
         super(score);
         this.board = board;
@@ -36,7 +52,6 @@ public class CardObjectiveGardener extends CardObjective {
         this.count = count;
         this.layout = layout;
     }
-
 
     @Override
     public boolean verify() {

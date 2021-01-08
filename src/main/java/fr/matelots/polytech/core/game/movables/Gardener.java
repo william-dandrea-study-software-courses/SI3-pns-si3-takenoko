@@ -1,7 +1,6 @@
 package fr.matelots.polytech.core.game.movables;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
@@ -34,4 +33,5 @@ public class Gardener extends Pawn {
                 .filter(n -> current.getBambooColor().equals(n.getBambooColor()))
                 .forEach(Parcel::growBamboo);
     }
+
 }

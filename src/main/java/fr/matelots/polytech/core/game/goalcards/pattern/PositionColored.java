@@ -6,6 +6,7 @@ import fr.matelots.polytech.engine.util.Position;
 import java.util.Objects;
 
 /**
+ * Représente une position avec une couleur
  * @author Alexandre Arcil
  */
 public class PositionColored {

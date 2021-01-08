@@ -24,11 +24,9 @@ public abstract class Parcel {
     }
 
     /**
-     *
      * @return true si la parcelle a un aménagement
      */
     public boolean hasLayout() {
-
         return this.layout != null;
     }
 
@@ -36,9 +34,13 @@ public abstract class Parcel {
         return layout;
     }
 
-
+    /**
+     * Met un aménagement s'il en a déjà pas, s'il n'est l'étang et s'il n'a pas de bambou
+     * @param layout L'aménagement à poser
+     * @return true si la parcelle à un aménagement, false sinon
+     */
     public boolean setLayout(Layout layout) {
-        if (!hasLayout() && !isPond()) {
+        if (!hasLayout() && !isPond() && this.getBambooSize() == 0) {
             this.layout = layout;
         }
         return hasLayout();
@@ -48,8 +50,16 @@ public abstract class Parcel {
 
     public abstract int getBambooSize();
 
+    /**
+     * Made the bamboo grow by one unit only if it's irrigate and size stay under the limit. Grow by two unit if
+     * it have the layout Fertilizer.
+     */
     public abstract void growBamboo();
 
+    /**
+     * Destroy a unit of bamboo if there is no enclosure and the size is not under the limit.
+     * @return true if the a unit of bambou has been destroyed, false otherwise
+     */
     public abstract boolean destroyUnitOfBamboo();
 
     public abstract BambooColor getBambooColor();
@@ -77,6 +87,11 @@ public abstract class Parcel {
         return this.irrigate.get(side);
     }
 
+    /**
+     * Place le jardinier ou le panda sur cette parcelle.
+     * @param pawn le jardinier ou le panda
+     * @return true si le jardinier ou le panda se trouve sur la parcelle, false sinon
+     */
     public boolean placeOn (Pawn pawn) {
         if (pawn instanceof Gardener) {
             this.gardener = (Gardener) pawn;
@@ -111,16 +126,13 @@ public abstract class Parcel {
         // Si elle n'est pas irrigué, elle peut partager des bordures qui le sont
         irrigate.forEach((side, isIrrigated) -> {
 
-            boolean irr = isIrrigate(side);
-            //System.out.println(side + " : " + irr);
-            if(irr) {
+            boolean irrigate = isIrrigate(side);
+            if(irrigate) {
                 drawer.setIrrigate(side);
             }
         });
     }
 
-
-    // Methods
     @Override
     public String toString() {
         return super.toString();

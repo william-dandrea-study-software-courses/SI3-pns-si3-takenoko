@@ -34,6 +34,7 @@ public class ThirdBot extends Bot {
     public ThirdBot(Game game) {
         super(game, "ThirdBot");
     }
+
     public ThirdBot(Game game, String name) {
         super(game, name);
     }
@@ -138,7 +139,7 @@ public class ThirdBot extends Bot {
         //              a - reachable by the gardenner
         //              b - has no layout or there is the good layout
 
-        boolean irrigatedAndReachableByGardenner = canPerformAction(BotActionType.MOVE_GARDENER) && board.getPositions().stream().anyMatch(position ->
+        return canPerformAction(BotActionType.MOVE_GARDENER) && board.getPositions().stream().anyMatch(position ->
                 board.getParcel(position).isIrrigate() &&
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 board.getParcel(position).getBambooSize() < bambooSize &&
@@ -149,23 +150,17 @@ public class ThirdBot extends Bot {
                             getIndividualBoard().getLayouts().contains(objectiveGardener.getLayout())
                 ) &&
                 isReachableByGardener(position));
-        if(irrigatedAndReachableByGardenner)
-            return true;
-
-        return false;
     }
 
     boolean haveObjectiveSolvable() {
         if(haveParcelObjectiveSolvable())
             return true;
-        boolean haveGardenerSolvable = haveGardenerObjectiveSolvable();
-        return haveGardenerSolvable;
+        return haveGardenerObjectiveSolvable();
     }
     boolean haveGardenerObjectiveSolvable() {
-        var solvable = getIndividualBoard()
+        return getIndividualBoard()
                 .getUnfinishedGardenerObjectives().stream()
                 .anyMatch(this::canSolveGardenerObjective);
-        return solvable;
     }
     boolean haveParcelObjectiveSolvable() {
         if(!canPerformAction(BotActionType.PLACE_PARCEL)) return false;
@@ -270,10 +265,8 @@ public class ThirdBot extends Bot {
                 var validPlaceOpt = board.getValidPlaces().stream().findAny();
                 validPlaceOpt.ifPresent(position -> placeParcel(turnLog, position, parcelChoosen));
             }
-            //placeParcel(tilePosition, tileColor, turnLog);
 
         } else {
-            //placeAnParcelAnywhere(turnLog);
             placeAnParcelAnywhere(turnLog, ChooseParcelRandom());
         }
 
@@ -297,8 +290,6 @@ public class ThirdBot extends Bot {
             objectiveGardener = getIndividualBoard().getUnfinishedGardenerObjectives().stream()
                     .filter(this::canSolveGardenerObjective).findAny().get();
         }
-
-        var gardenerPosition = board.getGardener().getPosition();
 
         // 3 Case :
         //      1 - there is no tile of the good color, but can pose tile of the color
@@ -370,11 +361,7 @@ public class ThirdBot extends Bot {
                 // Irrigate parcel
                 var path = getBestPathToIrrigate(board, notIrrigatedTile.get()).get();
                 var opt = getNextParcelToIrrigate(path);
-                /*AbsolutePositionIrrigation nextIrrigation = opt.orElseThrow(() -> {
-                    //throw new RuntimeException("Error in path finding algorithm");
-                });*/
                 opt.ifPresent(api -> irrigate(api, turnLog));
-                //irrigate(nextIrrigation, turnLog);
                 return;
             }
         } else if(board.canPickIrrigation()) {
@@ -387,7 +374,7 @@ public class ThirdBot extends Bot {
     }
 
     private int nothingDoneDuring = 50;
-    private int duringTurn = 5;
+
     void DecideAction(TurnLog log) {
 
         checkAllObjectives();
@@ -426,7 +413,7 @@ public class ThirdBot extends Bot {
         if(!canPlay()) return;
 
         turnLog = log;
-        duringTurn = 20;
+        int duringTurn = 20;
         while(canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
             int qOfAction = turnLog.getActions().length;
             DecideAction(log);
@@ -441,7 +428,6 @@ public class ThirdBot extends Bot {
 
         turnLog = null;
     }
-
 
     boolean canPlayThisTurn() {
         checkAllObjectives();

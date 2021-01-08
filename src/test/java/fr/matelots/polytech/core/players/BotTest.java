@@ -243,7 +243,7 @@ public class BotTest {
             bot.placeAnParcelAnywhere(BambooColor.GREEN, turnLog);
         }
 
-        Set<PositionColored> missingPositionsToComplete = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective);
+        Set<PositionColored> missingPositionsToComplete = bot.getMissingPositions(cardObjective);
         assertTrue(missingPositionsToComplete.size() > 0);
 
         CardObjectiveParcel cardObjective2 = new CardObjectiveParcel(bot.getBoard(), 3, Patterns.RHOMBUS, BambooColor.YELLOW, BambooColor.YELLOW, BambooColor.GREEN, BambooColor.GREEN);
@@ -254,7 +254,7 @@ public class BotTest {
             bot.placeAnParcelAnywhere(BambooColor.YELLOW, turnLog);
         }
 
-        Set<PositionColored> missingPositionsToComplete2 = bot.recoverTheMissingsPositionsToCompleteForParcelObjective(cardObjective2);
+        Set<PositionColored> missingPositionsToComplete2 = bot.getMissingPositions(cardObjective2);
         assertTrue(missingPositionsToComplete2.size() > 0);
 
 
@@ -360,7 +360,7 @@ public class BotTest {
     public void testWeatherCaseRainInitial() {
 
         bot.getBoard().addParcel(1,-1,0, new BambooPlantation(BambooColor.GREEN));
-        bot.weatherCaseRainInitial();
+        bot.onRaining();
         assertEquals(2, bot.getBoard().getParcel(new Position(1,-1,0)).getBambooSize());
 
 
