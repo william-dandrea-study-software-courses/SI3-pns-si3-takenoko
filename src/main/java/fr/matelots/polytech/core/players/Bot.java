@@ -18,6 +18,7 @@ import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 import fr.matelots.polytech.engine.util.AbsolutePositionIrrigation;
 import fr.matelots.polytech.engine.util.Position;
+import fr.matelots.polytech.engine.util.ShortestPathAlgorithm;
 
 import java.util.*;
 
@@ -614,6 +615,30 @@ public abstract class Bot {
             return Optional.of(layout);
         }
         return Optional.empty();
+    }
+
+    /**
+     * Donne une position où déplacer la panda ou jardinier pour atteindre la position souhaité en respectant leurs
+     * contraintes de mouvement. Si le déplacement respecte déjà la contrainte, donne alors la position souhaité.
+     * @param start Le position de départ
+     * @param goal La position où aller
+     * @return Une position intermédiaire pour atteindre la position souhaité, ou directement celle souhaité si possible
+     */
+    protected Position getStepMovePosition(Position start, Position goal) {
+        List<Position> path = ShortestPathAlgorithm.shortestPath(start, goal, this.board);
+        if(path.size() == 1 || path.size() == 2) {
+            if(path.size() == 2)
+                path.remove(start);
+            return goal;
+        }
+        Side sideDirection = Side.getTouchedSide(path.get(0), path.get(1));
+        for(int i = 2; i < path.size(); i++) {
+            Side side = Side.getTouchedSide(path.get(i - 1), path.get(i));
+            if(side != sideDirection) {
+                return path.get(i - 1);
+            }
+        }
+        return goal;
     }
 
 
