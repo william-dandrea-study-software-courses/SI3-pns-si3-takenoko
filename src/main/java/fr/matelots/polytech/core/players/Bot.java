@@ -56,7 +56,7 @@ public abstract class Bot {
     public Bot(Game game) {
         this.game = game;
         this.board = game.getBoard();
-        this.name = toString();
+        this.name = getClass().getSimpleName();
         this.individualBoard = new IndividualBoard();
         maxNumberOfActions = Config.TOTAL_NUMBER_OF_ACTIONS;
         panda = board.getPanda();
