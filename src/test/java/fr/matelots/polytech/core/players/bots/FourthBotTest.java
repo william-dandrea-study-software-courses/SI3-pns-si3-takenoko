@@ -5,7 +5,6 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
@@ -23,10 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -53,7 +50,7 @@ public class FourthBotTest {
         game.addBot(bot);
     }
 
-    @Test @DisplayName("Le bot prend 2 cartes parcelle puis 2 cartes jardinier pendant les 4 premiers tours")
+    /*@Test @DisplayName("Le bot prend 2 cartes parcelle puis 2 cartes jardinier pendant les 4 premiers tours")
     public void takeFourCardsAtTheBeginning() {
         for (int i = 0; i < 4; i++)
             this.bot.playTurn(log);
@@ -65,7 +62,7 @@ public class FourthBotTest {
                 .filter(cardObjective -> cardObjective instanceof CardObjectiveGardener)
                 .collect(Collectors.toList());
         assertTrue(2 <= this.individualBoard.countUnfinishedGardenerObjectives() + collect2.size());
-    }
+    }*/
 
 
 
