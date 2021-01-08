@@ -7,7 +7,6 @@ import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
-import fr.matelots.polytech.core.game.graphics.BoardDrawer;
 import fr.matelots.polytech.core.game.parcels.*;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.MarganIA;
@@ -185,7 +184,7 @@ public class FourthBot extends Bot {
         }
     }
 
-    private void fillIrrigations(TurnLog log) {
+    void fillIrrigations(TurnLog log) {
         if(this.irrigationNeeded > 0) {
             this.pickIrrigation(log);
             this.irrigationNeeded--;
@@ -288,13 +287,12 @@ public class FourthBot extends Bot {
             }
             unfinishedGardenersObjectives.removeIf(CardObjective::isCompleted);*/
 
-            List<CardObjectiveGardener> objectivesCompletable = unfinishedGardenersObjectives.stream().filter(this::canDoObjectiveGardener).collect(Collectors.toList());
-                return objectivesCompletable;
+            return unfinishedGardenersObjectives.stream().filter(this::canDoObjectiveGardener).collect(Collectors.toList());
             //List<CardObjectiveGardener> objectivesCompletable = unfinishedGardenersObjectives.stream().filter(this::canDoGardenerObjective).collect(Collectors.toList());
             //unfinishedGardenersObjectives.sort(Comparator.comparingInt(CardObjectiveGardener::getCountMissing));
             //this.currentGardenerObjective = unfinishedGardenersObjectives.get(0);
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 
     private boolean canDoObjectiveGardener(CardObjectiveGardener card) {
@@ -392,8 +390,8 @@ public class FourthBot extends Bot {
                         return this.placeParcel(log, position.getPosition(), parcel);
                 }
                 //System.out.println("Aucune parcelle de la bonne couleur :( "+parcelsPicked);
-                BoardDrawer drawer = new BoardDrawer(board);
-                drawer.print();
+                /*BoardDrawer drawer = new BoardDrawer(board);
+                drawer.print();*/
                 return this.placeAnParcelAnywhere(log, parcelsPicked.get(0)).isPresent();
                 // On a pioché aucune parcelle de la bonne couleur -> on tente un autre objectif
                 //TODO choisir la couleur par rapport aux autre objectifs
@@ -664,7 +662,7 @@ public class FourthBot extends Bot {
             System.out.println("bot bloqué !");
         } else if(this.trials > 100) {
             System.out.println("nb essai > 100");
-        } else if(!this.cantDoObjectives())
+        } else if(this.cantDoObjectives())
             System.out.println("ne peut plus faire ses objectifs");
         return !this.blocked &&
                 !this.cantDoObjectives() &&
@@ -704,18 +702,50 @@ public class FourthBot extends Bot {
                 layoutNeeded.put(layout, layoutNeeded.get(layout) - 1);
         }
         layoutNeeded.entrySet().removeIf(entry -> entry.getValue() <= 0);
-        if(!layoutNeeded.isEmpty()) {
-            int i = 1;
-            for (CardObjectiveGardener card : objectiveGardenersCompletable) {
-                Layout layout = card.getLayout();
-                if(layout != null && layoutNeeded.containsKey(layout)) {
-                    this.individualBoard.addLayouts(layout);
-                    break;
-                }
-                i++;
+        for (CardObjectiveGardener card : objectiveGardenersCompletable) {
+            Layout layout = card.getLayout();
+            if(layout != null && layoutNeeded.containsKey(layout) && this.layoutInDeck(layout)) {
+                this.individualBoard.addLayouts(this.getLayoutInDeck(layout));
+                return;
             }
-        } else
-            this.individualBoard.addLayouts(Layout.values()[random.nextInt(Layout.values().length)]);
+        }
+        this.stockRandomLayout();
+    }
+
+    private Layout getLayoutInDeck(Layout layout) {
+        switch (layout) {
+            case BASIN:
+                return this.board.getDeckBasinLayout().pick();
+            case FERTILIZER:
+                return this.board.getDeckFertilizerLayout().pick();
+            case ENCLOSURE:
+                return this.board.getDeckEnclosureLayout().pick();
+        }
+        return null;
+    }
+
+    private boolean layoutInDeck(Layout layout) {
+        switch (layout) {
+            case BASIN:
+                return this.board.getDeckBasinLayout().canPick();
+            case FERTILIZER:
+                return this.board.getDeckFertilizerLayout().canPick();
+            case ENCLOSURE:
+                return this.board.getDeckEnclosureLayout().canPick();
+        }
+        return false;
+    }
+
+    private void stockRandomLayout() {
+        List<Layout> layouts = Arrays.asList(Layout.values());
+        Collections.shuffle(layouts);
+        for (Layout layout : layouts) {
+            if(this.layoutInDeck(layout)) {
+                this.individualBoard.addLayouts(this.getLayoutInDeck(layout));
+                return;
+            }
+        }
+        //Plus de la layout, on fait rien, même s'il faudrait choisir la météo à appliquer
     }
 
     @Override
