@@ -145,7 +145,7 @@ public class ThirdBot extends Bot {
                 board.getParcel(position).getBambooSize() < bambooSize &&
                 (                                                                       // Check layouts
                         (objectiveGardener.getLayout() == null ||                                 // Check objectiveCard has no layout
-                                board.getParcel(position).getLayout() == null ||
+                                (board.getParcel(position).getLayout() == null && board.getParcel(position).getBambooSize() == 0) ||
                                 board.getParcel(position).getLayout() == objectiveGardener.getLayout()) &&
                             getIndividualBoard().getLayouts().contains(objectiveGardener.getLayout())
                 ) &&
@@ -306,15 +306,15 @@ public class ThirdBot extends Bot {
             getIndividualBoard().getLayouts().contains(objectiveGardener.getLayout()) &&
             board.getPositions().stream().map(board::getParcel).noneMatch(p ->
                     p.getBambooColor() == objectiveGardener.getColor() &&
-                    p.getBambooSize() == objectiveGardener.getSize() &&
-                    p.getLayout() == objectiveGardener.getLayout()
+                            p.getBambooSize() == 0 &&
+                            p.getLayout() == objectiveGardener.getLayout()
             )
         ) {
             var tile = board.getPositions().stream().map(board::getParcel).filter(p ->
                     p.getBambooColor() == objectiveGardener.getColor() &&
-                    p.getBambooSize() == objectiveGardener.getSize() &&
-                    p.getLayout() == null &&
-                    p instanceof BambooPlantation).map(p -> (BambooPlantation)p).findAny();
+                            p.getBambooSize() == 0 &&
+                            p.getLayout() == null &&
+                            p instanceof BambooPlantation).map(p -> (BambooPlantation)p).findAny();
 
             tile.ifPresent(val -> {
                 placeLayout(turnLog, val, objectiveGardener.getLayout());
@@ -410,15 +410,16 @@ public class ThirdBot extends Bot {
         super.playTurn(log, weatherCard);
         setCurrentNumberOfAction(0);
 
-        if(!canPlay()) return;
+        if (!canPlay())
+            return;
 
         turnLog = log;
         int duringTurn = 20;
-        while(canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
+        while (canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
             int qOfAction = turnLog.getActions().length;
             DecideAction(log);
             boolean actionDone = (turnLog.getActions().length - qOfAction) > 0;
-            if(!actionDone) duringTurn--;
+            if (!actionDone) duringTurn--;
         }
 
         if(turnLog.getActions().length == 0)
@@ -438,7 +439,8 @@ public class ThirdBot extends Bot {
 
     @Override
     public boolean canPlay() {
-        if((turnLog == null || turnLog.getActions().length == 0) && !canPlayThisTurn()) return false;
+        if ((turnLog == null || turnLog.getActions().length == 0) && !canPlayThisTurn())
+            return false;
         return nothingDoneDuring >= 0;
     }
 
