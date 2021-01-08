@@ -43,7 +43,7 @@ public class Game {
             addBot(new FourthBot(this, "4bot 2° du nom"));
         }
         else {
-            addBot(new ThirdBot(this, "3bot"));
+            addBot(new QuintusBot(this));
         }
         addBot(new FourthBot(this, "4bot"));
     }

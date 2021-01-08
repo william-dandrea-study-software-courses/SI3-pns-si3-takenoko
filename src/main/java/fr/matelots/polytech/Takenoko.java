@@ -17,7 +17,7 @@ public class Takenoko {
 
     // DEMO 1000 PARTIES
     // /*
-    final static int NB_GAMES = 100;
+    final static int NB_GAMES = 1000;
     final static int NB_DIVIDER = 10;
     final static double NB_DIVIDER_PCT = 10.;
     final static boolean LOG_DETAIL = false;
