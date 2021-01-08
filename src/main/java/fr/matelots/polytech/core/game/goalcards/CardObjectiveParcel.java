@@ -62,14 +62,14 @@ public class CardObjectiveParcel extends CardObjective {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         CardObjectiveParcel that = (CardObjectiveParcel) o;
-        return board.equals(that.board) &&
-                pattern == that.pattern &&
-                Objects.equals(missingPositions, that.missingPositions);
+        return Objects.equals(board, that.board) && pattern == that.pattern && Arrays.equals(colors, that.colors) && Objects.equals(missingPositions, that.missingPositions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), board, pattern, missingPositions);
+        int result = Objects.hash(super.hashCode(), board, pattern, missingPositions);
+        result = 31 * result + Arrays.hashCode(colors);
+        return result;
     }
 
     public Patterns getPattern() {
