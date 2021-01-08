@@ -37,40 +37,40 @@ public class CardObjectivePandaTest {
 
     @Test @DisplayName("carte '2 bambous verts' avec 1 bambou vert")
     public void twoGreenBambooOneBambooGreen() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         this.greenBambooCard.setIndividualBoard(this.board);
         assertFalse(this.greenBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous verts' complété")
     public void twoGreenBambooCompleted() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         this.greenBambooCard.setIndividualBoard(this.board);
         assertTrue(this.greenBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous verts' complété avec 3 bamboos verts")
     public void twoGreenBambooCompletedExtra() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         this.greenBambooCard.setIndividualBoard(this.board);
         assertTrue(this.greenBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous verts' avec 2 bamboo rose")
     public void twoGreenBambooTwoPinkBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
         this.greenBambooCard.setIndividualBoard(this.board);
         assertFalse(this.greenBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous verts' avec 2 bambous jaune")
     public void twoGreenBambooTwoYellowBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.greenBambooCard.setIndividualBoard(this.board);
         assertFalse(this.greenBambooCard.verify());
     }
@@ -86,40 +86,40 @@ public class CardObjectivePandaTest {
 
     @Test @DisplayName("carte '2 bambous rose' avec 1 bambou rose")
     public void twoPinkBambooOneBambooPink() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
         this.pinkBambooCard.setIndividualBoard(this.board);
         assertFalse(this.pinkBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous rose' complété")
     public void twoPinkBambooCompleted() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
         this.pinkBambooCard.setIndividualBoard(this.board);
         assertTrue(this.pinkBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous rose' complété avec 3 bamboos rose")
     public void twoPinkBambooCompletedExtra() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
         this.pinkBambooCard.setIndividualBoard(this.board);
         assertTrue(this.pinkBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous rose' avec 2 bamboo verts")
     public void twoPinkBambooTwoGreenBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         this.pinkBambooCard.setIndividualBoard(this.board);
         assertFalse(this.pinkBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous rose' avec 2 bambous jaune")
     public void twoPinkBambooTwoYellowBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.pinkBambooCard.setIndividualBoard(this.board);
         assertFalse(this.pinkBambooCard.verify());
     }
@@ -132,40 +132,40 @@ public class CardObjectivePandaTest {
 
     @Test @DisplayName("carte '2 bambous jaune' avec 1 bambou jaune")
     public void twoYellowBambooOneBambooYellow() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertFalse(this.yellowBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous jaune' complété")
     public void twoYellowBambooCompleted() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertTrue(this.yellowBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous jaune' complété avec 3 bamboos jaune")
     public void twoYellowBambooCompletedExtra() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertTrue(this.yellowBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous jaune' avec 2 bamboo verts")
     public void twoYellowBambooTwoGreenBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertFalse(this.yellowBambooCard.verify());
     }
 
     @Test @DisplayName("carte '2 bambous jaune' avec 2 bambous rose")
     public void twoYellowBambooTwoPinkBamboo() {
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
         this.yellowBambooCard.setIndividualBoard(this.board);
         assertFalse(this.yellowBambooCard.verify());
     }
@@ -179,66 +179,66 @@ public class CardObjectivePandaTest {
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 1 bambou vert")
     public void everyColorBambooOneGreen() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
         assertFalse(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 1 bambou vert et 1 bamboo rose")
     public void everyColorBambooOneGreenOnePink() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
         assertFalse(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 1 bambou vert, rose et jaune")
     public void everyColorBambooOneGreenOnePinkOneYellow() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.YELLOW);
         assertTrue(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 2 bambou vert, 1 rose et 1 jaune")
     public void everyColorBambooTwoGreenOnePinkOneYellow() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.YELLOW);
         assertTrue(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 2 bambou vert, 2 rose et 1 jaune")
     public void everyColorBambooTwoGreenTwoPinkOneYellow() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.YELLOW);
         assertTrue(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("carte '1 bambou de toute les couleurs' avec 2 bambou vert, rose et jaune")
     public void everyColorBambooTwoGreenTwoPinkTwoYellow() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.YELLOW);
         assertTrue(this.everyColorCard.verify());
     }
 
     @Test @DisplayName("L'objectif est bien complété")
     public void objectifIsCompleted() {
         this.everyColorCard.setIndividualBoard(this.board);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.GREEN);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.PINK);
-        this.board.addAnEatenUnitOfBamboo(BambooColor.YELLOW);
+        this.board.addBamboo(BambooColor.GREEN);
+        this.board.addBamboo(BambooColor.PINK);
+        this.board.addBamboo(BambooColor.YELLOW);
         this.everyColorCard.verify();
         assertTrue(this.everyColorCard.isCompleted());
     }

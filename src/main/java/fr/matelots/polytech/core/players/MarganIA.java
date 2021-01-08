@@ -34,34 +34,29 @@ public class MarganIA {
 
 
     /**
-     * If obj already resolve, it return null
-     * @param objective
-     * @param board
-     * @return
+     * Find the best position to place a parcel in order to solve a parcel objective
+     * @param objective Objective to resolve
+     * @param board the board
+     * @return the position where place the parcel in order to solve the given objective
      */
     public static PositionColored resolvePatternLine(CardObjectiveParcel objective, Board board) {
         Set<Position> actualGrid = board.getPositions();
         objective.verify();
 
         PositionColored positionFinalWithOneParcelAround = null;
-        Map<PositionColored, Integer> candidateParcels = new HashMap<PositionColored, Integer>();
+        Map<PositionColored, Integer> candidateParcels = new HashMap<>();
         Set<PositionColored> missingPositions = objective.getMissingPositionsToComplete();
 
-        //System.out.println("missingPosition : " + missingPositions);
         for (PositionColored pos : missingPositions) {
             int numberOfPlaceValidAroundThePosition = 0;
 
             // We turn around the position
             for (int i = 1; i <= 6; i++) {
                 Position newPosition = nextPositionIncrement(i, pos.getPosition());
-                //if (board.isPlaceValid(newPosition) || newPosition.equals(Config.POND_POSITION)) {
                 if (board.containTile(newPosition)) {
                     numberOfPlaceValidAroundThePosition++;
                 }
             }
-
-            //System.out.println("Position : " + pos);
-            //System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
 
 
             if (numberOfPlaceValidAroundThePosition >= 2) {
@@ -74,7 +69,6 @@ public class MarganIA {
                 if (numberOfPlaceValidAroundThePosition != 0) {
                     for (int i = 1; i <= 6; i++) {
                         Position internalPosition = nextPositionIncrement(i, pos.getPosition());
-                        //System.out.println(internalPosition);
 
                         if (board.containTile(internalPosition)) {
 
@@ -93,28 +87,24 @@ public class MarganIA {
 
         // If we have some parcels, we can return the parcel with the max of pos
         if (candidateParcels.size() != 0) {
-            return Collections.max(candidateParcels.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
+            return Collections.max(candidateParcels.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
         } else {
-            if (positionFinalWithOneParcelAround != null) {
-                return positionFinalWithOneParcelAround;
-            }
-            return null;
+            return positionFinalWithOneParcelAround;
         }
     }
 
-
-
-
-
-
-
-
+    /**
+     * Find the best position to place a parcel in order to solve a parcel objective
+     * @param objective Objective to resolve
+     * @param board the board
+     * @return the position where place the parcel in order to solve the given objective
+     */
     public static PositionColored resolveRhombusLine(CardObjectiveParcel objective, Board board) {
 
         objective.verify();
 
         PositionColored positionFinalWithOneParcelAround = null;
-        Map<PositionColored, Integer> candidateParcels = new HashMap<PositionColored, Integer>();
+        Map<PositionColored, Integer> candidateParcels = new HashMap<>();
         Set<PositionColored> missingPositions = objective.getMissingPositionsToComplete();
 
 
@@ -134,9 +124,6 @@ public class MarganIA {
                 }
             }
 
-            //System.out.println("Position : " + pos);
-            //System.out.println("Number place : " + numberOfPlaceValidAroundThePosition);
-
 
 
             // We can't place an parcel because we don't have more than 2 parcels around,
@@ -144,7 +131,6 @@ public class MarganIA {
             if (numberOfPlaceValidAroundThePosition != 0) {
                 for (int i = 1; i <= 6; i++) {
                     Position internalPosition = nextPositionIncrement(i, pos.getPosition());
-                    //System.out.println(internalPosition);
 
                     if (board.containTile(internalPosition)) {
 
@@ -166,17 +152,16 @@ public class MarganIA {
             }
         }
 
-
-
-        if (positionFinalWithOneParcelAround != null) {
-            return positionFinalWithOneParcelAround;
-        }
-        return null;
+        return positionFinalWithOneParcelAround;
 
     }
 
-
-
+    /**
+     * Following the given increment, it will give a neighbour position to the given one
+     * @param increment increment
+     * @param initialPosition position in the middle
+     * @return a position if exist for the increment, null else
+     */
     public static Position nextPositionIncrement(int increment, Position initialPosition){
         switch (increment) {
             case 1: return new Position(initialPosition.getX(), initialPosition.getY()+1, initialPosition.getZ()-1);
@@ -189,25 +174,22 @@ public class MarganIA {
         }
     }
 
-
-
     /**
      * Cette méthode va rechercher l'emplacement optimum ou placer le jardinier afin de résoudre au plus vite son objectif
-     * @param objective
-     * @param board
-     * @return hmap with the first parameter is the ideal place and the set is the place where we can move the gardener
+     * @param objective l'objectif à résoudre
+     * @param board le plateau
+     * @return a map with the first parameter is the ideal place and the set is the place where we can move the gardener
      */
-
     public static Map<Position, Set<Position>> findTheBestPlaceToMoveTheGardener(CardObjectiveGardener objective, Board board) {
 
         Layout layout = objective.getLayout();
         int sizeLayout = objective.getSize();
         Position finalPosition = null;
 
-        Set<Position> idealPositionWhereWeCanMoveTheGardener = new HashSet<Position>();
+        Set<Position> idealPositionWhereWeCanMoveTheGardener = new HashSet<>();
 
+        int difference = 20;
         if (layout != null) {
-            int difference = 20;
             int min = 0;
             for (Position p: board.getPositions()) {
                 BambooPlantation bambooPlantation = (BambooPlantation) board.getParcel(p);
@@ -232,8 +214,6 @@ public class MarganIA {
             }
         } else {
             // Pas de layout, on peut se placer ou on veut
-
-            int difference = 20;
 
             for (Position p: board.getPositions()) {
                 if (!board.getParcel(p).isPond()) {
@@ -261,8 +241,6 @@ public class MarganIA {
             }
         }
 
-
-
         Map<Position, Set<Position>> finalHmap = new HashMap<>();
         finalHmap.put(finalPosition, idealPositionWhereWeCanMoveTheGardener);
 
@@ -271,28 +249,14 @@ public class MarganIA {
     }
 
 
-    public static Set<BambooPlantation> searchTheIrrigatesPositionsInTheBoard(Board board){
-        Set<BambooPlantation> irrigatePositions = new HashSet<>();
-
-        for (Position p: board.getPositions()) {
-            BambooPlantation bambooPlantation = (BambooPlantation) board.getParcel(p);
-            if(board.getParcel(p).isIrrigate()) {
-                irrigatePositions.add(bambooPlantation);
-            }
-        }
-
-        return irrigatePositions;
-    }
-
-
     /**
-     * Récuperer les parcelles autour d'une parcelle irrigué afin de voir si un bambou peut etre placé dessus
-     *
+     * Récupérer les parcelles autour d'une parcelle irrigué afin de voir si un bambou peut être placé dessus
+     * @param board la plateau de jeu
+     * @return Les position où l'on peut faire pousser du bambou
      */
-
     public static Set<Position> searchTheParcelsAroundAnIrrigateParcel(Board board) {
 
-        Set<Position> positionsOfGoodParcels = new HashSet<Position>();
+        Set<Position> positionsOfGoodParcels = new HashSet<>();
         System.out.println(board.getPositions());
         for (Position initialPosition : board.getPositions()) {
             // We browse all the map
@@ -324,13 +288,12 @@ public class MarganIA {
 
     /**
      * Return the ideal position for move the gardener or the panda
-     * @param initialPosition
-     * @param finalPosition
-     * @param board
-     * @return
+     * @param initialPosition initial position of the pawn
+     * @param finalPosition the goal to reach
+     * @param board the game board
+     * @return the next position to reach in order to go to finalPosition (the fastest way)
      */
-    public static Position findTheBestPositionForMoovingTheGardenerInLine(Position initialPosition, Position finalPosition, Board board) {
-
+    public static Position findTheBestPositionForMovingTheGardenerInLine(Position initialPosition, Position finalPosition, Board board) {
         int finalX = initialPosition.getX();
         int finalY = initialPosition.getY();
         int finalZ = initialPosition.getZ();
@@ -355,9 +318,12 @@ public class MarganIA {
         return finalPosition;
     }
 
-
-
-
+    /**
+     * Compte le nombre d'actions minimum requis pour compléter un objectif parcelle
+     * @param objective l'objectif à compléter
+     * @param board le plateau
+     * @return le nombre d'actions
+     */
     public static int countNumberActionsResolvePatternLine(CardObjectiveParcel objective, Board board) {
 
         boolean stop = false;
@@ -413,19 +379,5 @@ public class MarganIA {
 
         return actionsNumber;
 
-    }
-
-
-    public static boolean isRelativePlaceValid(Position position, Set<Position> positions) {
-
-        int increment = 0;
-        for (int i = 1; i <= 6; i++) {
-            Position posAround = nextPositionIncrement(i,position);
-            if (positions.contains(posAround)) {
-                increment++;
-            }
-        }
-
-        return increment >= 2;
     }
 }

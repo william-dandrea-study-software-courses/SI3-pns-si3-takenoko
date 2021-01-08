@@ -39,24 +39,13 @@ public class Game {
     }
 
     private void setDemoBots(boolean twiceSameBot) {
-        /*if (twiceSameBot) {
-            addBot(new QuintusBot(this));
+        if (twiceSameBot) {
+            addBot(new FourthBot(this, "4bot 2° du nom"));
         }
         else {
             addBot(new ThirdBot(this, "3bot"));
         }
-        addBot(new QuintusBot(this, "Quintus (Rush Panda)"))*/
-        //bots.add(new PremierBot(this));
-        addBot(new FourthBot(this, "BadBot"));
-        addBot(new FourthBot(this, "GoodBot"));
-        //bots.add(new ThirdBot(this));
-        //bots.add(new FourthBot(this));
-        //bots.add(new FifthBot(this, "GentleBot"));
-        //addBot(new QuintusBot(this, "Jojol (Rush Panda)"));
-        //bots.add(new QuintusBot(this));
-        //bots.add(new QuintusBot(this, "Jojo"));
-        //bots.add(new RushParcelBot(this, "RushParcel"));
-        //bots.add(new RushParcelBot(this, "RushParcel2"));
+        addBot(new FourthBot(this, "4bot"));
     }
 
     public void addBot(Bot bot) {
@@ -207,10 +196,6 @@ public class Game {
         launchTurnLoop(draw);
     }
 
-    public void launchTurnLoop() {
-        launchTurnLoop(false);
-    }
-
     public void launchTurnLoop(boolean draw) {
 
         int numberOfGlobalTour = 0;
@@ -345,9 +330,9 @@ public class Game {
      * This method will move the panda at a certain position (somewhere)
      *
      * @param lastAction The last action from the bot
-     * @param bot
-     * @param pos        the position where we want to move the panda
-     * @param log
+     * @param bot the bot who made the panda move
+     * @param pos the position where we want to move the panda
+     * @param log the logger
      * @return true if we arrived to move, false otherwise
      */
     public boolean movePandaWhenWeather(BotActionType lastAction, Bot bot, Position pos, TurnLog log) {

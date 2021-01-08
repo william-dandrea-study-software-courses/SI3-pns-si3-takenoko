@@ -485,5 +485,4 @@ public class FourthBot extends Bot {
 
     @Override
     protected void onThunderstorm(TurnLog log) { }
-
 }

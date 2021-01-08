@@ -17,8 +17,6 @@ public class LineDrawer {
         var cubey = lerp(a.getY(), b.getY(), t);
         var cubez = lerp(a.getZ(), b.getZ(), t);
 
-
-
         int rx = Math.round(cubex);
         int ry = Math.round(cubey);
         int rz = Math.round(cubez);

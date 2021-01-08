@@ -1,17 +1,19 @@
 package fr.matelots.polytech.engine.util;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * @author Yann Clodong
+ */
 public class ParcelRouteFinder {
+
     private static Optional<List<Side>> getPathInParcel(Side output, Predicate<Side> isGoodInput, Predicate<Side> isPraticable) {
         if(output == null) throw new RuntimeException("Error");
-        if(!Arrays.stream(Side.values()).anyMatch(isGoodInput))
+        if(Arrays.stream(Side.values()).noneMatch(isGoodInput))
             return Optional.empty();
 
         List<Side> toIrrigate = new ArrayList<>();
@@ -83,50 +85,26 @@ public class ParcelRouteFinder {
     }
 
     private static Optional<List<AbsolutePositionIrrigation>> getPathInAParcelWithIrrigation(Board board, Position currentPosition, Side output, Side input) {
-        var parcel = board.getParcel(currentPosition);
         List<AbsolutePositionIrrigation> list = new ArrayList<>();
         List<Side> result;
+        Optional<List<Side>> opt;
         if(input == null) {
-            var opt = getPathInParcel(output, new Predicate<Side>() {
-                @Override
-                public boolean test(Side side) {
-                    return board.canPlaceIrrigation(currentPosition, side);
-                }
-            }, new Predicate<Side>() {
-                @Override
-                public boolean test(Side side) {
-                    return board.isInterstice(currentPosition, side);
-                }
-            });
+            opt = getPathInParcel(output, side -> board.canPlaceIrrigation(currentPosition, side), side -> board.isInterstice(currentPosition, side));
 
-            if(opt.isPresent())
-                result = opt.get();
-            else
-                return Optional.empty();
         } else {
 
-            var opt = getPathInParcel(output, new Predicate<Side>() {
-                @Override
-                public boolean test(Side side) {
-                    return side == input;
-                }
-            }, new Predicate<Side>() {
-                @Override
-                public boolean test(Side side) {
-                    return board.isInterstice(currentPosition, side);
-                }
-            });
+            opt = getPathInParcel(output, side -> side == input, side -> board.isInterstice(currentPosition, side));
 
-            if(opt.isPresent())
-                result = opt.get();
-            else
-                return Optional.empty();
         }
-        result.stream().forEach(s -> list.add(new AbsolutePositionIrrigation(currentPosition, s, board)));
+        if(opt.isPresent())
+            result = opt.get();
+        else
+            return Optional.empty();
+        result.forEach(s -> list.add(new AbsolutePositionIrrigation(currentPosition, s, board)));
         return Optional.of(list);
     }
 
-    public static Optional<Set<AbsolutePositionIrrigation>> getRequiredIrrigation(Board board, Position start, Position end) {
+    private static Optional<Set<AbsolutePositionIrrigation>> getRequiredIrrigation(Board board, Position start, Position end) {
         var positions = LineDrawer.getLine(start, end);
         Set<AbsolutePositionIrrigation> result = new HashSet<>();
 
@@ -168,6 +146,13 @@ public class ParcelRouteFinder {
 
         return Optional.of(positions);
     }
+
+    /**
+     * Récupère les irrigations nécessaires pour irriguer la parcelle positionToIrrigate
+     * @param board la plateau
+     * @param positionToIrrigate la parcelle à irriguer
+     * @return Set de positions à irriguer pour irriguer la parcelle positionToIrrigate
+     */
     public static Optional<Set<AbsolutePositionIrrigation>> getBestPathToIrrigate(Board board, Position positionToIrrigate) {
         var nearestPoint = board.getPositions().stream().filter(p -> board.getParcel(p).isIrrigate()).sorted(Comparator.comparing(o1 -> (Math.abs(o1.getX() - positionToIrrigate.getX()) +
                 Math.abs(o1.getY() - positionToIrrigate.getY()) +
@@ -182,20 +167,13 @@ public class ParcelRouteFinder {
 
         if(path == null) return Optional.empty();
         else return Optional.of(path);
-
-
-
-
-        /*var shortest = board.getPositions().stream()
-                .filter(p -> board.getParcel(p).isIrrigate()) // on recupere les cases irrigué
-                .map(p -> getIrrigationToIrrigate(board, p, positionToIrrigate)) // On recherche tout les chemins
-                .filter(Optional::isPresent)        // On retire les positions jugé sans chemin
-                .map(Optional::get)                 // on recupere les valeur des optionnels
-                .filter(p -> !p.isEmpty())
-                .min(Comparator.comparing(Set::size)); // on recupere le chemin le moins couteux
-        return shortest;*/
     }
 
+    /**
+     * Récupérer la première parcelle à irriguer dans le chemin donné
+     * @param path le chemin vers la parcelle à irriguer
+     * @return la position de la première parcelle à irriguer dans le chemin donné
+     */
     public static Optional<AbsolutePositionIrrigation> getNextParcelToIrrigate(Set<AbsolutePositionIrrigation> path) {
         return path.stream().filter(api -> !api.isIrrigate() && api.canBeIrrigated()).findAny();
     }

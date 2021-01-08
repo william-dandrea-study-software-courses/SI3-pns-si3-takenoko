@@ -526,7 +526,7 @@ public class QuintusBot extends Bot {
      * See which objective is now complete
      */
     private void checkObjectives () {
-        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().verify(obj));
+        getIndividualBoard().getUnfinishedPandaObjectives().forEach(obj -> getIndividualBoard().pandaEatBambooIfVerify(obj));
         getIndividualBoard().getUnfinishedGardenerObjectives().forEach(CardObjectiveGardener::verify);
         getIndividualBoard().getUnfinishedParcelObjectives().forEach(CardObjectiveParcel::verify);
     }

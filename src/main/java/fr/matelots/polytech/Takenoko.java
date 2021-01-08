@@ -15,20 +15,11 @@ import java.util.logging.Logger;
  */
 public class Takenoko {
 
-    // DEMO 1 PARTIE
-    /*
-    final static int NB_GAMES = 1;
-    final static int NB_DIVIDER = 1;
-    final static double NB_DIVIDER_PCT = 1.;
-    final static boolean LOG_DETAIL = true;
-    */
-
-
-    // DEMO 100 PARTIES
+    // DEMO 1000 PARTIES
     // /*
-    final static int NB_GAMES = 100;
+    final static int NB_GAMES = 10;
     final static int NB_DIVIDER = 10;
-    final static double NB_DIVIDER_PCT = 10.;
+    final static double NB_DIVIDER_PCT = NB_DIVIDER;
     final static boolean LOG_DETAIL = false;
     // */
 
@@ -50,8 +41,7 @@ public class Takenoko {
         for (double i = 0; i < NB_DIVIDER; i++)
             percents.add(i / NB_DIVIDER_PCT);
 
-        final int NB_GAMES = 100;
-        final boolean LOG_DETAIL = false;
+        
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
         int nbDraw = 0;

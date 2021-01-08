@@ -96,7 +96,7 @@ public class IndividualBoard {
      * Vérifie tous les objectifs panda
      */
     public void checkAllPandaGoal() {
-        objectivePandas.forEach(this::verify);
+        objectivePandas.forEach(this::pandaEatBambooIfVerify);
     }
 
     /**
@@ -225,6 +225,9 @@ public class IndividualBoard {
         return result;
     }
 
+    /**
+     * @return La liste des tous les objectifs jardinier non résolu
+     */
     public List<CardObjectiveGardener> getUnfinishedGardenerObjectives() {
         List<CardObjectiveGardener> result = new ArrayList<>();
         objectiveGardeners.stream()
@@ -233,6 +236,9 @@ public class IndividualBoard {
         return result;
     }
 
+    /**
+     * @return La liste des tous les objectifs panda non résolu
+     */
     public List<CardObjectivePanda> getUnfinishedPandaObjectives() {
         List<CardObjectivePanda> result = new ArrayList<>();
         objectivePandas.stream()
@@ -241,19 +247,32 @@ public class IndividualBoard {
         return result;
     }
 
+    /**
+     * @return le nombre d'objectifs parcelle non résolu
+     */
     public int countUnfinishedParcelObjectives () {
         return (int) objectiveParcels.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
+    /**
+     * @return le nombre d'objectifs jardinier non résolu
+     */
     public int countUnfinishedGardenerObjectives () {
         return (int) objectiveGardeners.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
+    /**
+     * @return le nombre d'objectifs panda non résolu
+     */
     public int countUnfinishedPandaObjectives () {
         return (int) objectivePandas.stream().filter(obj -> !obj.isCompleted()).count();
     }
 
-    public void addAnEatenUnitOfBamboo (BambooColor color) {
+    /**
+     * Ajoute une unité de bambou à la plaque de status
+     * @param color couleur du bambou ajouté
+     */
+    public void addBamboo(BambooColor color) {
         if (color != null)
             bamboos[color.ordinal()]++;
     }
@@ -270,7 +289,11 @@ public class IndividualBoard {
         return bamboos[BambooColor.PINK.ordinal()];
     }
 
-    public void verify (CardObjectivePanda objectivePanda) {
+    /**
+     * Vérifie l'objectif panda en précisant la plaque de status
+     * @param objectivePanda
+     */
+    public void pandaEatBambooIfVerify(CardObjectivePanda objectivePanda) {
         objectivePanda.setIndividualBoard(this);
         if (objectivePanda.verify()) {
             bamboos[BambooColor.GREEN.ordinal()] -= objectivePanda.getCountForColor(BambooColor.GREEN);
@@ -281,16 +304,11 @@ public class IndividualBoard {
 
     // ====== LAYOUT
 
-
     public List<Layout> getLayouts() {
         return layouts;
     }
 
     public boolean addLayouts(Layout layout) {
         return layouts.add(layout);
-    }
-
-    public boolean getLayoutFromIndBoard(Layout lay) {
-        return layouts.remove(lay);
     }
 }

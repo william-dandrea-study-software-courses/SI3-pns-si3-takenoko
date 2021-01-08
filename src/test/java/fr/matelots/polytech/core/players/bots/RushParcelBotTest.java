@@ -24,12 +24,8 @@ public class RushParcelBotTest {
 
     }
 
-
-
-
     @Test
     public void testInilializeOrUpdateListOfCurrentsObjective2() {
-
 
         bot.setCurrentNumberOfAction(0);
         bot.initializeOrUpdateListOfCurrentsObjective2();

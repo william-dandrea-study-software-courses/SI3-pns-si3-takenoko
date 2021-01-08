@@ -5,6 +5,7 @@ import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.core.game.parcels.Side;
 
 public class AbsolutePositionIrrigation {
+
     private final Board board;
     private final Position position;
     private final Side side;
@@ -15,6 +16,7 @@ public class AbsolutePositionIrrigation {
         this.side = side;
         this.board = null;
     }
+
     public AbsolutePositionIrrigation(Position position, Side side, Board board) {
         this.position = position;
         this.side = side;
@@ -31,7 +33,7 @@ public class AbsolutePositionIrrigation {
 
     /**
      * Return the state of irrigation of the edge
-     * @return
+     * @return true if the parcel is irrigate on the side
      */
     public boolean isIrrigate() {
         if(board == null) throw new RuntimeException("Board were null");
@@ -62,6 +64,9 @@ public class AbsolutePositionIrrigation {
                 (position.add(side.getDirection()).equals(api.position) && side.oppositeSide().equals(api.side));
     }
 
+    /**
+     * @return true if the parcel can be irrigate
+     */
     public boolean canBeIrrigated() {
         if(board == null) throw new RuntimeException("Board were null");
         return board.canPlaceIrrigation(position, side);

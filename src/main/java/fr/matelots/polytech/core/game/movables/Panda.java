@@ -37,7 +37,7 @@ public class Panda extends Pawn {
 
         if (getBoard().getParcel(getPosition()).destroyUnitOfBamboo()) {
             currentPlayer.getIndividualBoard()
-                    .addAnEatenUnitOfBamboo(getBoard()
+                    .addBamboo(getBoard()
                             .getParcel(getPosition())
                             .getBambooColor());
         }

@@ -1,21 +1,17 @@
 package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
-import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
-import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.Patterns;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
-import fr.matelots.polytech.core.game.parcels.Layout;
 import fr.matelots.polytech.engine.util.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fr.matelots.polytech.core.players.MarganIA.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -279,8 +275,8 @@ public class MarganIATest {
 
         // On veut aller du -1 ; 1 ; 0 au 2 ; -1 ; -1
 
-        assertEquals(new Position(1,-1,0), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(-1,1,0), new Position(2,-1,-1), board));
-        assertEquals(new Position(0,1,-1), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(2,-1,-1),new Position(-1,1,0),  board));
+        assertEquals(new Position(1,-1,0), ia.findTheBestPositionForMovingTheGardenerInLine(new Position(-1,1,0), new Position(2,-1,-1), board));
+        assertEquals(new Position(0,1,-1), ia.findTheBestPositionForMovingTheGardenerInLine(new Position(2,-1,-1),new Position(-1,1,0),  board));
     }
 
     @Test
@@ -301,9 +297,9 @@ public class MarganIATest {
 
         // On veut aller du -1 ; 1 ; 0 au 2 ; -1 ; -1
 
-        assertEquals(new Position(1,0,-1), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(0,0,0), new Position(1,0,-1), board));
+        assertEquals(new Position(1,0,-1), ia.findTheBestPositionForMovingTheGardenerInLine(new Position(0,0,0), new Position(1,0,-1), board));
 
-        assertEquals(new Position(-1,1,0), ia.findTheBestPositionForMoovingTheGardenerInLine(new Position(1,-1,0), new Position(-1,1,0), board));
+        assertEquals(new Position(-1,1,0), ia.findTheBestPositionForMovingTheGardenerInLine(new Position(1,-1,0), new Position(-1,1,0), board));
 
     }
 

@@ -8,30 +8,29 @@ import java.util.Objects;
  */
 
 public class Position {
-    // Attributes
+
     private final int x;
     private final int y;
     private final int z;
 
-    // Constructor
     public Position(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    // Accessors
     public int getX () {
         return x;
     }
+
     public int getY() {
         return y;
     }
+
     public int getZ() {
         return z;
     }
 
-    // Methods and Functions
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Position) {
@@ -43,6 +42,11 @@ public class Position {
         return false;
     }
 
+    /**
+     * Crée un nouvelle position résultante de l'addition entre cette position et une autre
+     * @param position position à ajouter à la courante
+     * @return une nouvelle position
+     */
     public Position add(Position position) {
         int x = this.getX() + position.getX();
         int y = this.getY() + position.getY();
