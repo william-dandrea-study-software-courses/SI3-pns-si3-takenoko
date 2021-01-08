@@ -4,7 +4,6 @@ import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.goalcards.*;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.game.parcels.Layout;
-import fr.matelots.polytech.engine.util.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,23 +73,35 @@ public class IndividualBoard {
     }
 
 
+    /**
+     * Vérifie tous les objectifs parcelles
+     */
     public void checkAllParcelGoal() {
         objectiveParcels.forEach(card -> {
             if(card.isCompleted()) return;
             card.verify();
-            //if(card.isCompleted()) System.out.println("Parcel objective completed: +"+card.getScore());
         });
     }
+
+    /**
+     * Vérifie tous les objectifs
+     */
     public void checkAllGoal() {
         checkAllParcelGoal();
         checkAllGardenerGoal();
         checkAllPandaGoal();
     }
 
+    /**
+     * Vérifie tous les objectifs panda
+     */
     public void checkAllPandaGoal() {
         objectivePandas.forEach(this::verify);
     }
 
+    /**
+     * Vérifie tous les objectifs jardinier
+     */
     public void checkAllGardenerGoal() {
         for (CardObjectiveGardener card : objectiveGardeners) {
             if(card.isCompleted()) return;
@@ -99,15 +110,6 @@ public class IndividualBoard {
         }
     }
     // = = = = = = = = = = = = = = = = = = = OBJECTIVES = = = = = = = = = = = = = = = = = = =
-
-    /** @return a objective in the list of objectives who is not completed*/
-    public CardObjectiveParcel getNextParcelGoal() {
-        for(var obj : objectiveParcels) {
-            if(!obj.isCompleted())
-                return obj;
-        }
-        return null;
-    }
 
     /**
      *
@@ -118,7 +120,9 @@ public class IndividualBoard {
                 + countUnfinishedGardenerObjectives() + countUnfinishedPandaObjectives();
     }
 
-    // @return the number of completed objectives (all types of objectives)
+    /**
+     * @return the number of completed objectives (all types of objectives)
+     */
     public CardObjective[] getCompletedObjectives() {
         return Stream.concat(
                 Stream.concat(
@@ -129,6 +133,9 @@ public class IndividualBoard {
         .toArray(CardObjective[]::new);
     }
 
+    /**
+     * @return the number of completed objectives
+     */
     public int countCompletedObjectives() {
         return getCompletedObjectives().length;
     }
@@ -147,6 +154,11 @@ public class IndividualBoard {
         return objectiveParcels.add(parcelObjective);
     }
 
+    /**
+     * Ajoute un objectif jardinier à la plaque de status
+     * @param gardenerObjective, l'objectif
+     * @return true si l'objectif est ajouté avec succès
+     */
     public boolean addNewGardenerObjective(CardObjectiveGardener gardenerObjective) {
         if (countUnfinishedObjectives() >= Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND)
             return false;
@@ -154,6 +166,11 @@ public class IndividualBoard {
         return objectiveGardeners.add(gardenerObjective);
     }
 
+    /**
+     * Ajoute un objectif panda à la plaque de status
+     * @param pandaObjective, l'objectif
+     * @return true si l'objectif est ajouté avec succès
+     */
     public boolean addNewPandaObjective(CardObjectivePanda pandaObjective) {
         if (countUnfinishedObjectives() >= Config.MAX_NUMBER_OF_OBJECTIVES_CARD_IN_HAND)
             return false;
@@ -163,27 +180,42 @@ public class IndividualBoard {
 
     // = = = = = = = = = = = = = = = = = = IRRIGATION = = = = = = = = = = = = = = = = = =
 
+    /**
+     * Ajoute une irrigation à la plaque de status
+     */
     public void addIrrigation() {
         irrigations++;
     }
 
+    /**
+     * @return true si il reste des irrigation sur la plaque de status
+     */
     public boolean canPlaceIrrigation() {
         return irrigations > 0;
     }
 
+    /**
+     * Retire une irrigation de la plaque de status
+     * @return true si il y avais assez d'irrigation
+     */
     public boolean placeIrrigation() {
         if(!canPlaceIrrigation()) return false;
         irrigations--;
         return false;
     }
 
+    /**
+     * @return Le nombre d'irrigation disponible sur la plaque de status
+     */
     public int getNumberOfIrrigations() {
         return irrigations;
     }
 
     // = = = = = = = = = = = = = = = = = = = PARCELS = = = = = = = = = = = = = = = = = = =
 
-    // @return the number of completed objectives (all types of objectives)
+    /**
+     * @return La liste des tous les objectifs parcelle non résolu
+     */
     public List<CardObjectiveParcel> getUnfinishedParcelObjectives() {
         List<CardObjectiveParcel> result = new ArrayList<>();
         for(var obj : objectiveParcels) {
