@@ -3,7 +3,7 @@ package fr.matelots.polytech.core.game.deck;
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.parcels.Layout;
 
-public class DeckLayoutBasin extends Deck{
+public class DeckLayoutBasin extends Deck<Layout> {
     public DeckLayoutBasin(Board board) {
         super(board);
     }
