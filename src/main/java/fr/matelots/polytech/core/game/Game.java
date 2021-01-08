@@ -22,8 +22,8 @@ import java.util.logging.Logger;
  * @author Yann Clodong
  */
 public class Game {
-    private static final Logger ACTIONLOGGER = Logger.getLogger("actionLogger");
-    // Attributes
+
+    private static final Logger ACTION_LOGGER = Logger.getLogger("actionLogger");
     private final List<Bot> bots;
     private final Board board;
     private final BoardDrawer drawer;
@@ -32,39 +32,48 @@ public class Game {
     private boolean canPlayWeather = false;
     private boolean canMovePandaSomewhere = false;       // For the THUNDERSTORM weather => The panda can move somewhere
 
-    // Constructors
-    public Game () {
+    public Game() {
         bots = new ArrayList<>();
         board = new Board();
         drawer = new BoardDrawer(board);
     }
 
     private void setDemoBots(boolean twiceSameBot) {
-        if (twiceSameBot) {
-            addBot(new FourthBot(this, "Bot super intelligent 1"));
+        /*if (twiceSameBot) {
+            addBot(new QuintusBot(this));
         }
         else {
-            addBot(new ThirdBot(this));
+            addBot(new ThirdBot(this, "3bot"));
         }
-        addBot(new FourthBot(this, "Bot super intelligent 2"));
+        addBot(new QuintusBot(this, "Quintus (Rush Panda)"))*/
+        //bots.add(new PremierBot(this));
+        addBot(new FourthBot(this, "BadBot"));
+        addBot(new FourthBot(this, "GoodBot"));
+        //bots.add(new ThirdBot(this));
+        //bots.add(new FourthBot(this));
+        //bots.add(new FifthBot(this, "GentleBot"));
+        //addBot(new QuintusBot(this, "Jojol (Rush Panda)"));
+        //bots.add(new QuintusBot(this));
+        //bots.add(new QuintusBot(this, "Jojo"));
+        //bots.add(new RushParcelBot(this, "RushParcel"));
+        //bots.add(new RushParcelBot(this, "RushParcel2"));
     }
 
     public void addBot(Bot bot) {
-        if(bots.contains(bot)) return; // Eviter les doubles coups ;)
+        if (bots.contains(bot)) return; // Eviter les doubles coups ;)
         bots.add(bot);
     }
 
-    public List<List<Bot>> getRanks()
-    {
+    public List<List<Bot>> getRanks() {
 
         List<List<Bot>> ranked = new ArrayList<>(); // une liste de (liste de bot ayant le meme score) classé par score
 
-        for(Bot bot : bots) {
+        for (Bot bot : bots) {
             var goodList = ranked.stream()
-                    .filter(a -> a.get(0) /* les listes contiennent au moins un element cf suite */ .getIndividualBoard().getPlayerScore() == bot.getIndividualBoard().getPlayerScore())
+                    .filter(a -> a.get(0) /* les listes contiennent au moins un element cf suite */.getIndividualBoard().getPlayerScore() == bot.getIndividualBoard().getPlayerScore())
                     .findAny(); // si il existe déjà une liste correspondant au score de ce bot, on la récupère
 
-            if(goodList.isEmpty()) {
+            if (goodList.isEmpty()) {
                 ArrayList<Bot> listForThisScore = new ArrayList<>(); // si elle n'existe pas on la créée
                 listForThisScore.add(bot);
                 ranked.add(listForThisScore); // donc les liste etant creee uniquement ici, elles contiennent au moins un element chacune
@@ -82,7 +91,7 @@ public class Game {
         return ranked;
     }
 
-    public List<Bot> separate (List<Bot> winners) {
+    public List<Bot> separate(List<Bot> winners) {
         List<Bot> trueWinners = new ArrayList<>();
 
         if (winners != null && !winners.isEmpty()) {
@@ -96,8 +105,7 @@ public class Game {
                     max = winners.get(i);
                     score = max.getIndividualBoard().getObjectivesPandaScore();
                     trueWinners.add(max);
-                }
-                else if (winners.get(i).getIndividualBoard().getObjectivesPandaScore() == score) {
+                } else if (winners.get(i).getIndividualBoard().getObjectivesPandaScore() == score) {
                     trueWinners.add(winners.get(i));
                 }
             }
@@ -106,17 +114,16 @@ public class Game {
         return trueWinners;
     }
 
-
     private void drawRanks() {
         List<List<Bot>> ranked = getRanks();
 
-        if(ranked.size() == 0) return;
+        if (ranked.size() == 0) return;
         StringBuilder result = new StringBuilder();
         result.append("========== RESULTS ==========\n");
 
         // drawing winner
         int winnerScore = ranked.get(0).get(0).getIndividualBoard().getPlayerScore();
-        if(ranked.get(0).size() == 1)
+        if (ranked.get(0).size() == 1)
             result.append("The winner (score : ").append(winnerScore).append(") is : ");
         else {
             List<Bot> winners = new ArrayList<>(ranked.get(0));
@@ -131,9 +138,8 @@ public class Game {
                                 .append(", panda : ")
                                 .append(trueWinners.get(0).getIndividualBoard().getObjectivesPandaScore())
                                 .append(") is : ")
-                        .append(trueWinners.get(0));
-                    }
-                    else {
+                                .append(trueWinners.get(0));
+                    } else {
                         result.append("The following bots are winning with equal score (score: ")
                                 .append(winnerScore)
                                 .append(", panda : ")
@@ -143,8 +149,7 @@ public class Game {
                             result.append(bot.getName()).append(", ");
                         result.append("\n");
                     }
-                }
-                else {
+                } else {
                     for (Bot bot : trueWinners) {
                         result.append("Score ")
                                 .append(bot.getIndividualBoard().getPlayerScore())
@@ -162,44 +167,40 @@ public class Game {
         }
 
 
-        for(var bot : ranked.get(0)) {
+        for (var bot : ranked.get(0)) {
             result.append(bot.getName()).append(", ");
         }
         result.delete(result.length() - 2, result.length());
         result.append('\n');
         ranked.remove(0); // make sure the winner will not be displayed two times
-        for(var sameScored : ranked) {
+        for (var sameScored : ranked) {
             int scoreStep = sameScored.get(0).getIndividualBoard().getPlayerScore();
 
             result.append("Score ").append(scoreStep).append(" : ");
-            if(sameScored.size() != 1)
+            if (sameScored.size() != 1)
                 result.append("equality between ");
 
-            for(var bot : sameScored) {
+            for (var bot : sameScored) {
                 result.append(bot.getName()).append(", ");
             }
             result.delete(result.length() - 2, result.length());
             result.append('\n');
         }
         result.deleteCharAt(result.length() - 1);
-        ACTIONLOGGER.info(result.toString());
+        ACTION_LOGGER.info(result.toString());
 
     }
 
-
-
-
-
-    public boolean isCanceledGame () {
+    public boolean isCanceledGame() {
         return canceledGame;
     }
 
-    public void run (boolean draw, boolean twiceSameBot) {
+    public void run(boolean draw, boolean twiceSameBot) {
         setDemoBots(twiceSameBot);
 
-        if(bots.size() < 2 || bots.size() > 4) {
+        if (bots.size() < 2 || bots.size() > 4) {
             if (draw)
-                ACTIONLOGGER.info("Pas le bon nombre de joueurs");
+                ACTION_LOGGER.info("Pas le bon nombre de joueurs");
             return;
         }
 
@@ -209,6 +210,7 @@ public class Game {
     public void launchTurnLoop() {
         launchTurnLoop(false);
     }
+
     public void launchTurnLoop(boolean draw) {
 
         int numberOfGlobalTour = 0;
@@ -241,23 +243,23 @@ public class Game {
                 if (bot.getIndividualBoard().countCompletedObjectives() >= Config.getNbObjectivesToCompleteForLastTurn(bots.size())) {
                     if (!lastTurn) {
                         if (draw)
-                            ACTIONLOGGER.info(bot.getName() + " is the Emperor owner !!");
+                            ACTION_LOGGER.info(bot.getName() + " is the Emperor owner !!");
                         bot.getIndividualBoard().setEmperor(new CardObjectiveEmperor());
                     }
                     lastTurn = true;
                 }
 
 
-                if(draw) {
-                    ACTIONLOGGER.info("========== ACTIONS ==========\n" + log.toString() + "\n");
+                if (draw) {
+                    ACTION_LOGGER.info("========== ACTIONS ==========\n" + log.toString() + "\n");
                     drawer.print();
                 }
 
             });
 
-            if(bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
+            if (bots.stream().noneMatch(Bot::canPlay)) { // Si aucun bot ne peut jouer, on coupe la partie.
                 if (draw)
-                    ACTIONLOGGER.info("aucun bot ne peux jouer la partie, on la fini");
+                    ACTION_LOGGER.info("aucun bot ne peux jouer la partie, on la fini");
                 canceledGame = true;
                 break;
             }
@@ -267,9 +269,10 @@ public class Game {
 
     /**
      * This return the hidden top card of the parcel objective deck
+     *
      * @return the hidden top card of the parcel objective deck
      */
-    public CardObjectiveParcel getNextParcelObjective () {
+    public CardObjectiveParcel getNextParcelObjective() {
         if (board.getDeckParcelObjective().canPick())
             return board.getDeckParcelObjective().pick();
         return null;
@@ -277,6 +280,7 @@ public class Game {
 
     /**
      * This return the hidden top card of the gardener objective deck
+     *
      * @return the hidden top card of the gardener objective deck
      */
     public CardObjectiveGardener getNextGardenerObjective() {
@@ -287,6 +291,7 @@ public class Game {
 
     /**
      * This return the hidden top card of the panda objective deck
+     *
      * @return the hidden top card of the panda objective deck
      */
     public CardObjectivePanda getNextPandaObjective() {
@@ -298,17 +303,19 @@ public class Game {
 
     public Layout getNextBasinLayout() {
         if (board.getDeckBasinLayout().canPick())
-            return (Layout) board.getDeckBasinLayout().pick();
+            return board.getDeckBasinLayout().pick();
         return null;
     }
+
     public Layout getNextFertilizerLayout() {
         if (board.getDeckFertilizerLayout().canPick())
-            return (Layout) board.getDeckFertilizerLayout().pick();
+            return board.getDeckFertilizerLayout().pick();
         return null;
     }
+
     public Layout getNextEnclosureLayout() {
         if (board.getDeckEnclosureLayout().canPick())
-            return (Layout) board.getDeckEnclosureLayout().pick();
+            return board.getDeckEnclosureLayout().pick();
         return null;
     }
 
@@ -336,9 +343,10 @@ public class Game {
 
     /**
      * This method will move the panda at a certain position (somewhere)
+     *
      * @param lastAction The last action from the bot
      * @param bot
-     * @param pos the position where we want to move the panda
+     * @param pos        the position where we want to move the panda
      * @param log
      * @return true if we arrived to move, false otherwise
      */
@@ -348,7 +356,7 @@ public class Game {
                 throw new IllegalActionRepetitionException();
 
             getBoard().getPanda().setCurrentPlayer(bot);
-            boolean res = getBoard().getPanda().moveToAbsolute(pos.getX(), pos.getY(), pos.getZ());
+            boolean res = getBoard().getPanda().moveFreelyTo(pos.getX(), pos.getY(), pos.getZ());
             if (res) {
                 log.addAction(BotActionType.MOVE_PANDA, pos.toString());
                 bot.setCurrentNumberOfAction(bot.getCurrentNumberOfAction() + 1);
@@ -358,7 +366,6 @@ public class Game {
         }
         return false;
     }
-
 
 
 }

@@ -12,14 +12,12 @@ import fr.matelots.polytech.core.players.MarganIA;
 import fr.matelots.polytech.core.players.bots.logger.BotActionType;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
-import java.util.*;
+import java.util.List;
 
 public class RushParcelBot extends Bot {
 
     private TurnLog turnLogger;
     private CardObjectiveParcel cardWeActuallyTryToResolve;
-
-    private Random random = new Random();
 
     public RushParcelBot(Game game, String name) {
         super(game, name);
@@ -30,9 +28,6 @@ public class RushParcelBot extends Bot {
         cardWeActuallyTryToResolve = null;
     }
 
-
-
-
     @Override
     public void playTurn(TurnLog log, Weather weatherCard) {
         super.playTurn(log, weatherCard);
@@ -40,12 +35,10 @@ public class RushParcelBot extends Bot {
         turnLogger = log;
         // En premier lieu, on vérifie / initialise / met a jour la liste d'objectifs si celle-ci n'est pas rempli
         if (getIndividualBoard().getUnfinishedParcelObjectives().size() != 5) {
-            inilializeOrUpdateListOfCurrentsObjective2();
+            initializeOrUpdateListOfCurrentsObjective2();
         }
 
         easiestObjectiveToResolve2();
-
-        //Set<PositionColored> missingsPositions = recoverTheMissingsPositionsToCompleteForParcelObjective(cardWeActuallyTryToResolve);
 
         if (cardWeActuallyTryToResolve != null) {
             PositionColored missingPosition = MarganIA.findTheBestPlaceToPlaceAnParcel(cardWeActuallyTryToResolve, getBoard());
@@ -87,9 +80,7 @@ public class RushParcelBot extends Bot {
 
     }
 
-
-
-    void inilializeOrUpdateListOfCurrentsObjective2() {
+    void initializeOrUpdateListOfCurrentsObjective2() {
 
         BotActionType lastAction = getLastAction();
         if (lastAction != null)
@@ -97,7 +88,7 @@ public class RushParcelBot extends Bot {
             if (lastAction.equals(BotActionType.PICK_PARCEL_GOAL)) {
                 // We pick a new parcel
                 List<Parcel> availableParcels = board.pickParcels();
-                if (!availableParcels.isEmpty() && availableParcels != null && getBoard().getPositions().size() < Config.DECK_PARCEL_SIZE) {
+                if (!availableParcels.isEmpty() && getBoard().getPositions().size() < Config.DECK_PARCEL_SIZE) {
                     placeAnParcelAnywhere(turnLogger, availableParcels.get(random.nextInt(availableParcels.size())));
                 }
             } else {
@@ -119,11 +110,7 @@ public class RushParcelBot extends Bot {
 
     @Override
     public boolean canPlay() {
-        if (getBoard().getParcelCount() <= 26) {
-            return true;
-        } else {
-            return false;
-        }
+        return getBoard().getParcelCount() <= 26;
     }
 
 }

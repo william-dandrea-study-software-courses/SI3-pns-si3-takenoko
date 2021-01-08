@@ -50,7 +50,8 @@ public class Takenoko {
         for (double i = 0; i < NB_DIVIDER; i++)
             percents.add(i / NB_DIVIDER_PCT);
 
-
+        final int NB_GAMES = 100;
+        final boolean LOG_DETAIL = false;
         Map<String, Integer> results = new HashMap<>();
         int nbCanceledGame = 0;
         int nbDraw = 0;

@@ -2,18 +2,14 @@ package fr.matelots.polytech.core.players;
 
 import fr.matelots.polytech.core.game.Board;
 import fr.matelots.polytech.core.game.Config;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveGardener;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooPlantation;
 import fr.matelots.polytech.core.game.parcels.Layout;
-import fr.matelots.polytech.core.game.parcels.Parcel;
 import fr.matelots.polytech.engine.util.Position;
 
 import java.util.*;
-
-import static java.lang.StrictMath.abs;
 
 
 /**

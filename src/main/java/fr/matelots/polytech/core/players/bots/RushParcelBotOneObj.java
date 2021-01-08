@@ -3,29 +3,26 @@ package fr.matelots.polytech.core.players.bots;
 import fr.matelots.polytech.core.game.Config;
 import fr.matelots.polytech.core.game.Game;
 import fr.matelots.polytech.core.game.Weather;
-import fr.matelots.polytech.core.game.goalcards.CardObjective;
 import fr.matelots.polytech.core.game.goalcards.CardObjectiveParcel;
 import fr.matelots.polytech.core.game.goalcards.pattern.PositionColored;
 import fr.matelots.polytech.core.game.parcels.BambooColor;
 import fr.matelots.polytech.core.players.Bot;
 import fr.matelots.polytech.core.players.bots.logger.TurnLog;
 
-import java.util.*;
-
-
-
+import java.util.Optional;
+import java.util.Set;
 
 public class RushParcelBotOneObj extends Bot {
 
     private TurnLog turnLogger;
     private Optional<CardObjectiveParcel> currentObjective;
 
-    private int minNumberOfParcels = 6;
+    private final int minNumberOfParcels = 6;
     private int finishIncrement = 0;
     private int inc = 0;
 
-
     public RushParcelBotOneObj(Game game) { super(game); }
+
     public RushParcelBotOneObj(Game game, String name) { super(game, name); }
 
     @Override
@@ -81,26 +78,19 @@ public class RushParcelBotOneObj extends Bot {
      */
     void tryToResolveParcelObjective2() {
 
-        CardObjectiveParcel actualCard = (CardObjectiveParcel) currentObjective.get();
-        BambooColor[] colors = actualCard.getColors();
+        CardObjectiveParcel actualCard = currentObjective.get();
 
-        Set<PositionColored> missingPositionsToComplete = recoverTheMissingsPositionsToCompleteForParcelObjective(actualCard);
+        Set<PositionColored> missingPositionsToComplete = getMissingPositions(actualCard);
 
         for (PositionColored positionColored : missingPositionsToComplete) {
             placeAnParcelAnywhere(positionColored.getColor(), turnLogger);
-            //placeParcel(positionColored.getPosition(), positionColored.getColor(), turnLogger);
         }
 
     }
 
     boolean minimumParcelsInTheBoard() {
-        if (getBoard().getParcelCount() <= minNumberOfParcels) {
-            return true;
-        }
-        return false;
+        return getBoard().getParcelCount() <= minNumberOfParcels;
     }
-
-
 
     /**
      *
@@ -117,33 +107,6 @@ public class RushParcelBotOneObj extends Bot {
 
     }
 
-
-
-
-
-
-
-    /**
-     * This methid check the currentObjective, if it is completed, we pick a new Parcel objective
-     * @return true if the objective is completed, false if the currentObjective doesn't change
-     */
-    private boolean checkCurrentObjective() {
-
-        if (currentObjective.isPresent()) {
-            if (currentObjective.get().isCompleted() && currentObjective.get().verify()) {
-                return true;
-            }
-        }
-
-        return false;
-
-
-    }
-
-
-
-
-
     @Override
     public boolean canPlay() {
 
@@ -156,12 +119,6 @@ public class RushParcelBotOneObj extends Bot {
         return false;
 
 
-    }
-
-
-
-    public Optional<CardObjectiveParcel> getCurrentObjective() {
-        return currentObjective;
     }
 
     public TurnLog getLogger() {
