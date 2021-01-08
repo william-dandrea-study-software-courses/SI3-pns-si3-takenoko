@@ -2,12 +2,22 @@
 package fr.matelots.polytech.core.players.bots;
 
 
+import fr.matelots.polytech.core.game.Board;
+import fr.matelots.polytech.core.game.Game;
+import fr.matelots.polytech.core.game.parcels.Layout;
+import fr.matelots.polytech.core.players.IndividualBoard;
+import fr.matelots.polytech.core.players.bots.logger.TurnLog;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author williamdandrea
  */
 
 public class FourthBotTest {
-/*
+
     Game game;
     FourthBot bot;
     TurnLog log;
@@ -24,7 +34,7 @@ public class FourthBotTest {
         game.addBot(bot);
     }
 
-    */
+
 /**
      * Here, we test the start of the game, we verify if we take MAX_NUMBER_OF_PARCEL_OBJECTIVES and the
      * MAX_NUMBER_OF_GARDENER_OBJECTIVES
@@ -322,5 +332,30 @@ public class FourthBotTest {
 
     }*//*
  */
+
+    /* A SUPPRIMER
+    @Test
+    public void testStockRandomLayout() {
+        bot.setCurrentNumberOfAction(0);
+        bot.stockRandomLayout();
+
+        System.out.println(board.getLayoutFertilizerLeftToPlace());
+        System.out.println(board.getLayoutEnclosureLeftToPlace());
+        System.out.println(board.getLayoutBasinLeftToPlace());
+    }
+
+    @Test
+    public void testGetLayoutInDeck() {
+        bot.getLayoutInDeck(Layout.BASIN);
+        assertEquals(1, individualBoard.getLayoutFromIndBoard(Layout.BASIN));
+    }
+
+    @Test
+    public void testWeatherCaseCloudInitial() {
+        bot.pickParcelObjective(log);
+
+    }
+    */
+
 }
 

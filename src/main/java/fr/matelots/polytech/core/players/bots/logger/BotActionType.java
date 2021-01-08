@@ -15,7 +15,11 @@ public enum BotActionType {
     MOVE_PANDA,
 
     PLACE_IRRIGATION,
-    PLACE_LAYOUT;
+    PLACE_LAYOUT,
+
+    PICK_BASIN_LAYOUT,
+    PICK_FERTILIZER_LAYOUT,
+    PICK_ENCLOSURE_LAYOUT;
 
 
     public String getMessage(Bot bot, Object param) {
@@ -40,6 +44,12 @@ public enum BotActionType {
                 return bot.getName() + " place an irrigation on the edge " + param;
             case PLACE_LAYOUT:
                 return bot.getName() + " place a layout " + param;
+            case PICK_BASIN_LAYOUT:
+                return bot.getName() + " pick a basin layout ";
+            case PICK_ENCLOSURE_LAYOUT:
+                return bot.getName() + " pick a enclosure layout ";
+            case PICK_FERTILIZER_LAYOUT:
+                return bot.getName() + " pick a fertilizer layout ";
         }
 
         return "";

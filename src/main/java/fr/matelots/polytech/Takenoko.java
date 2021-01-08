@@ -57,7 +57,7 @@ public class Takenoko {
 
         for (int nbGame = 0; nbGame < NB_GAMES; nbGame++) {
             if(percents.contains(nbGame / ((double) NB_GAMES)))
-                System.out.print("" + nbGame + "... ");
+                System.out.print("" + nbGame + "-");
             game = new Game();
 
             game.run(LOG_DETAIL, twiceSameBot);
