@@ -423,6 +423,8 @@ public class ThirdBot extends Bot {
         super.playTurn(log, weatherCard);
         setCurrentNumberOfAction(0);
 
+        if(!canPlay()) return;
+
         turnLog = log;
         duringTurn = 20;
         while(canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
