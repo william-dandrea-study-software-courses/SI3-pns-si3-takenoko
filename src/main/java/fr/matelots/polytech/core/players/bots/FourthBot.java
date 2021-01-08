@@ -191,7 +191,7 @@ public class FourthBot extends Bot {
         }
     }
 
-    private boolean hasAlreadyPickGoal() {
+    boolean hasAlreadyPickGoal() {
         return this.getLastAction() == BotActionType.PICK_GARDENER_GOAL || this.getLastAction() == BotActionType.PICK_PANDA_GOAL
                 || this.getLastAction() == BotActionType.PICK_PARCEL_GOAL;
     }
@@ -214,7 +214,7 @@ public class FourthBot extends Bot {
     /**
      * This function will analyze all the parcels objectives and set the easier parcel objective
      */
-    private List<CardObjectiveParcel> getObjectiveParcelsCompletable(TurnLog log) {
+    List<CardObjectiveParcel> getObjectiveParcelsCompletable(TurnLog log) {
         //System.out.println("left: "+this.board.getParcelLeftToPlace());
         if(this.cantDoParcelObjectives())
             return Collections.emptyList();
@@ -619,22 +619,7 @@ public class FourthBot extends Bot {
             return false;
     }*/
 
-    private Position getStepMovePosition(Position start, Position goal) {
-        List<Position> path = ShortestPathAlgorithm.shortestPath(start, goal, this.board);
-        if(path.size() == 1 || path.size() == 2) {
-            if(path.size() == 2)
-                path.remove(start);
-            return goal;
-        }
-        Side sideDirection = Side.getTouchedSide(path.get(0), path.get(1));
-        for(int i = 2; i < path.size(); i++) {
-            Side side = Side.getTouchedSide(path.get(i - 1), path.get(i));
-            if(side != sideDirection) {
-                return path.get(i - 1);
-            }
-        }
-        return goal;
-    }
+
 
     private Position getNextPosition(Position position) {
         Position posTmp;
@@ -704,44 +689,37 @@ public class FourthBot extends Bot {
         layoutNeeded.entrySet().removeIf(entry -> entry.getValue() <= 0);
         for (CardObjectiveGardener card : objectiveGardenersCompletable) {
             Layout layout = card.getLayout();
-            if(layout != null && layoutNeeded.containsKey(layout) && this.layoutInDeck(layout)) {
-                this.individualBoard.addLayouts(this.getLayoutInDeck(layout));
-                return;
+            if(layout != null && layoutNeeded.containsKey(layout)) {
+                Optional<Layout> layoutInDeck = this.getLayoutInDeck(layout);
+                if(layoutInDeck.isPresent()) {
+                    this.individualBoard.addLayouts(layoutInDeck.get());
+                    return;
+                }
             }
         }
         this.stockRandomLayout();
     }
 
-    private Layout getLayoutInDeck(Layout layout) {
+    private Optional<Layout> getLayoutInDeck(Layout layout) {
+        TurnLog log = new TurnLog(this);
         switch (layout) {
             case BASIN:
-                return this.board.getDeckBasinLayout().pick();
+                return this.pickBasinLayout(log);
             case FERTILIZER:
-                return this.board.getDeckFertilizerLayout().pick();
+                return this.pickFertilizerLayout(log);
             case ENCLOSURE:
-                return this.board.getDeckEnclosureLayout().pick();
+                return this.pickEnclosureLayout(log);
         }
-        return null;
-    }
-
-    private boolean layoutInDeck(Layout layout) {
-        switch (layout) {
-            case BASIN:
-                return this.board.getDeckBasinLayout().canPick();
-            case FERTILIZER:
-                return this.board.getDeckFertilizerLayout().canPick();
-            case ENCLOSURE:
-                return this.board.getDeckEnclosureLayout().canPick();
-        }
-        return false;
+        return Optional.empty();
     }
 
     private void stockRandomLayout() {
         List<Layout> layouts = Arrays.asList(Layout.values());
         Collections.shuffle(layouts);
         for (Layout layout : layouts) {
-            if(this.layoutInDeck(layout)) {
-                this.individualBoard.addLayouts(this.getLayoutInDeck(layout));
+            Optional<Layout> layoutInDeck = this.getLayoutInDeck(layout);
+            if(layoutInDeck.isPresent()) {
+                this.individualBoard.addLayouts(layoutInDeck.get());
                 return;
             }
         }

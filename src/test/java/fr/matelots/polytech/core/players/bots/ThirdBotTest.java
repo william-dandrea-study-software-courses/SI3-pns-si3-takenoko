@@ -99,7 +99,7 @@ public class ThirdBotTest {
     @Disabled
     @Test
     void testStability() {
-        for(int i = 0; i < 1500; i++) {
+        for(int i = 0; i < 500; i++) {
             init();
             int n = 0;
             while (bot.canPlay()) {
@@ -150,18 +150,22 @@ public class ThirdBotTest {
          assertTrue(action.getType() == BotActionType.PICK_GARDENER_GOAL || action.getType() == BotActionType.PICK_PARCEL_GOAL);
      }
 
+     @Disabled
      @Test
     void bot3vs3bot() {
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 250; i++) {
             ThirdBot bot2 = new ThirdBot(game);
             game.addBot(bot2);
 
+            int n = 0;
             while (bot.canPlay() && bot2.canPlay()) {
+                init();
                 bot.playTurn(log);
                 log = new TurnLog(bot2);
                 bot2.playTurn(log);
-                log = new TurnLog(bot);
+                n++;
             }
+            System.out.println("Game finished in " + n);
         }
     }
 

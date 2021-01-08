@@ -143,9 +143,10 @@ public class ThirdBot extends Bot {
                 board.getParcel(position).getBambooColor() == bambooColor &&
                 board.getParcel(position).getBambooSize() < bambooSize &&
                 (                                                                       // Check layouts
-                        objectiveGardener.getLayout() == null ||                                 // Check objectiveCard has no layout
+                        (objectiveGardener.getLayout() == null ||                                 // Check objectiveCard has no layout
                                 board.getParcel(position).getLayout() == null ||
-                                board.getParcel(position).getLayout() == objectiveGardener.getLayout()
+                                board.getParcel(position).getLayout() == objectiveGardener.getLayout()) &&
+                            getIndividualBoard().getLayouts().contains(objectiveGardener.getLayout())
                 ) &&
                 isReachableByGardener(position));
         if(irrigatedAndReachableByGardenner)
@@ -307,6 +308,30 @@ public class ThirdBot extends Bot {
         //              a - reachable by the gardenner
 
 
+        /*
+            Check if there is a tile needing layout
+         */
+        if(objectiveGardener.getLayout() != null &&
+            getIndividualBoard().getLayouts().contains(objectiveGardener.getLayout()) &&
+            board.getPositions().stream().map(board::getParcel).noneMatch(p ->
+                    p.getBambooColor() == objectiveGardener.getColor() &&
+                    p.getBambooSize() == objectiveGardener.getSize() &&
+                    p.getLayout() == objectiveGardener.getLayout()
+            )
+        ) {
+            var tile = board.getPositions().stream().map(board::getParcel).filter(p ->
+                    p.getBambooColor() == objectiveGardener.getColor() &&
+                    p.getBambooSize() == objectiveGardener.getSize() &&
+                    p.getLayout() == null &&
+                    p instanceof BambooPlantation).map(p -> (BambooPlantation)p).findAny();
+
+            tile.ifPresent(val -> {
+                placeLayout(turnLog, val, objectiveGardener.getLayout());
+            });
+            return;
+        }
+
+
         //      3 - there is a tile of the good color and is irrigated
         //              a - reachable by the gardenner
         //              b - Good layout
@@ -325,13 +350,11 @@ public class ThirdBot extends Bot {
         if(tileIrrigatedReachableByGardener.isPresent() && canPerformAction(BotActionType.MOVE_GARDENER)) {
             var nextPosition = getGardenerRoute(tileIrrigatedReachableByGardener.get()).get();
             moveGardener(nextPosition, turnLog);
-            if(canPerformAction(BotActionType.PLACE_LAYOUT) && objectiveGardener.getLayout() != null && board.getParcel(nextPosition).getLayout() != objectiveGardener.getLayout()) {
-                getIndividualBoard().addLayouts(objectiveGardener.getLayout());
-                if(!(board.getParcel(nextPosition) instanceof BambooPlantation)) return;
-                placeLayout(turnLog, (BambooPlantation)board.getParcel(nextPosition), objectiveGardener.getLayout());
-            }
             return;
         }
+
+
+
 
 
         if(getIndividualBoard().canPlaceIrrigation()) {
@@ -363,7 +386,8 @@ public class ThirdBot extends Bot {
         placeAnParcelAnywhere(objectiveGardener.getColor(), turnLog);
     }
 
-    private int nothingDoneDuring = 30;
+    private int nothingDoneDuring = 50;
+    private int duringTurn = 5;
     void DecideAction(TurnLog log) {
 
         checkAllObjectives();
@@ -400,9 +424,18 @@ public class ThirdBot extends Bot {
         setCurrentNumberOfAction(0);
 
         turnLog = log;
-        while(canDoAction() && canPlayThisTurn()) {
+        duringTurn = 20;
+        while(canDoAction() && canPlayThisTurn() && duringTurn >= 0) {
+            int qOfAction = turnLog.getActions().length;
             DecideAction(log);
+            boolean actionDone = (turnLog.getActions().length - qOfAction) > 0;
+            if(!actionDone) duringTurn--;
         }
+
+        if(turnLog.getActions().length == 0)
+            nothingDoneDuring--;
+        else
+            nothingDoneDuring = 20;
 
         turnLog = null;
     }
@@ -417,7 +450,8 @@ public class ThirdBot extends Bot {
 
     @Override
     public boolean canPlay() {
-        return canPlayThisTurn();
+        if((turnLog == null || turnLog.getActions().length == 0) && !canPlayThisTurn()) return false;
+        return nothingDoneDuring >= 0;
     }
 
 }
